@@ -9,39 +9,37 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="loginScreen" class="loginScreen hidden">
+
+<div id="loginScreen" class="loginScreen">
   <div class="loginCard">
     <div class="loginLogo">🌱</div>
     <b class="brand">FAGIOLINI</b>
-    <h1>La nostra famiglia</h1>
-    <p class="muted">Accedi come JJ o Kiki per usare i dati condivisi.</p>
+    <h1>Entra in famiglia</h1>
+    <p class="muted">Accedi con l'account JJ o Kiki per sincronizzare tutti i dati.</p>
     <form id="loginForm" class="form">
-      <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required>
-      <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required>
-      <button id="loginBtn" class="primary">Accedi</button>
-<button id="loginClose" type="button" class="secondaryFull">Continua senza sincronizzare</button>
+      <input id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+      <button id="loginButton" class="primary">Accedi</button>
     </form>
-    <div id="loginMessage" class="errorText"></div>
+    <div id="loginMessage" class="loginMessage"></div>
+    <p class="tiny">I dati restano anche in cache sul dispositivo e vengono sincronizzati con Supabase quando c'è connessione.</p>
   </div>
 </div>
 
 <div class="app">
 <header>
-  <div>
-    <b class="brand">FAGIOLINI</b>
-    <h1 id="pageTitle">La nostra giornata</h1>
-    <span id="todayLabel" class="muted"></span>
-  </div>
+  <div><b class="brand">FAGIOLINI</b><h1 id="pageTitle">La nostra giornata</h1><span id="todayLabel" class="muted"></span></div>
   <div class="headerTools">
-    <div id="syncStatus" class="syncStatus"><span>●</span><small>Locale</small></div>
-    <button id="accountBtn" class="round">👤</button>
-  </div>
+      <div id="cloudStatus" class="cloudStatus offline"><span>●</span><small>Locale</small></div>
+      <button id="accountBtn" class="round accountBtn" title="Account">👤</button>
+      <button id="resetBtn" class="round" title="Reset dati">↻</button>
+    </div>
 </header>
 
 <main>
 <section id="home" class="view on">
   <div class="familyHero card">
-    <div><small>LA FAMIGLIA</small><h2>JJ, Kiki, Caty, Kiko & Astro</h2><p class="muted">Tutto quello che serve oggi.</p></div>
+    <div><small>LA FAMIGLIA</small><h2>JJ, Kiki, Caty, Kiko & Astro</h2><p class="muted">Tutto quello che serve oggi, in un posto solo.</p></div>
     <div class="heroEmoji">🌱</div>
   </div>
 
@@ -49,123 +47,156 @@
   <div id="peopleCards" class="peopleGrid"></div>
 
   <div class="sectionTitle"><h2>Noi</h2></div>
-  <div class="adultGrid">
-    <button class="adultCard" data-adult="jj"><span>👨</span><div><b>JJ</b><small>31/05/1991</small></div></button>
-    <button class="adultCard" data-adult="kiki"><span>👩</span><div><b>Kiki</b><small>24/08/1990</small></div></button>
-  </div>
-
-  <div class="quickHome">
+<div class="adultGrid">
+  <button class="adultCard" data-adult="jj"><span>👨</span><div><b>JJ</b><small>31/05/1991 · età automatica</small></div></button>
+  <button class="adultCard" data-adult="kiki"><span>👩</span><div><b>Kiki</b><small>24/08/1990 · età automatica</small></div></button>
+</div>
+<div class="quickHome">
     <button id="quickRecord"><span>➕</span><b>Segna</b><small>Pappa, nanna, cacca...</small></button>
-    <button data-go="calendar"><span>📅</span><b>Calendario</b><small>Tutto insieme</small></button>
-    <button data-go="menu"><span>🍝</span><b>Menu</b><small>Settimana e ricette</small></button>
-    <button data-go="house"><span>🏡</span><b>Casa</b><small>Routine e bucato</small></button>
-    <button data-go="money"><span>💶</span><b>Soldi</b><small>Spese e scadenze</small></button>
+    <button data-go="menu"><span>🍝</span><b>Menu</b><small>Organizza la settimana</small></button>
+    <button data-go="calendar"><span>📅</span><b>Calendario</b><small>Vedi tutto insieme</small></button>
     <button data-go="health"><span>❤️</span><b>Salute</b><small>Visite e medicine</small></button>
+    <button data-go="shop"><span>🛒</span><b>Spesa</b><small>Cosa manca</small></button>
+    <button data-go="money"><span>💶</span><b>Soldi</b><small>Spese del mese</small></button>
   </div>
 
-  <div class="dashboardGrid">
-    <div class="card dashCard"><small>OGGI</small><b id="dashEvents">0 impegni</b></div>
-    <div class="card dashCard"><small>ROUTINE</small><b id="dashRoutines">0 da fare</b></div>
-    <div class="card dashCard"><small>SCADENZE</small><b id="dashDue">0 vicine</b></div>
-  </div>
-
-  <div class="card">
-    <div class="sectionTitle compact"><h3>In evidenza</h3></div>
-    <div id="homeFeed"></div>
-  </div>
+  <div class="sectionTitle"><h2>Oggi</h2></div>
+  <div id="todayOverview" class="card"></div>
 
   <div class="sectionTitle"><h2>Menu di oggi</h2><button data-go="menu">Apri</button></div>
   <div id="menuToday" class="card mealGrid"></div>
+
+  <div class="sectionTitle"><h2>Casa</h2><button data-go="house">Apri</button></div>
+  <div id="houseToday" class="card"></div>
+
+  <div class="sectionTitle"><h2>Spese questo mese</h2><button data-go="money">Apri</button></div>
+  <div id="moneyToday" class="card"></div>
 </section>
 
 <section id="person" class="view">
   <div class="sectionTitle"><div><small>FAGIOLINI</small><h2 id="personTitle"></h2></div><button data-go="home">← Home</button></div>
   <div id="personStats" class="stats"></div>
-  <div class="card"><h3>Segna adesso</h3><div id="personActions" class="actions"></div></div>
-  <div class="card"><div class="sectionTitle compact"><h3>Registro</h3><div class="daySwitch"><button id="dayPrev">←</button><span id="dayLabel"></span><button id="dayNext">→</button></div></div><div id="personTimeline"></div></div>
+  <div class="card">
+    <h3>Segna adesso</h3>
+    <div id="personActions" class="actions"></div>
+  </div>
+  <div class="card">
+    <div class="sectionTitle compact"><h3>Registro</h3><div class="daySwitch"><button id="dayPrev">←</button><span id="dayLabel"></span><button id="dayNext">→</button></div></div>
+    <div id="personTimeline"></div>
+  </div>
 </section>
 
 <section id="adult" class="view">
   <div class="sectionTitle"><div><small>NOI</small><h2 id="adultTitle"></h2></div><button data-go="home">← Home</button></div>
   <div id="adultSummary" class="stats"></div>
+
   <div class="card">
-    <div class="sectionTitle compact"><div><small>SPESE PERSONALI</small><h3>💳 Questo mese</h3></div><b id="adultExpenseTotal"></b></div>
-    <form id="adultExpenseForm" class="form two">
+    <h3>Azioni rapide</h3>
+    <div class="adultActions">
+      <button id="adultVisit">🩺<b>Visita</b></button>
+      <button id="adultMedicine">💊<b>Medicina</b></button>
+      <button data-go="calendar">📅<b>Calendario</b></button>
+      <button data-go="profiles">🍝<b>Alimentazione</b></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle compact">
+      <div><small>SPESE PERSONALI</small><h3>💳 Questo mese</h3></div>
+      <strong id="adultExpenseTotal">0,00 €</strong>
+    </div>
+    <form id="adultExpenseForm" class="form personalExpenseForm">
       <input id="adultExpenseName" placeholder="Es. Pranzo lavoro" required>
       <input id="adultExpenseAmount" type="number" min="0" step="0.01" placeholder="€" required>
-      <select id="adultExpenseCategory">
-        <option>Pranzo lavoro</option><option>Caffè / Bar</option><option>Trasporti</option>
-        <option>Acquisti personali</option><option>Svago</option><option>Altro</option>
+      <select id="adultExpenseCat">
+        <option value="Pranzo lavoro">Pranzo lavoro</option>
+        <option value="Caffè / Bar">Caffè / Bar</option>
+        <option value="Trasporti">Trasporti</option>
+        <option value="Acquisti personali">Acquisti personali</option>
+        <option value="Svago">Svago</option>
+        <option value="Altro">Altro</option>
       </select>
       <button class="primary">Aggiungi spesa</button>
     </form>
-    <div id="adultExpenseBreakdown"></div>
+    <div id="adultExpenseBreakdown" class="expenseBreakdown"></div>
     <div id="adultExpenseList"></div>
   </div>
-  <div class="card"><h3>Prossimi impegni</h3><div id="adultUpcoming"></div></div>
-</section>
 
+  <div class="card"><h3>Prossimi impegni</h3><div id="adultHealth"></div></div>
+</section>
 <section id="menu" class="view">
-  <div class="sectionTitle"><div><small>MENU INTELLIGENTE</small><h2>🍝 Settimana</h2></div><button data-go="home">← Home</button></div>
-  <div class="card">
-    <p class="muted">Genera un menu usando età, preferenze, cibi non graditi e allergeni dei profili.</p>
-    <div class="buttonRow"><button id="generateMenu" class="primary">✨ Genera menu</button><button id="undoMenu">↩️ Annulla</button><button data-go="profiles">⚙️ Profili</button></div>
+  <div class="sectionTitle"><div><small>ASSISTENTE MENU</small><h2>🍝 Menu famiglia</h2></div><button data-go="home">← Home</button></div>
+
+  <div class="card introCard">
+    <h3>Genera una settimana</h3>
+    <p class="muted">Il generatore usa età, preferenze e allergeni salvati nei profili. Tutto avviene sul telefono.</p>
+    <div class="inlineBtns"><button id="generateMenu" class="primary">✨ Genera menu</button><button id="undoMenu">↩️ Annulla ultima generazione</button><button data-go="profiles">⚙️ Profili alimentari</button></div>
+    <p class="tiny">Per bambini piccoli, allergie o esigenze cliniche, il menu va sempre verificato con pediatra/professionista sanitario.</p>
   </div>
   <div id="menuWeek"></div>
 </section>
 
 <section id="profiles" class="view">
-  <div class="sectionTitle"><div><small>ALIMENTAZIONE</small><h2>⚙️ Profili</h2></div><button data-go="menu">← Menu</button></div>
+  <div class="sectionTitle"><div><small>PERSONALIZZAZIONE</small><h2>⚙️ Profili alimentari</h2></div><button data-go="menu">← Menu</button></div>
   <div id="profileForms"></div>
 </section>
 
 <section id="health" class="view">
   <div class="sectionTitle"><div><small>SALUTE</small><h2>❤️ Visite e medicine</h2></div><button data-go="home">← Home</button></div>
-  <form id="visitForm" class="card form">
+
+  <form id="visitForm" class="card form healthForm">
     <h3>Nuova visita / appuntamento</h3>
-    <select id="visitPerson"></select><input id="visitTitle" placeholder="Es. Pediatra" required>
-    <input id="visitDate" type="date" required><input id="visitTime" type="time"><input id="visitNote" placeholder="Nota">
-    <select id="visitReminder"><option value="0">🔔 Giorno stesso</option><option value="1">🔔 1 giorno prima</option><option value="3">🔔 3 giorni prima</option><option value="7">🔔 7 giorni prima</option></select>
-    <select id="visitNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+    <select id="visitPerson"></select>
+    <input id="visitTitle" placeholder="Es. Pediatra, dentista..." required>
+    <input id="visitDate" type="date" required>
+    <input id="visitTime" type="time">
+    <input id="visitNote" placeholder="Nota facoltativa">
     <button class="primary">Salva visita</button>
   </form>
-  <form id="medicineForm" class="card form">
-    <h3>Nuova medicina / promemoria</h3>
-    <select id="medPerson"></select><input id="medName" placeholder="Nome medicina" required><input id="medDose" placeholder="Dose / indicazione">
-    <input id="medDate" type="date" required><input id="medTime" type="time"><input id="medNote" placeholder="Nota">
-    <select id="medReminder"><option value="0">🔔 All'orario indicato</option><option value="1">🔔 1 giorno prima</option></select>
-    <select id="medNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+
+  <form id="medicineForm" class="card form healthForm">
+    <h3>Nuova medicina</h3>
+    <select id="medPerson"></select>
+    <input id="medName" placeholder="Nome medicina" required>
+    <input id="medDose" placeholder="Dose / indicazione">
+    <input id="medDate" type="date" required>
+    <input id="medTime" type="time">
+    <input id="medNote" placeholder="Nota facoltativa">
     <button class="primary">Salva medicina</button>
   </form>
+
   <div class="card"><h3>Prossimi eventi</h3><div id="healthList"></div></div>
 </section>
 
 <section id="calendar" class="view">
   <div class="sectionTitle"><div><small>TUTTO INSIEME</small><h2>📅 Calendario</h2></div><button data-go="home">← Home</button></div>
-  <div class="calendarHead card"><button id="calPrev">←</button><h3 id="calMonth"></h3><button id="calNext">→</button></div>
-  <div class="calendar card"><div class="weekdays"><span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span></div><div id="calendarGrid" class="calGrid"></div></div>
-  <div class="card"><h3 id="selectedDateTitle"></h3><div id="calendarDetails"></div></div>
+  <div class="calendarHead card">
+    <button id="calPrev">←</button><h3 id="calMonth"></h3><button id="calNext">→</button>
+  </div>
+  <div class="calendar card">
+    <div class="weekdays"><span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span></div>
+    <div id="calendarGrid" class="calGrid"></div>
+  </div>
+  <div class="card"><h3 id="selectedDateTitle">Dettagli</h3><div id="calendarDetails"></div></div>
 </section>
 
 <section id="house" class="view">
-  <div class="sectionTitle"><div><small>CASA</small><h2>🏡 Routine</h2></div><button data-go="home">← Home</button></div>
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>CICLO COLLEGATO</small><h3>🧺 Bucato</h3></div><span id="laundryStatus" class="pill"></span></div>
-    <div id="laundrySteps" class="laundrySteps"></div>
-    <button id="laundryNext" class="primary full">Avvia lavatrice</button>
-    <button id="laundryReset" class="secondaryFull">Azzera ciclo</button>
-  </div>
-  <div class="card">
-    <div class="sectionTitle compact"><h3>Routine casa</h3><button id="addRoutine">＋</button></div>
-    <div id="routineList"></div>
-  </div>
+  <div class="sectionTitle"><h2>🧹 Casa</h2><button data-go="home">← Home</button></div>
+  <form id="houseForm" class="card form">
+    <input id="houseText" placeholder="Es. Pulire bagno" required>
+    <select id="houseOwner"><option>Famiglia</option><option>JJ</option><option>Kiki</option></select>
+    <select id="houseFreq"><option value="giornaliera">Giornaliera</option><option value="settimanale">Settimanale</option><option value="mensile">Mensile</option></select>
+    <button class="primary">Aggiungi</button>
+  </form>
+  <div id="houseList" class="card"></div>
 </section>
 
 <section id="shop" class="view">
   <div class="sectionTitle"><h2>🛒 Spesa</h2><button data-go="home">← Home</button></div>
-  <form id="shopForm" class="card form two">
-    <input id="shopName" placeholder="Cosa comprare" required><input id="shopQty" placeholder="Qtà">
-    <select id="shopCategory"><option>Alimentari</option><option>Bambini</option><option>Casa</option><option>Cane</option><option>Altro</option></select>
+  <form id="shopForm" class="card form">
+    <input id="shopText" placeholder="Es. Pannolini" required>
+    <input id="shopQty" placeholder="Qtà">
+    <select id="shopCat"><option>Alimentari</option><option>Bambini</option><option>Casa</option><option>Cane</option><option>Altro</option></select>
     <button class="primary">Aggiungi</button>
   </form>
   <div id="shopList" class="card"></div>
@@ -175,22 +206,15 @@
   <div class="sectionTitle"><div><small>BILANCIO</small><h2>💶 Soldi</h2></div><button data-go="home">← Home</button></div>
   <div class="monthSwitch card"><button id="moneyPrev">←</button><h3 id="moneyMonth"></h3><button id="moneyNext">→</button></div>
   <div id="moneyStats" class="stats"></div>
-  <form id="moneyForm" class="card form two">
-    <input id="moneyName" placeholder="Es. Affitto" required><input id="moneyAmount" type="number" step="0.01" min="0" placeholder="€" required>
-    <select id="moneyCategory"><option>Casa</option><option>Bollette</option><option>Spesa</option><option>Bambini</option><option>Cane</option><option>Auto</option><option>Svago</option><option>Altro</option></select>
-    <label class="check"><input id="moneyRecurring" type="checkbox"> Ricorrente</label><button class="primary">Salva</button>
+  <form id="moneyForm" class="card form">
+    <input id="moneyName" placeholder="Es. Affitto, luce..." required>
+    <input id="moneyAmount" type="number" min="0" step="0.01" placeholder="€" required>
+    <select id="moneyCat"><option>Casa</option><option>Bollette</option><option>Spesa</option><option>Bambini</option><option>Cane</option><option>Auto</option><option>Svago</option><option>Altro</option></select>
+    <label class="check"><input id="moneyRecurring" type="checkbox"> Si ripete ogni mese</label>
+    <button class="primary">Salva spesa</button>
   </form>
-  <div class="card"><h3>Spese del mese</h3><div id="moneyList"></div></div>
+  <div class="card"><h3>Voci del mese</h3><div id="moneyList"></div></div>
   <div class="card"><h3>Per categoria</h3><div id="moneyCategories"></div></div>
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3>⏰ Scadenze</h3></div><button id="addSubscription">＋</button></div>
-    <div id="subscriptionStats" class="stats"></div><div id="subscriptionList"></div>
-  </div>
-</section>
-
-<section id="reminders" class="view">
-  <div class="sectionTitle"><div><small>TELEGRAM</small><h2>🔔 Reminder</h2></div><button data-go="home">← Home</button></div>
-  <div class="card"><p class="muted">Tutti i reminder salvati nell'app. L'invio Telegram diventa operativo appena colleghiamo il bot.</p><div id="reminderList"></div></div>
 </section>
 </main>
 
@@ -199,19 +223,20 @@
   <button data-go="calendar"><span>📅</span><small>Calendario</small></button>
   <button id="navQuick" class="plus"><span>＋</span><small>Segna</small></button>
   <button data-go="menu"><span>🍝</span><small>Menu</small></button>
-  <button data-go="reminders"><span>🔔</span><small>Reminder</small></button>
+  <button data-go="health"><span>❤️</span><small>Salute</small></button>
 </nav>
 </div>
 
+<dialog id="accountDialog"><div class="dialogBox">
+      <div class="sectionTitle compact"><h3>Account Fagiolini</h3><button data-close="accountDialog">✕</button></div>
+      <div id="accountInfo" class="accountInfo"></div>
+      <button id="syncNowBtn" class="primary fullBtn">🔄 Sincronizza adesso</button>
+      <button id="logoutBtn" class="secondaryFull">Esci dall'account</button>
+    </div></dialog>
 <dialog id="quickDialog"><div class="dialogBox"><div class="sectionTitle compact"><h3>Segna qualcosa</h3><button data-close="quickDialog">✕</button></div><div id="quickPeople" class="peopleGrid dialogPeople"></div><div id="quickActions" class="actions"></div></div></dialog>
-<dialog id="poopDialog"><form id="poopForm" class="dialogBox"><h3>💩 Cacca</h3><select id="poopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select><input id="poopNote" placeholder="Nota"><button class="primary">Salva</button></form></dialog>
-<dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepText"></p><button class="primary">Conferma</button></form></dialog>
-<dialog id="routineDialog"><form id="routineForm" class="dialogBox"><div class="sectionTitle compact"><h3>Nuova routine</h3><button type="button" data-close="routineDialog">✕</button></div><input id="routineName" placeholder="Es. Pulizia bagno" required><select id="routineEvery"><option value="1">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7" selected>Ogni settimana</option><option value="14">Ogni 2 settimane</option><option value="30">Ogni mese</option></select><select id="routineOwner"><option value="family">JJ o Kiki</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select><button class="primary">Salva</button></form></dialog>
-<dialog id="subscriptionDialog"><form id="subscriptionForm" class="dialogBox"><div class="sectionTitle compact"><h3>Nuova scadenza</h3><button type="button" data-close="subscriptionDialog">✕</button></div><input id="subName" placeholder="Es. Abbonamento treno" required><input id="subAmount" type="number" min="0" step="0.01" placeholder="€" required><select id="subOwner"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select><select id="subCategory"><option>Trasporti</option><option>Utenze</option><option>Casa</option><option>Telefono / Internet</option><option>Streaming</option><option>Assicurazione</option><option>Altro</option></select><input id="subDue" type="date" required><select id="subFrequency"><option value="monthly">Mensile</option><option value="bimonthly">Bimestrale</option><option value="quarterly">Trimestrale</option><option value="annual">Annuale</option><option value="once">Una volta</option></select><select id="subReminder"><option value="0">Giorno stesso</option><option value="1">1 giorno prima</option><option value="3" selected>3 giorni prima</option><option value="7">7 giorni prima</option></select><select id="subNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select><button class="primary">Salva</button></form></dialog>
-<dialog id="recipeDialog"><div class="dialogBox"><div class="sectionTitle compact"><div><small>RICETTA</small><h3 id="recipeTitle"></h3></div><button data-close="recipeDialog">✕</button></div><div id="recipeBody"></div><button id="recipeShopping" class="primary full">🛒 Ingredienti nella spesa</button></div></dialog>
-<dialog id="accountDialog"><div class="dialogBox"><div class="sectionTitle compact"><h3>Account</h3><button data-close="accountDialog">✕</button></div><div id="accountInfo"></div><button id="syncNow" class="primary full">🔄 Sincronizza</button><button id="logoutBtn" class="secondaryFull">Esci</button></div></dialog>
+<dialog id="poopDialog"><form id="poopForm" class="dialogBox"><h3>💩 Cacca</h3><select id="poopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select><input id="poopNote" placeholder="Nota facoltativa"><button class="primary">Salva</button><button type="button" data-close="poopDialog">Annulla</button></form></dialog>
+<dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
-</body>
-</html>
+</body></html>

@@ -1,68 +1,70 @@
-# Fagiolini V8 FINAL LOGIC
+# Fagiolini V6
 
-Build funzionale congelata. Da qui in poi modificare soprattutto grafica/UX.
+Versione più completa e più leggibile.
 
-## Incluso
-- Supabase JJ/Kiki
-- Caty, Kiko, Astro
-- date di nascita ed età automatiche
-- registrazioni pappa/pannolino/cacca/nanna/bagnetto
-- Astro: traversina, pipì, pappa, farmaco, toeletta
-- JJ/Kiki: spese personali
-- menu settimanale + profili alimentari + allergeni/preferenze
-- ricette + ingredienti nella spesa
-- visite e medicine
-- calendario unico
-- routine casa
-- ciclo bucato collegato
-- spesa
-- bilancio mensile
-- bollette/abbonamenti con scadenza, frequenza e pagamento
-- reminder con destinatario JJ/Kiki/entrambi
-- struttura Telegram pronta nei dati
+## Novità
+- layout e pulsanti più grandi
+- Caty, Kiko e Astro nella Home
+- Assistente Menu locale e gratuito
+- profili alimentari con età, gusti, cibi non graditi e allergeni/esclusioni
+- menu settimanale variabile
+- adattamenti indicativi per Caty e Kiko
+- visite mediche / appuntamenti
+- medicine
+- calendario mensile che raccoglie menu, salute e registrazioni dei piccoli
+- Casa
+- Spesa
+- Soldi con storico mensile e categorie
 
-## Telegram
-L'invio reale richiede ancora:
-1. bot BotFather
-2. token salvato come Secret Supabase
-3. chat ID di JJ e Kiki
-4. Edge Function / scheduler Supabase
+## Importante
+L'Assistente Menu è locale e basato su regole: non usa API esterne e non invia dati fuori dal telefono.
+Per bambini piccoli, allergie o esigenze sanitarie, le proposte alimentari vanno verificate con pediatra/professionista sanitario.
 
-Non inserire il token del bot nel repository GitHub.
+## GitHub Pages
+Metti direttamente nella root:
+- index.html
+- style.css
+- app.js
+- manifest.json
+- sw.js
+- README.md
+
+Nessuna sottocartella.
+
+## V6.1
+- date di nascita reali: Caty 10/12/2024, Kiko 11/02/2026, Astro 19/10/2025
+- età calcolata automaticamente
+- sezione "Noi" per JJ e Kiki
+- scheda personale adulti con visite, medicine, calendario e alimentazione
+
+## V6.2
+- JJ: 31/05/1991
+- Kiki: 24/08/1990
+- età adulti calcolata automaticamente
+- pulsante "Annulla ultima generazione" nel menu
+- se un piatto viene modificato a mano, il vecchio commento/adattamento viene rimosso automaticamente
+
+## V6.3
+- spese personali per JJ e Kiki
+- categorie: pranzo lavoro, caffè/bar, trasporti, acquisti personali, svago, altro
+- totale mensile personale nella scheda
+- riepilogo per categoria
+- tutte le spese personali confluiscono nel totale famiglia
+- bilancio generale mostra separatamente JJ e Kiki
 
 
-## LOGIN FIX
-- dopo login riuscito l'app entra immediatamente
-- Supabase viene inizializzato dopo l'ingresso
-- un errore cloud non lascia più l'utente bloccato sulla schermata di login
-- messaggi espliciti per account non associato / errore RLS / errore database
-- uso della cache locale come fallback
+## V7 - Supabase
+- Login JJ / Kiki con Supabase Authentication
+- Database condiviso `family_state`
+- sincronizzazione automatica tra telefoni
+- aggiornamento realtime quando disponibile
+- controllo periodico ogni 8 secondi come fallback
+- sincronizzazione quando l'app torna in primo piano
+- localStorage mantenuto come cache/offline
+- migrazione automatica: se Supabase è vuoto, il primo telefono autenticato carica i dati locali
+- se Supabase contiene già dati, il database condiviso ha priorità sul localStorage
 
-## AUTH FIX definitivo
-- la schermata login viene mostrata solo se non esiste una sessione valida
-- dopo `signInWithPassword` riuscito si entra immediatamente nell'app
-- errori su family_members / family_state / RLS non rimandano più alla login
-- `onAuthStateChange` riapre la login esclusivamente su SIGNED_OUT
-- Supabase può fallire senza bloccare l'interfaccia
+Project URL e Publishable Key sono valori pubblici client-side.
+NON inserire mai una Secret key o service_role nel repository GitHub.
 
-## LOGIN HARD FIX
-La UI di login non dipende più dagli eventi Auth di Supabase.
-Dopo una sessione valida l'app resta aperta anche in caso di refresh token,
-errore RLS, errore family_state o perdita temporanea di rete.
-
-## AUTH/UI SEPARATION FIX
-- autenticazione e rendering UI hanno catch separati
-- un errore in renderAll non viene più interpretato come login fallito
-- dopo una sessione valida la schermata login non può essere riaperta da errori UI/cloud
-
-## NO LOGIN GATE CLEAN
-- Fagiolini si apre sempre con localStorage
-- il login Supabase è richiesto solo per sincronizzare
-- account senza sessione apre la schermata login
-- problemi cloud/RLS non possono bloccare l'app
-
-## DOM FIX
-- tutti gli elementi UI sono collegati esplicitamente con document.getElementById
-- niente dipendenza dagli ID globali impliciti del browser
-- compatibilità più robusta Safari iPhone / Safari Mac / Chrome
-- renderAll isolato: un errore in una sezione non blocca tutti gli altri pulsanti
+Nota: lo stato familiare è salvato in un unico record JSON; se due telefoni modificano esattamente nello stesso istante, prevale l'ultimo salvataggio.
