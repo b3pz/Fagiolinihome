@@ -60,3 +60,9 @@ errore RLS, errore family_state o perdita temporanea di rete.
 - il login Supabase è richiesto solo per sincronizzare
 - account senza sessione apre la schermata login
 - problemi cloud/RLS non possono bloccare l'app
+
+## DOM FIX
+- tutti gli elementi UI sono collegati esplicitamente con document.getElementById
+- niente dipendenza dagli ID globali impliciti del browser
+- compatibilità più robusta Safari iPhone / Safari Mac / Chrome
+- renderAll isolato: un errore in una sezione non blocca tutti gli altri pulsanti
