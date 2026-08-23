@@ -42,7 +42,7 @@ const META={
  pappa:['🍼','Pappa'],pannolino:['🚼','Pannolino'],cacca:['💩','Cacca'],nanna:['😴','Nanna'],bagnetto:['🛁','Bagnetto'],
  traversina:['🐾','Traversina'],pipi:['💧','Pipì'],farmaco:['💊','Farmaco'],toeletta:['🛁','Toeletta']
 };
-let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null;
+let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null;
 
 function load(){
  let out=structuredClone(DEFAULT);
@@ -70,6 +70,9 @@ function load(){
  out.profiles.kiki.ageMonths=monthsFromBirth('1990-08-24');
  out.houseLogs=Array.isArray(out.houseLogs)?out.houseLogs:[];
  out.subscriptions=Array.isArray(out.subscriptions)?out.subscriptions:[];
+ out.maintenance=Array.isArray(out.maintenance)?out.maintenance:[];
+ out.autoDeadlines=Array.isArray(out.autoDeadlines)?out.autoDeadlines:[];
+ out.autoExpenses=Array.isArray(out.autoExpenses)?out.autoExpenses:[];
  out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
   return out
 }
@@ -122,6 +125,15 @@ function houseName(id){return HOUSE_ROUTINES.find(x=>x.id===id)?.name||id}
 function houseIcon(id){return HOUSE_ROUTINES.find(x=>x.id===id)?.emoji||'🏠'}
 function nextSubDate(k,f){let d=dateObj(k);if(f==='monthly')d.setMonth(d.getMonth()+1);else if(f==='bimonthly')d.setMonth(d.getMonth()+2);else if(f==='quarterly')d.setMonth(d.getMonth()+3);else if(f==='semiannual')d.setMonth(d.getMonth()+6);else if(f==='annual')d.setFullYear(d.getFullYear()+1);return dateKey(d)}
 function openRecipe(name){let r=RECIPE_DETAILS[name]||{time:'30 min',ingredients:[name,'Olio EVO','Ingredienti a piacere'],steps:['Prepara gli ingredienti.','Cuoci completamente.','Servi.']};recipeDialog.dataset.recipe=name;recipeTitle.textContent=name;recipeBody.innerHTML=`<div class="recipeTime">⏱️ ${esc(r.time)}</div><h4>Ingredienti</h4><ul>${r.ingredients.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h4>Preparazione</h4><ol>${r.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="adaptation"><b>👧👶 Bambini</b><br>Adatta sale, consistenza e dimensione dei pezzi all’età di Caty e Kiko.</div>`;recipeDialog.showModal()}
+
+function maintenanceIcon(type){return ({Caldaia:'🔥',Climatizzatore:'❄️',Idraulico:'🚰',Elettricista:'⚡',Elettrodomestico:'🔌','Manutenzione generica':'🧰',Altro:'🏠'})[type]||'🧰'}
+function autoIcon(type){return ({Assicurazione:'🛡️',Bollo:'📄',Revisione:'🔍',Tagliando:'🔧',Gomme:'🛞',Manutenzione:'🧰',Benzina:'⛽',Parcheggio:'🅿️',Pedaggio:'🛣️',Lavaggio:'🧼',Riparazione:'🔧',Accessorio:'🛒',Altro:'🚗'})[type]||'🚗'}
+function nextRecurringDate(k,f){let d=dateObj(k);if(f==='monthly')d.setMonth(d.getMonth()+1);else if(f==='semiannual')d.setMonth(d.getMonth()+6);else if(f==='annual')d.setFullYear(d.getFullYear()+1);else if(f==='biennial')d.setFullYear(d.getFullYear()+2);return dateKey(d)}
+function ensureExpenseOnce(source,sourceId,name,amount,category,date,person=null){
+ if(!Number(amount)||Number(amount)<=0)return;
+ if(s.expenses.some(x=>x.source===source&&x.sourceId===sourceId))return;
+ s.expenses.push({id:crypto.randomUUID(),name,amount:Number(amount),category,person,month:monthKey(dateObj(date)),date,recurring:false,source,sourceId});
+}
 function setCloudStatus(mode,text){
  if(!cloudStatus)return;
  cloudStatus.className='cloudStatus '+mode;
@@ -157,6 +169,9 @@ function normalizeRemoteState(data){
  out.menuBackup=out.menuBackup||null;
  out.houseLogs=Array.isArray(out.houseLogs)?out.houseLogs:[];
  out.subscriptions=Array.isArray(out.subscriptions)?out.subscriptions:[];
+ out.maintenance=Array.isArray(out.maintenance)?out.maintenance:[];
+ out.autoDeadlines=Array.isArray(out.autoDeadlines)?out.autoDeadlines:[];
+ out.autoExpenses=Array.isArray(out.autoExpenses)?out.autoExpenses:[];
  out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
  return out
 }
@@ -358,9 +373,9 @@ async function bootCloud(){
 function go(id){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
  document.getElementById(id).classList.add('on');
- const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi'};
+ const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi',maintenance:'Manutenzioni casa',auto:'Auto'};
  pageTitle.textContent=titles[id]||'Fagiolini';
- if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}
+ if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();
  scrollTo(0,0)
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -605,14 +620,88 @@ function renderHealth(){
  healthList.querySelectorAll('[data-health-edit]').forEach(b=>b.onclick=()=>{let h=s.health.find(x=>x.id===b.dataset.healthEdit);if(!h)return;if(h.kind==='visit'){visitPerson.value=h.person;visitTitle.value=h.title;visitDate.value=h.date;visitTime.value=h.time||'';visitNote.value=h.note||'';visitForm.dataset.edit=h.id;visitTitle.focus();scrollTo(0,0)}else{medPerson.value=h.person;medName.value=h.title;medDose.value=h.dose||'';medDate.value=h.date;medTime.value=h.time||'';medNote.value=h.note||'';medicineForm.dataset.edit=h.id;medName.focus();scrollTo(0,0)}})
 }
 
+
+function renderMaintenance(){
+ let a=[...s.maintenance].sort((x,y)=>x.date.localeCompare(y.date));
+ maintenanceList.innerHTML=a.length?a.map(x=>`<div class="row ${x.status==='done'?'done':''}"><span>${maintenanceIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${longDate(dateObj(x.date))}${x.time?' · '+x.time:''} · ${x.status==='done'?'✅ Completata':'⏳ Da fare'}${x.expectedCost?` · Prev. ${euro(x.expectedCost)}`:''}${x.actualCost?` · Eff. ${euro(x.actualCost)}`:''}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div><button class="editBtn" data-maint-edit="${x.id}">✎</button><button class="del" data-maint-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna manutenzione programmata.</div>';
+ maintenanceList.querySelectorAll('[data-maint-edit]').forEach(b=>b.onclick=()=>openMaintenance(b.dataset.maintEdit));
+ maintenanceList.querySelectorAll('[data-maint-del]').forEach(b=>b.onclick=()=>{s.maintenance=s.maintenance.filter(x=>x.id!==b.dataset.maintDel);save();renderMaintenance()})
+}
+function openMaintenance(id=null){
+ editingMaintenanceId=id;let x=id?s.maintenance.find(v=>v.id===id):null;
+ maintType.value=x?.type||'Caldaia';maintTitle.value=x?.title||'';maintDate.value=x?.date||dateKey();maintTime.value=x?.time||'';
+ maintExpected.value=x?.expectedCost||'';maintActual.value=x?.actualCost||'';maintFrequency.value=x?.frequency||'once';maintStatus.value=x?.status||'planned';
+ maintReminder.value=String(x?.reminderDays??7);maintNotify.value=x?.notify||'both';maintNote.value=x?.note||'';maintenanceDialog.showModal()
+}
+addMaintenanceBtn.onclick=()=>openMaintenance();
+maintenanceForm.onsubmit=e=>{
+ e.preventDefault();
+ let payload={type:maintType.value,title:maintTitle.value.trim(),date:maintDate.value,time:maintTime.value,expectedCost:Number(maintExpected.value||0),actualCost:Number(maintActual.value||0),frequency:maintFrequency.value,status:maintStatus.value,reminderDays:Number(maintReminder.value),notify:maintNotify.value,note:maintNote.value.trim()};
+ let x;
+ if(editingMaintenanceId){x=s.maintenance.find(v=>v.id===editingMaintenanceId);Object.assign(x,payload)}else{x={id:crypto.randomUUID(),...payload};s.maintenance.push(x)}
+ if(x.status==='done'){
+  ensureExpenseOnce('maintenance',x.id,x.title,x.actualCost||x.expectedCost,'Casa',x.date);
+  if(x.frequency!=='once'&&!x.nextCreated){
+   s.maintenance.push({...x,id:crypto.randomUUID(),date:nextRecurringDate(x.date,x.frequency),status:'planned',actualCost:0,nextCreated:false});
+   x.nextCreated=true;
+  }
+ }
+ maintenanceDialog.close();save();renderMaintenance()
+};
+
+function renderAuto(){
+ fuelDate.value=fuelDate.value||dateKey();fuelTime.value=fuelTime.value||new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+ let d=[...s.autoDeadlines].sort((x,y)=>x.date.localeCompare(y.date));
+ autoDeadlineList.innerHTML=d.length?d.map(x=>`<div class="row ${x.status==='done'?'done':''}"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${x.type} · ${longDate(dateObj(x.date))}${x.time?' · '+x.time:''}${x.km?` · ${x.km} km`:''}${x.cost?` · ${euro(x.cost)}`:''} · ${x.status==='done'?'✅ Fatto':'⏳ Da fare'}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div><button class="editBtn" data-auto-edit="${x.id}">✎</button><button class="del" data-auto-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna scadenza auto.</div>';
+ autoDeadlineList.querySelectorAll('[data-auto-edit]').forEach(b=>b.onclick=()=>openAutoDeadline(b.dataset.autoEdit));
+ autoDeadlineList.querySelectorAll('[data-auto-del]').forEach(b=>b.onclick=()=>{s.autoDeadlines=s.autoDeadlines.filter(x=>x.id!==b.dataset.autoDel);save();renderAuto()});
+ let e=[...s.autoExpenses].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,30);
+ autoExpenseHistory.innerHTML=e.length?e.map(x=>`<div class="row"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.type)} · ${euro(x.amount)}</b><div class="meta">${longDate(new Date(x.at))} · ${localTimeFromIso(x.at)}${x.km?` · ${x.km} km`:''}${x.note?' · '+esc(x.note):''}</div></div><button class="editBtn" data-fuel-edit="${x.id}">✎</button><button class="del" data-fuel-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna spesa auto registrata.</div>';
+ autoExpenseHistory.querySelectorAll('[data-fuel-del]').forEach(b=>b.onclick=()=>{let id=b.dataset.fuelDel;s.autoExpenses=s.autoExpenses.filter(x=>x.id!==id);s.expenses=s.expenses.filter(x=>!(x.source==='autoExpense'&&x.sourceId===id));save();renderAuto()});
+ autoExpenseHistory.querySelectorAll('[data-fuel-edit]').forEach(b=>b.onclick=()=>{let x=s.autoExpenses.find(v=>v.id===b.dataset.fuelEdit);if(!x)return;fuelForm.dataset.edit=x.id;fuelType.value=x.type;fuelAmount.value=x.amount;fuelKm.value=x.km||'';fuelNote.value=x.note||'';fuelDate.value=localDateFromIso(x.at);fuelTime.value=localTimeFromIso(x.at);fuelAmount.focus();scrollTo(0,0)})
+}
+fuelForm.onsubmit=e=>{
+ e.preventDefault();let id=fuelForm.dataset.edit||crypto.randomUUID();let payload={id,type:fuelType.value,amount:Number(fuelAmount.value),km:Number(fuelKm.value||0),note:fuelNote.value.trim(),at:isoFromLocal(fuelDate.value,fuelTime.value)};
+ if(fuelForm.dataset.edit){let x=s.autoExpenses.find(v=>v.id===id);Object.assign(x,payload);let exp=s.expenses.find(v=>v.source==='autoExpense'&&v.sourceId===id);if(exp){exp.name=payload.type;exp.amount=payload.amount;exp.date=fuelDate.value;exp.month=monthKey(dateObj(fuelDate.value))}}else{s.autoExpenses.push(payload);ensureExpenseOnce('autoExpense',id,payload.type,payload.amount,'Auto',fuelDate.value)}
+ delete fuelForm.dataset.edit;fuelForm.reset();save();renderAuto()
+};
+function openAutoDeadline(id=null){
+ editingAutoDeadlineId=id;let x=id?s.autoDeadlines.find(v=>v.id===id):null;
+ autoDeadlineType.value=x?.type||'Assicurazione';autoDeadlineTitle.value=x?.title||'';autoDeadlineDate.value=x?.date||dateKey();autoDeadlineTime.value=x?.time||'';autoDeadlineCost.value=x?.cost||'';autoDeadlineKm.value=x?.km||'';autoDeadlineFrequency.value=x?.frequency||'once';autoDeadlineStatus.value=x?.status||'planned';autoDeadlineReminder.value=String(x?.reminderDays??7);autoDeadlineNotify.value=x?.notify||'both';autoDeadlineNote.value=x?.note||'';autoDeadlineDialog.showModal()
+}
+addAutoDeadlineBtn.onclick=()=>openAutoDeadline();
+autoDeadlineForm.onsubmit=e=>{
+ e.preventDefault();let payload={type:autoDeadlineType.value,title:autoDeadlineTitle.value.trim(),date:autoDeadlineDate.value,time:autoDeadlineTime.value,cost:Number(autoDeadlineCost.value||0),km:Number(autoDeadlineKm.value||0),frequency:autoDeadlineFrequency.value,status:autoDeadlineStatus.value,reminderDays:Number(autoDeadlineReminder.value),notify:autoDeadlineNotify.value,note:autoDeadlineNote.value.trim()};let x;
+ if(editingAutoDeadlineId){x=s.autoDeadlines.find(v=>v.id===editingAutoDeadlineId);Object.assign(x,payload)}else{x={id:crypto.randomUUID(),...payload};s.autoDeadlines.push(x)}
+ if(x.status==='done'){
+  ensureExpenseOnce('autoDeadline',x.id,x.title,x.cost,'Auto',x.date);
+  if(x.frequency!=='once'&&!x.nextCreated){s.autoDeadlines.push({...x,id:crypto.randomUUID(),date:nextRecurringDate(x.date,x.frequency),status:'planned',nextCreated:false});x.nextCreated=true}
+ }
+ autoDeadlineDialog.close();save();renderAuto()
+};
 function monthBase(offset=0){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()+offset);d.setHours(12,0,0,0);return d}
 function dayData(k){
  let out=[];
- let menu=s.menu[k];if(menu?.lunch)out.push(['🍝','Pranzo: '+menu.lunch]);if(menu?.dinner)out.push(['🌙','Cena: '+menu.dinner]);
- s.health.filter(h=>h.date===k).forEach(h=>out.push([h.kind==='visit'?'🩺':'💊',`${personName(h.person)}: ${h.title}${h.time?' '+h.time:''}`]));
- s.events.filter(e=>dateKey(new Date(e.at))===k).forEach(e=>out.push([META[e.type]?.[0]||'•',`${personName(e.childId)}: ${META[e.type]?.[1]||e.type} ${timeLabel(e.at)}`]));
- s.houseLogs.filter(x=>dateKey(new Date(x.at))===k).forEach(x=>out.push([houseIcon(x.routineId),`${houseName(x.routineId)} · ${personName(x.by)} ${localTimeFromIso(x.at)}`]));
- s.subscriptions.filter(x=>x.dueDate===k).forEach(x=>out.push(['⏰',`${x.name} · ${euro(x.amount)}`]));
+ let menu=s.menu[k];if(menu?.lunch)out.push({icon:'🍝',text:'Pranzo: '+menu.lunch,source:'menu'});if(menu?.dinner)out.push({icon:'🌙',text:'Cena: '+menu.dinner,source:'menu'});
+
+ // SALUTE: visite e medicine sempre nel calendario
+ s.health.filter(h=>h.date===k).forEach(h=>out.push({icon:h.kind==='visit'?'🩺':'💊',text:`${personName(h.person)}: ${h.title}${h.time?' · '+h.time:''}`,source:'health',id:h.id}));
+
+ // Bambini / Astro
+ s.events.filter(e=>dateKey(new Date(e.at))===k).forEach(e=>out.push({icon:META[e.type]?.[0]||'•',text:`${personName(e.childId)}: ${META[e.type]?.[1]||e.type} · ${timeLabel(e.at)}`,source:'event',id:e.id}));
+
+ // Routine casa registrate
+ s.houseLogs.filter(x=>dateKey(new Date(x.at))===k).forEach(x=>out.push({icon:houseIcon(x.routineId),text:`${houseName(x.routineId)} · ${personName(x.by)} · ${localTimeFromIso(x.at)}`,source:'house',id:x.id}));
+
+ // Bollette / abbonamenti
+ s.subscriptions.filter(x=>x.dueDate===k).forEach(x=>out.push({icon:'⏰',text:`${x.name} · ${euro(x.amount)}`,source:'subscription',id:x.id}));
+
+ // Manutenzioni casa
+ s.maintenance.filter(x=>x.date===k).forEach(x=>out.push({icon:maintenanceIcon(x.type),text:`${x.title}${x.time?' · '+x.time:''}${x.status==='done'?' · ✅':' · ⏳'}`,source:'maintenance',id:x.id}));
+
+ // Scadenze auto
+ s.autoDeadlines.filter(x=>x.date===k).forEach(x=>out.push({icon:autoIcon(x.type),text:`${x.title}${x.time?' · '+x.time:''}${x.status==='done'?' · ✅':' · ⏳'}`,source:'auto',id:x.id}));
+
  return out
 }
 function renderCalendar(){
@@ -621,7 +710,7 @@ function renderCalendar(){
  for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length;cells.push(`<button class="calDay ${other?'other':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}">${d.getDate()}${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
  calendarGrid.innerHTML=cells.join('');calendarGrid.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{selectedDate=b.dataset.date;renderCalendarDetails();renderCalendar()});renderCalendarDetails()
 }
-function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedDate);selectedDateTitle.textContent=longDate(d);calendarDetails.innerHTML=a.length?a.map(x=>`<div class="row"><span>${x[0]}</span><div class="grow">${esc(x[1])}</div></div>`).join(''):'<div class="muted">Niente in programma o registrato.</div>'}
+function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedDate);selectedDateTitle.textContent=longDate(d);calendarDetails.innerHTML=a.length?a.map(x=>`<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}</div></div>`).join(''):'<div class="muted">Niente in programma o registrato.</div>'}
 calPrev.onclick=()=>{calOffset--;renderCalendar()};calNext.onclick=()=>{calOffset++;renderCalendar()};
 
 
@@ -741,6 +830,6 @@ window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)pullCloudState(true)});
 
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
-function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}}
+function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();bootCloud();

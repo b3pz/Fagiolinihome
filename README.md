@@ -94,3 +94,21 @@ Aggiunto:
 ## HOTFIX KIKI LOGIN
 Corretto riferimento legacy `houseDone` rimasto nella Home dopo il passaggio alla nuova Routine Casa.
 Autenticazione, family_id e sincronizzazione Supabase NON modificati.
+
+## V8.1 — Casa + Auto
+Baseline: V8 Functional Stable HOTFIX houseDone.
+
+Aggiunto:
+- Manutenzioni Casa: caldaia, climatizzatore, idraulico, elettricista, elettrodomestici, altro
+- data/ora, costo previsto/effettivo, ricorrenza, stato, note e reminder
+- completamento manutenzione → spesa automatica in categoria Casa
+- Auto: benzina, parcheggi, pedaggi, lavaggi, riparazioni, accessori
+- spesa auto → Soldi/Auto automaticamente
+- Auto: assicurazione, bollo, revisione, tagliando, gomme e manutenzione
+- scadenze auto → Calendario
+- pagamento/completamento → Soldi/Auto
+- ricorrenze automatiche di manutenzioni/scadenze
+- Calendario riscritto come aggregatore: visite, medicine, bambini/Astro, routine, abbonamenti, manutenzioni casa e auto
+
+IMPORTANTE:
+Autenticazione, Supabase, family_id e sincronizzazione sono rimasti invariati.

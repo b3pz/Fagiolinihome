@@ -58,6 +58,8 @@
     <button data-go="health"><span>❤️</span><b>Salute</b><small>Visite e medicine</small></button>
     <button data-go="shop"><span>🛒</span><b>Spesa</b><small>Cosa manca</small></button>
     <button data-go="money"><span>💶</span><b>Soldi</b><small>Spese del mese</small></button>
+    <button data-go="maintenance"><span>🧰</span><b>Manutenzioni</b><small>Casa e tecnici</small></button>
+    <button data-go="auto"><span>🚗</span><b>Auto</b><small>Carburante e scadenze</small></button>
   </div>
 
   <div class="sectionTitle"><h2>Oggi</h2></div>
@@ -168,6 +170,51 @@
   <div class="card"><h3>Prossimi eventi</h3><div id="healthList"></div></div>
 </section>
 
+
+<section id="maintenance" class="view">
+  <div class="sectionTitle"><div><small>CASA</small><h2>🧰 Manutenzioni</h2></div><button data-go="home">← Home</button></div>
+
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>PROGRAMMATE</small><h3>Casa</h3></div><button id="addMaintenanceBtn">＋</button></div>
+    <p class="muted">Caldaia, climatizzatore, idraulico, elettricista e qualsiasi intervento. Le date compaiono automaticamente nel Calendario.</p>
+    <div id="maintenanceList"></div>
+  </div>
+</section>
+
+<section id="auto" class="view">
+  <div class="sectionTitle"><div><small>FAGIOLINI</small><h2>🚗 Auto</h2></div><button data-go="home">← Home</button></div>
+
+  <form id="fuelForm" class="card form">
+    <h3>⛽ Spesa veloce auto</h3>
+    <select id="fuelType">
+      <option value="Benzina">Benzina</option>
+      <option value="Parcheggio">Parcheggio</option>
+      <option value="Pedaggio">Pedaggio</option>
+      <option value="Lavaggio">Lavaggio</option>
+      <option value="Riparazione">Riparazione</option>
+      <option value="Accessorio">Accessorio</option>
+      <option value="Altro">Altro</option>
+    </select>
+    <input id="fuelAmount" type="number" min="0" step="0.01" placeholder="Importo €" required>
+    <input id="fuelKm" type="number" min="0" step="1" placeholder="Km auto (facoltativo)">
+    <input id="fuelNote" placeholder="Distributore / nota">
+    <div class="twoCols">
+      <input id="fuelDate" type="date" required>
+      <input id="fuelTime" type="time" required>
+    </div>
+    <button class="primary">Registra</button>
+  </form>
+
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>SCADENZE & MANUTENZIONE</small><h3>Auto</h3></div><button id="addAutoDeadlineBtn">＋</button></div>
+    <div id="autoDeadlineList"></div>
+  </div>
+
+  <div class="card">
+    <h3>Storico spese auto</h3>
+    <div id="autoExpenseHistory"></div>
+  </div>
+</section>
 <section id="calendar" class="view">
   <div class="sectionTitle"><div><small>TUTTO INSIEME</small><h2>📅 Calendario</h2></div><button data-go="home">← Home</button></div>
   <div class="calendarHead card">
@@ -299,6 +346,48 @@
   <button id="recipeToShop" class="primary fullBtn">🛒 Aggiungi ingredienti alla spesa</button>
 </div></dialog>
 
+
+<dialog id="maintenanceDialog"><form id="maintenanceForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>🧰 Manutenzione casa</h3><button type="button" data-close="maintenanceDialog">✕</button></div>
+  <select id="maintType">
+    <option>Caldaia</option><option>Climatizzatore</option><option>Idraulico</option>
+    <option>Elettricista</option><option>Elettrodomestico</option><option>Manutenzione generica</option><option>Altro</option>
+  </select>
+  <input id="maintTitle" placeholder="Es. Controllo annuale caldaia" required>
+  <div class="twoCols"><input id="maintDate" type="date" required><input id="maintTime" type="time"></div>
+  <input id="maintExpected" type="number" min="0" step="0.01" placeholder="Costo previsto €">
+  <input id="maintActual" type="number" min="0" step="0.01" placeholder="Costo effettivo €">
+  <select id="maintFrequency">
+    <option value="once">Una volta</option><option value="annual">Annuale</option>
+    <option value="semiannual">Semestrale</option><option value="monthly">Mensile</option>
+  </select>
+  <select id="maintStatus"><option value="planned">Programmata / da fare</option><option value="done">Completata</option></select>
+  <select id="maintReminder"><option value="0">🔔 Giorno stesso</option><option value="1">🔔 1 giorno prima</option><option value="3">🔔 3 giorni prima</option><option value="7" selected>🔔 7 giorni prima</option></select>
+  <select id="maintNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+  <input id="maintNote" placeholder="Tecnico / telefono / note">
+  <button class="primary">Salva</button>
+</form></dialog>
+
+<dialog id="autoDeadlineDialog"><form id="autoDeadlineForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>🚗 Scadenza Auto</h3><button type="button" data-close="autoDeadlineDialog">✕</button></div>
+  <select id="autoDeadlineType">
+    <option>Assicurazione</option><option>Bollo</option><option>Revisione</option>
+    <option>Tagliando</option><option>Gomme</option><option>Manutenzione</option><option>Altro</option>
+  </select>
+  <input id="autoDeadlineTitle" placeholder="Descrizione" required>
+  <div class="twoCols"><input id="autoDeadlineDate" type="date" required><input id="autoDeadlineTime" type="time"></div>
+  <input id="autoDeadlineCost" type="number" min="0" step="0.01" placeholder="Costo previsto/effettivo €">
+  <input id="autoDeadlineKm" type="number" min="0" step="1" placeholder="Km (facoltativo)">
+  <select id="autoDeadlineFrequency">
+    <option value="once">Una volta</option><option value="annual">Annuale</option>
+    <option value="semiannual">Semestrale</option><option value="biennial">Ogni 2 anni</option>
+  </select>
+  <select id="autoDeadlineStatus"><option value="planned">Da fare / da pagare</option><option value="done">Completata / pagata</option></select>
+  <select id="autoDeadlineReminder"><option value="0">🔔 Giorno stesso</option><option value="1">🔔 1 giorno prima</option><option value="3">🔔 3 giorni prima</option><option value="7" selected>🔔 7 giorni prima</option><option value="30">🔔 30 giorni prima</option></select>
+  <select id="autoDeadlineNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+  <input id="autoDeadlineNote" placeholder="Compagnia / officina / note">
+  <button class="primary">Salva</button>
+</form></dialog>
 <dialog id="quickDialog"><div class="dialogBox"><div class="sectionTitle compact"><h3>Segna qualcosa</h3><button data-close="quickDialog">✕</button></div><div id="quickPeople" class="peopleGrid dialogPeople"></div><div id="quickActions" class="actions"></div></div></dialog>
 <dialog id="poopDialog"><form id="poopForm" class="dialogBox"><h3>💩 Cacca</h3><select id="poopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select><input id="poopNote" placeholder="Nota facoltativa"><button class="primary">Salva</button><button type="button" data-close="poopDialog">Annulla</button></form></dialog>
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
