@@ -55,6 +55,7 @@
     <button id="quickRecord"><span>➕</span><b>Segna</b><small>Pappa, nanna, cacca...</small></button>
     <button data-go="menu"><span>🍝</span><b>Menu</b><small>Organizza la settimana</small></button>
     <button data-go="calendar"><span>📅</span><b>Calendario</b><small>Vedi tutto insieme</small></button>
+    <button data-go="reminders"><span>🔔</span><b>Promemoria</b><small>Scadenze e appuntamenti</small></button>
     <button data-go="health"><span>❤️</span><b>Salute</b><small>Visite e medicine</small></button>
     <button data-go="shop"><span>🛒</span><b>Spesa</b><small>Cosa manca</small></button>
     <button data-go="money"><span>💶</span><b>Soldi</b><small>Spese del mese</small></button>
@@ -133,7 +134,8 @@
     <h3>Menu bilanciato, ma sempre modificabile</h3>
     <p class="muted">Fagiolini propone una settimana varia usando preferenze, esclusioni e ricette reali. <b>Ogni campo può essere riscritto liberamente</b>: se una proposta non va bene, basta scrivere quello che mangerà davvero la persona.</p>
     <div class="inlineBtns">
-      <button id="generateMenu" class="primary">✨ Genera settimana</button>
+      <button id="generateMenu" class="primary">✨ Genera tutta la settimana</button>
+      <button id="generateEmptyMenu">✨ Completa solo i campi vuoti</button>
       <button id="undoMenu">↩️ Annulla</button>
       <button id="menuToShop">🛒 Spesa dalla settimana</button>
       <button data-go="profiles">⚙️ Preferenze</button>
@@ -181,6 +183,17 @@
       <input id="visitMapUrl" type="url" placeholder="Incolla link Apple Maps o Google Maps">
     </label>
     <input id="visitNote" placeholder="Nota facoltativa">
+    <label class="fieldLabel">🔔 Promemoria
+      <select id="visitReminder">
+        <option value="0">Il giorno stesso</option>
+        <option value="1" selected>1 giorno prima</option>
+        <option value="3">3 giorni prima</option>
+        <option value="7">7 giorni prima</option>
+      </select>
+    </label>
+    <label class="fieldLabel">👥 Avvisa
+      <select id="visitNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+    </label>
     <button class="primary">Salva visita</button>
   </form>
 
@@ -192,6 +205,16 @@
     <label class="fieldLabel">📅 Data<input id="medDate" type="date" required></label>
     <label class="fieldLabel">🕒 Ora<input id="medTime" type="time"></label>
     <input id="medNote" placeholder="Nota facoltativa">
+    <label class="fieldLabel">🔔 Promemoria
+      <select id="medReminder">
+        <option value="0" selected>Il giorno stesso</option>
+        <option value="1">1 giorno prima</option>
+        <option value="3">3 giorni prima</option>
+      </select>
+    </label>
+    <label class="fieldLabel">👥 Avvisa
+      <select id="medNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+    </label>
     <button class="primary">Salva medicina</button>
   </form>
 
@@ -244,7 +267,7 @@
   </div>
 </section>
 <section id="calendar" class="view">
-  <div class="sectionTitle"><div><small>TUTTO INSIEME</small><h2>📅 Calendario</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle"><div><small>TUTTO INSIEME</small><h2>📅 Calendario</h2></div><div class="inlineBtns"><button data-go="reminders">🔔 Promemoria</button><button data-go="home">← Home</button></div></div>
   <div class="calendarHead card">
     <button id="calPrev">←</button><h3 id="calMonth"></h3><button id="calNext">→</button>
   </div>
@@ -253,6 +276,38 @@
     <div id="calendarGrid" class="calGrid"></div>
   </div>
   <div class="card"><h3 id="selectedDateTitle">Dettagli</h3><div id="calendarDetails"></div></div>
+</section>
+
+
+<section id="reminders" class="view">
+  <div class="sectionTitle"><div><small>TUTTO INSIEME</small><h2>🔔 Promemoria</h2></div><button data-go="calendar">📅 Calendario</button></div>
+
+  <div id="reminderAlert" class="card reminderAlert"></div>
+
+  <div class="card">
+    <div class="sectionTitle compact">
+      <div><small>MANUALE</small><h3>Aggiungi promemoria</h3></div>
+      <button id="addReminderBtn">＋</button>
+    </div>
+    <p class="muted">Per qualcosa che non appartiene già a Salute, Auto, Casa o Soldi.</p>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>DA VEDERE</small><h3>Adesso / scaduti</h3></div></div>
+    <div id="remindersDue"></div>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>IN ARRIVO</small><h3>Prossimi</h3></div></div>
+    <div id="remindersUpcoming"></div>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>CREATI A MANO</small><h3>I miei promemoria</h3></div></div>
+    <div id="manualReminderList"></div>
+  </div>
+
+  <p class="tiny card">In V8.3 i promemoria sono sincronizzati e visibili dentro Fagiolini. La consegna automatica fuori dall'app verrà collegata a Telegram nella V8.4.</p>
 </section>
 
 <section id="house" class="view">
@@ -310,6 +365,24 @@
   <button data-go="health"><span>❤️</span><small>Salute</small></button>
 </nav>
 </div>
+
+
+<dialog id="reminderDialog"><form id="reminderForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>🔔 Promemoria manuale</h3><button type="button" data-close="reminderDialog">✕</button></div>
+  <label class="fieldLabel">Titolo<input id="reminderTitle" placeholder="Es. Telefonare al pediatra" required></label>
+  <div class="twoCols">
+    <label class="fieldLabel">📅 Data<input id="reminderDate" type="date" required></label>
+    <label class="fieldLabel">🕒 Ora<input id="reminderTime" type="time"></label>
+  </div>
+  <label class="fieldLabel">🔔 Avvisami
+    <select id="reminderDays"><option value="0">Il giorno stesso</option><option value="1" selected>1 giorno prima</option><option value="3">3 giorni prima</option><option value="7">7 giorni prima</option><option value="30">30 giorni prima</option></select>
+  </label>
+  <label class="fieldLabel">👥 Destinatario
+    <select id="reminderNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+  </label>
+  <label class="fieldLabel">📝 Nota<input id="reminderNote" placeholder="Nota facoltativa"></label>
+  <button class="primary">Salva promemoria</button>
+</form></dialog>
 
 <dialog id="accountDialog"><div class="dialogBox">
       <div class="sectionTitle compact"><h3>Account Fagiolini</h3><button data-close="accountDialog">✕</button></div>

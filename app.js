@@ -25,7 +25,7 @@ const DEFAULT={
   {id:crypto.randomUUID(),text:'Riordinare cucina',owner:'Famiglia',frequency:'giornaliera',done:[]},
   {id:crypto.randomUUID(),text:'Pulire bagno',owner:'Famiglia',frequency:'settimanale',done:[]}
  ],
- shopping:[],menu:{},expenses:[],health:[],
+ shopping:[],menu:{},expenses:[],health:[],manualReminders:[],dismissedReminders:[],
  menuBackup:null,
  recipeFeedback:{},
  profiles:{
@@ -43,7 +43,7 @@ const META={
  pappa:['🍼','Pappa'],pannolino:['🚼','Pannolino'],cacca:['💩','Cacca'],nanna:['😴','Nanna'],bagnetto:['🛁','Bagnetto'],
  traversina:['🐾','Traversina'],pipi:['💧','Pipì'],farmaco:['💊','Farmaco'],toeletta:['🛁','Toeletta']
 };
-let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null;
+let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null;
 
 function load(){
  let out=structuredClone(DEFAULT);
@@ -75,6 +75,8 @@ function load(){
  out.maintenance=Array.isArray(out.maintenance)?out.maintenance:[];
  out.autoDeadlines=Array.isArray(out.autoDeadlines)?out.autoDeadlines:[];
  out.autoExpenses=Array.isArray(out.autoExpenses)?out.autoExpenses:[];
+ out.manualReminders=Array.isArray(out.manualReminders)?out.manualReminders:[];
+ out.dismissedReminders=Array.isArray(out.dismissedReminders)?out.dismissedReminders:[];
  out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
   return out
 }
@@ -234,6 +236,108 @@ function openRecipe(name){
  recipeDialog.showModal()
 }
 
+function notifyLabel(v){return v==='jj'?'JJ':v==='kiki'?'Kiki':'JJ + Kiki'}
+function reminderSourceLabel(v){return ({health:'Salute',subscription:'Soldi',maintenance:'Casa',auto:'Auto',manual:'Manuale'})[v]||v}
+function subtractDays(k,n){let d=dateObj(k);d.setDate(d.getDate()-Number(n||0));return dateKey(d)}
+function reminderKey(source,id,date){return `${source}:${id}:${date}`}
+function reminderIsDismissed(x){return s.dismissedReminders.includes(x.key)}
+function dismissReminder(key){
+ if(!s.dismissedReminders.includes(key))s.dismissedReminders.push(key);
+ save();
+ if(document.getElementById('reminders').classList.contains('on'))renderReminders()
+}
+function collectReminders(){
+ let out=[];
+ s.health.forEach(h=>{
+  if(!h.date)return;
+  let days=Number(h.reminderDays??(h.kind==='visit'?1:0));
+  out.push({
+   key:reminderKey('health',h.id,h.date),source:'health',sourceId:h.id,
+   icon:h.kind==='visit'?'🩺':'💊',title:`${personName(h.person)} · ${h.title}`,
+   date:h.date,time:h.time||'',reminderDays:days,notify:h.notify||'both',
+   note:h.location?`📍 ${h.location}${h.note?' · '+h.note:''}`:(h.note||''),
+   triggerDate:subtractDays(h.date,days)
+  })
+ });
+ s.subscriptions.forEach(x=>{
+  if(!x.dueDate)return;
+  let days=Number(x.reminderDays??3);
+  out.push({
+   key:reminderKey('subscription',x.id,x.dueDate),source:'subscription',sourceId:x.id,
+   icon:'💳',title:x.name,date:x.dueDate,time:'',reminderDays:days,notify:x.notify||'both',
+   note:`${euro(x.amount)} · ${x.category}`,triggerDate:subtractDays(x.dueDate,days)
+  })
+ });
+ s.maintenance.filter(x=>x.status!=='done').forEach(x=>{
+  if(!x.date)return;
+  let days=Number(x.reminderDays??7);
+  out.push({
+   key:reminderKey('maintenance',x.id,x.date),source:'maintenance',sourceId:x.id,
+   icon:maintenanceIcon(x.type),title:x.title,date:x.date,time:x.time||'',reminderDays:days,notify:x.notify||'both',
+   note:x.note||'',triggerDate:subtractDays(x.date,days)
+  })
+ });
+ s.autoDeadlines.filter(x=>x.status!=='done').forEach(x=>{
+  if(!x.date)return;
+  let days=Number(x.reminderDays??7);
+  out.push({
+   key:reminderKey('auto',x.id,x.date),source:'auto',sourceId:x.id,
+   icon:autoIcon(x.type),title:x.title,date:x.date,time:x.time||'',reminderDays:days,notify:x.notify||'both',
+   note:x.note||'',triggerDate:subtractDays(x.date,days)
+  })
+ });
+ s.manualReminders.filter(x=>!x.done).forEach(x=>{
+  if(!x.date)return;
+  let days=Number(x.reminderDays??0);
+  out.push({
+   key:reminderKey('manual',x.id,x.date),source:'manual',sourceId:x.id,
+   icon:'🔔',title:x.title,date:x.date,time:x.time||'',reminderDays:days,notify:x.notify||'both',
+   note:x.note||'',triggerDate:subtractDays(x.date,days)
+  })
+ });
+ return out.sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')))
+}
+function reminderState(x){
+ let today=dateKey();
+ if(x.date<today)return 'overdue';
+ if(x.triggerDate<=today)return 'due';
+ return 'upcoming'
+}
+function reminderCard(x){
+ let state=reminderState(x),stateText=state==='overdue'?'⚠️ Scaduto':state==='due'?'🔔 Da ricordare':'🕒 In arrivo';
+ return `<div class="row reminderRow ${state}">
+  <span>${x.icon}</span>
+  <div class="grow">
+   <b>${esc(x.title)}</b>
+   <div class="meta">${birthLabel(x.date)}${x.time?' · '+x.time:''} · ${stateText}</div>
+   <div class="meta">🔔 ${x.reminderDays?x.reminderDays+'g prima':'giorno stesso'} · 👥 ${notifyLabel(x.notify)} · ${reminderSourceLabel(x.source)}</div>
+   ${x.note?`<div class="meta">${esc(x.note)}</div>`:''}
+  </div>
+  <div class="rowActions">
+   <button data-rem-open="${x.source}" data-rem-id="${x.sourceId}">Apri</button>
+   ${x.source==='manual'?`<button class="primary smallBtn" data-rem-done="${x.sourceId}">✓ Fatto</button>`:`<button data-rem-dismiss="${esc(x.key)}">🔕</button>`}
+  </div>
+ </div>`
+}
+function openSourceItem(source,id){
+ if(source==='health'){
+  let h=s.health.find(x=>x.id===id);go('health');if(!h)return;
+  if(h.kind==='visit'){
+   visitPerson.value=h.person;visitTitle.value=h.title;visitDate.value=h.date;visitTime.value=h.time||'';
+   visitLocation.value=h.location||'';visitMapUrl.value=h.mapUrl||'';visitNote.value=h.note||'';
+   visitReminder.value=String(h.reminderDays??1);visitNotify.value=h.notify||'both';visitForm.dataset.edit=h.id;visitTitle.focus()
+  }else{
+   medPerson.value=h.person;medName.value=h.title;medDose.value=h.dose||'';medDate.value=h.date;medTime.value=h.time||'';
+   medNote.value=h.note||'';medReminder.value=String(h.reminderDays??0);medNotify.value=h.notify||'both';medicineForm.dataset.edit=h.id;medName.focus()
+  }
+ }else if(source==='maintenance'){go('maintenance');openMaintenance(id)}
+ else if(source==='auto'){go('auto');openAutoDeadline(id)}
+ else if(source==='subscription'){go('money')}
+ else if(source==='manual'){go('reminders');openReminder(id)}
+ else if(source==='menu'){go('menu')}
+ else if(source==='house'){go('house')}
+ else if(source==='event'){let e=s.events.find(x=>x.id===id);if(e){current=e.childId;go('person');renderPerson()}}
+}
 function maintenanceIcon(type){return ({Caldaia:'🔥',Climatizzatore:'❄️',Idraulico:'🚰',Elettricista:'⚡',Elettrodomestico:'🔌','Manutenzione generica':'🧰',Altro:'🏠'})[type]||'🧰'}
 function autoIcon(type){return ({Assicurazione:'🛡️',Bollo:'📄',Revisione:'🔍',Tagliando:'🔧',Gomme:'🛞',Manutenzione:'🧰',Benzina:'⛽',Parcheggio:'🅿️',Pedaggio:'🛣️',Lavaggio:'🧼',Riparazione:'🔧',Accessorio:'🛒',Altro:'🚗'})[type]||'🚗'}
 function nextRecurringDate(k,f){let d=dateObj(k);if(f==='monthly')d.setMonth(d.getMonth()+1);else if(f==='semiannual')d.setMonth(d.getMonth()+6);else if(f==='annual')d.setFullYear(d.getFullYear()+1);else if(f==='biennial')d.setFullYear(d.getFullYear()+2);return dateKey(d)}
@@ -294,6 +398,8 @@ function normalizeRemoteState(data){
  out.maintenance=Array.isArray(out.maintenance)?out.maintenance:[];
  out.autoDeadlines=Array.isArray(out.autoDeadlines)?out.autoDeadlines:[];
  out.autoExpenses=Array.isArray(out.autoExpenses)?out.autoExpenses:[];
+ out.manualReminders=Array.isArray(out.manualReminders)?out.manualReminders:[];
+ out.dismissedReminders=Array.isArray(out.dismissedReminders)?out.dismissedReminders:[];
  out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
  return out
 }
@@ -495,9 +601,9 @@ async function bootCloud(){
 function go(id){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
  document.getElementById(id).classList.add('on');
- const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi',maintenance:'Manutenzioni casa',auto:'Auto'};
+ const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi',maintenance:'Manutenzioni casa',auto:'Auto',reminders:'Promemoria'};
  pageTitle.textContent=titles[id]||'Fagiolini';
- if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();
+ if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
  scrollTo(0,0)
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -524,6 +630,7 @@ function renderHome(){
   return days>=(limits[r.id]||7);
 }).map(r=>({emoji:r.emoji,title:r.name,freq:'Routine casa',owner:'Famiglia'}));
  todayOverview.innerHTML=[
+  (()=>{let n=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x))).length;return n?`<div class="row">🔔<div class="grow"><b>${n} promemoria da vedere</b><div class="meta">Apri Promemoria dalla Home</div></div></div>`:''})(),
   healthToday.length?`<div class="row">❤️<div class="grow"><b>${healthToday.length} evento salute</b><div class="meta">${healthToday.map(h=>esc(h.title||h.name)).join(' · ')}</div></div></div>`:'',
   `<div class="row">🧹<div class="grow"><b>${dueHouse.length} attività di casa</b><div class="meta">Ancora da completare</div></div></div>`,
   `<div class="row">🛒<div class="grow"><b>${s.shopping.filter(x=>!x.done).length} cose da comprare</b><div class="meta">Lista della spesa</div></div></div>`
@@ -714,9 +821,8 @@ function childMealFromAdult(id,adultRecipe,meal){
 function balanceSchedule(){
  return shuffle(['legumi','pesce','uova','vegetariano','carne','legumi','pesce','uova','carne','vegetariano','legumi','carne','formaggio','vegetariano'])
 }
-generateMenu.onclick=()=>{
- s.menuBackup=JSON.parse(JSON.stringify(s.menu));
- let cats=balanceSchedule(),used=new Set(),ci=0;
+function buildWeekProposal(){
+ let proposal={},cats=balanceSchedule(),used=new Set(),ci=0;
  for(let i=0;i<7;i++){
   let d=offsetDate(i),k=dateKey(d);
   let breakfast=pickSimple('jj','breakfast')?.name||'Colazione a scelta';
@@ -732,7 +838,7 @@ generateMenu.onclick=()=>{
   let kikoSnack1=kikoAge<12?babyPick('snack'):(pickSimple('kiko','snack')?.name||'Frutta fresca');
   let kikoSnack2=kikoAge<12?babyPick('snack',kikoSnack1):(pickSimple('kiko','snack',kikoSnack1)?.name||'Yogurt bianco');
 
-  s.menu[k]={
+  proposal[k]={
    breakfast,
    lunch:lunch?.name||'',
    dinner:dinner?.name||'',
@@ -752,6 +858,36 @@ generateMenu.onclick=()=>{
    }
   }
  }
+ return proposal
+}
+function weekHasMenuContent(){
+ for(let i=0;i<7;i++){
+  let m=s.menu[dateKey(offsetDate(i))]||{};
+  if([m.breakfast,m.lunch,m.dinner,m.caty?.breakfast,m.caty?.snackAM,m.caty?.lunch,m.caty?.snackPM,m.caty?.dinner,m.kiko?.breakfast,m.kiko?.snackAM,m.kiko?.lunch,m.kiko?.snackPM,m.kiko?.dinner].some(v=>String(v||'').trim()))return true
+ }
+ return false
+}
+function mergeEmptyMenu(target,proposal){
+ let out=JSON.parse(JSON.stringify(target||{}));
+ ['breakfast','lunch','dinner'].forEach(k=>{if(!String(out[k]||'').trim())out[k]=proposal[k]||''});
+ ['caty','kiko'].forEach(person=>{
+  out[person]=out[person]||{};
+  let src=proposal[person]||{};
+  ['breakfast','snackAM','lunch','snackPM','dinner'].forEach(k=>{if(!String(out[person][k]||'').trim())out[person][k]=src[k]||''})
+ });
+ return out
+}
+generateMenu.onclick=()=>{
+ if(weekHasMenuContent()&&!confirm('Ci sono già pasti compilati o modificati a mano. Vuoi davvero rigenerare TUTTA la settimana e sostituirli?'))return;
+ s.menuBackup=JSON.parse(JSON.stringify(s.menu));
+ let proposal=buildWeekProposal();
+ Object.entries(proposal).forEach(([k,v])=>s.menu[k]=v);
+ save();renderMenu()
+};
+generateEmptyMenu.onclick=()=>{
+ s.menuBackup=JSON.parse(JSON.stringify(s.menu));
+ let proposal=buildWeekProposal();
+ Object.entries(proposal).forEach(([k,v])=>s.menu[k]=mergeEmptyMenu(s.menu[k],v));
  save();renderMenu()
 };
 undoMenu.onclick=()=>{
@@ -939,7 +1075,9 @@ visitForm.onsubmit=e=>{
   time:visitTime.value,
   location:visitLocation.value.trim(),
   mapUrl:safeExternalUrl(visitMapUrl.value.trim()),
-  note:visitNote.value.trim()
+  note:visitNote.value.trim(),
+  reminderDays:Number(visitReminder.value),
+  notify:visitNotify.value
  };
  if(visitForm.dataset.edit){
   let x=s.health.find(v=>v.id===visitForm.dataset.edit);
@@ -952,7 +1090,7 @@ visitForm.onsubmit=e=>{
  save();
  renderHealth();
 };
-medicineForm.onsubmit=e=>{e.preventDefault();let payload={kind:'medicine',person:medPerson.value,name:medName.value.trim(),title:medName.value.trim(),dose:medDose.value.trim(),date:medDate.value,time:medTime.value,note:medNote.value.trim()};if(medicineForm.dataset.edit){let x=s.health.find(v=>v.id===medicineForm.dataset.edit);Object.assign(x,payload);delete medicineForm.dataset.edit}else s.health.push({id:crypto.randomUUID(),...payload});medicineForm.reset();save();renderHealth()};
+medicineForm.onsubmit=e=>{e.preventDefault();let payload={kind:'medicine',person:medPerson.value,name:medName.value.trim(),title:medName.value.trim(),dose:medDose.value.trim(),date:medDate.value,time:medTime.value,note:medNote.value.trim(),reminderDays:Number(medReminder.value),notify:medNotify.value};if(medicineForm.dataset.edit){let x=s.health.find(v=>v.id===medicineForm.dataset.edit);Object.assign(x,payload);delete medicineForm.dataset.edit}else s.health.push({id:crypto.randomUUID(),...payload});medicineForm.reset();save();renderHealth()};
 function renderHealth(){
  let upcoming=[...s.health]
   .filter(h=>h.date>=dateKey())
@@ -977,6 +1115,7 @@ function renderHealth(){
       ${loc}
       ${h.kind==='medicine'&&h.dose?`<div class="meta">Dose: ${esc(h.dose)}</div>`:''}
       ${h.note?`<div class="meta">${esc(h.note)}</div>`:''}
+      <div class="meta">🔔 ${Number(h.reminderDays??(h.kind==='visit'?1:0))}g · ${notifyLabel(h.notify||'both')}</div>
       ${maps}
     </div>
     <button class="editBtn" data-health-edit="${h.id}">✎</button>
@@ -1002,6 +1141,8 @@ function renderHealth(){
    visitLocation.value=h.location||'';
    visitMapUrl.value=h.mapUrl||'';
    visitNote.value=h.note||'';
+   visitReminder.value=String(h.reminderDays??1);
+   visitNotify.value=h.notify||'both';
    visitForm.dataset.edit=h.id;
    visitTitle.focus();
    scrollTo(0,0);
@@ -1012,12 +1153,58 @@ function renderHealth(){
    medDate.value=h.date;
    medTime.value=h.time||'';
    medNote.value=h.note||'';
+   medReminder.value=String(h.reminderDays??0);
+   medNotify.value=h.notify||'both';
    medicineForm.dataset.edit=h.id;
    medName.focus();
    scrollTo(0,0);
   }
  });
 }
+function renderReminders(){
+ let all=collectReminders().filter(x=>!reminderIsDismissed(x));
+ let due=all.filter(x=>['due','overdue'].includes(reminderState(x)));
+ let upcoming=all.filter(x=>reminderState(x)==='upcoming').slice(0,40);
+
+ reminderAlert.innerHTML=due.length
+  ?`<div class="reminderHero"><span>🔔</span><div><b>${due.length} ${due.length===1?'promemoria da vedere':'promemoria da vedere'}</b><div class="meta">Le scadenze provengono automaticamente dalle altre sezioni.</div></div></div>`
+  :`<div class="reminderHero ok"><span>✅</span><div><b>Niente di urgente</b><div class="meta">I prossimi promemoria sono sotto.</div></div></div>`;
+
+ remindersDue.innerHTML=due.length?due.map(reminderCard).join(''):'<div class="muted">Nessun promemoria da gestire adesso.</div>';
+ remindersUpcoming.innerHTML=upcoming.length?upcoming.map(reminderCard).join(''):'<div class="muted">Nessun promemoria futuro.</div>';
+
+ let manual=[...s.manualReminders].sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+ manualReminderList.innerHTML=manual.length?manual.map(x=>`<div class="row ${x.done?'done':''}">
+  <span>🔔</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${birthLabel(x.date)}${x.time?' · '+x.time:''} · ${notifyLabel(x.notify||'both')}${x.done?' · ✅ Fatto':''}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div>
+  <button class="editBtn" data-manual-edit="${x.id}">✎</button><button class="del" data-manual-del="${x.id}">✕</button>
+ </div>`).join(''):'<div class="muted">Nessun promemoria manuale.</div>';
+
+ document.querySelectorAll('[data-rem-open]').forEach(b=>b.onclick=()=>openSourceItem(b.dataset.remOpen,b.dataset.remId));
+ document.querySelectorAll('[data-rem-dismiss]').forEach(b=>b.onclick=()=>dismissReminder(b.dataset.remDismiss));
+ document.querySelectorAll('[data-rem-done]').forEach(b=>b.onclick=()=>{let x=s.manualReminders.find(v=>v.id===b.dataset.remDone);if(x)x.done=true;save();renderReminders()});
+ manualReminderList.querySelectorAll('[data-manual-edit]').forEach(b=>b.onclick=()=>openReminder(b.dataset.manualEdit));
+ manualReminderList.querySelectorAll('[data-manual-del]').forEach(b=>b.onclick=()=>{s.manualReminders=s.manualReminders.filter(x=>x.id!==b.dataset.manualDel);save();renderReminders()})
+}
+function openReminder(id=null){
+ editingReminderId=id;
+ let x=id?s.manualReminders.find(v=>v.id===id):null;
+ reminderTitle.value=x?.title||'';
+ reminderDate.value=x?.date||dateKey();
+ reminderTime.value=x?.time||'';
+ reminderDays.value=String(x?.reminderDays??1);
+ reminderNotify.value=x?.notify||'both';
+ reminderNote.value=x?.note||'';
+ reminderDialog.showModal()
+}
+addReminderBtn.onclick=()=>openReminder();
+reminderForm.onsubmit=e=>{
+ e.preventDefault();
+ let payload={title:reminderTitle.value.trim(),date:reminderDate.value,time:reminderTime.value,reminderDays:Number(reminderDays.value),notify:reminderNotify.value,note:reminderNote.value.trim(),done:false};
+ if(editingReminderId){let x=s.manualReminders.find(v=>v.id===editingReminderId);Object.assign(x,payload)}
+ else s.manualReminders.push({id:crypto.randomUUID(),...payload});
+ editingReminderId=null;reminderForm.reset();reminderDialog.close();save();renderReminders()
+};
+
 function monthBase(offset=0){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()+offset);d.setHours(12,0,0,0);return d}
 function dayData(k){
  let out=[];
@@ -1048,6 +1235,11 @@ function dayData(k){
  // Scadenze auto
  s.autoDeadlines.filter(x=>x.date===k).forEach(x=>out.push({icon:autoIcon(x.type),text:`${x.title}${x.time?' · '+x.time:''}${x.status==='done'?' · ✅':' · ⏳'}`,source:'auto',id:x.id}));
 
+ // Promemoria manuali
+ s.manualReminders.filter(x=>x.date===k&&!x.done).forEach(x=>out.push({
+  icon:'🔔',text:`${x.title}${x.time?' · '+x.time:''}`,source:'manual',id:x.id
+ }));
+
  return out
 }
 function renderCalendar(){
@@ -1062,8 +1254,11 @@ function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedD
    <a href="${appleMapsUrl(x.location)}" target="_blank" rel="noopener">🍎 Apple Maps</a>
    <a href="${googleMapsUrl(x.location)}" target="_blank" rel="noopener">📍 Google Maps</a>
   </div>`:'';
- return `<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}${maps}</div></div>`;
-}).join(''):'<div class="muted">Niente in programma o registrato.</div>'}
+ let canOpen=['health','maintenance','auto','subscription','manual','menu','house','event'].includes(x.source);
+ return `<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}${maps}</div>${canOpen?`<button data-cal-open="${x.source}" data-cal-id="${x.id||''}">Apri</button>`:''}</div>`;
+}).join(''):'<div class="muted">Niente in programma o registrato.</div>';
+ calendarDetails.querySelectorAll('[data-cal-open]').forEach(b=>b.onclick=()=>openSourceItem(b.dataset.calOpen,b.dataset.calId))
+}
 calPrev.onclick=()=>{calOffset--;renderCalendar()};calNext.onclick=()=>{calOffset++;renderCalendar()};
 
 
@@ -1198,6 +1393,6 @@ window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)pullCloudState(true)});
 
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
-function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto()}
+function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();bootCloud();

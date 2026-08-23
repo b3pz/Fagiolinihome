@@ -103,3 +103,23 @@ nav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width
  .recipeMeal label{grid-column:1/-1;margin-top:4px}
  .recipeMeal input{grid-column:1/2}
 }
+
+/* V8.3 — Calendario + Promemoria */
+.reminderAlert{padding:14px}
+.reminderHero{display:flex;align-items:center;gap:12px}
+.reminderHero>span{font-size:28px}
+.reminderHero.ok{opacity:.78}
+.reminderRow{align-items:flex-start}
+.reminderRow.due{border-left:4px solid #d79a18}
+.reminderRow.overdue{border-left:4px solid #b94a48}
+.reminderRow.upcoming{border-left:4px solid #7d8da6}
+.rowActions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.rowActions button{white-space:nowrap}
+#reminders .done{opacity:.55}
+#reminderForm .fieldLabel select,#visitForm .fieldLabel select,#medicineForm .fieldLabel select{width:100%}
+.calendarDetailsActions{display:flex;gap:6px}
+#generateEmptyMenu{font-weight:800}
+@media(max-width:560px){
+ .reminderRow{display:grid;grid-template-columns:auto 1fr}
+ .reminderRow .rowActions{grid-column:2;justify-content:flex-start;margin-top:5px}
+}

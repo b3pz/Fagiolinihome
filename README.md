@@ -156,3 +156,49 @@ Funzioni:
 Nota: l'indicatore è pensato per varietà organizzativa, non come prescrizione dietetica o calorica.
 
 Autenticazione, Supabase, family_id e sincronizzazione non modificati.
+
+
+## V8.3 — Calendario + Promemoria
+
+### Calendario
+- continua ad aggregare automaticamente Salute, Menu, Routine Casa, Abbonamenti, Manutenzioni e Auto
+- include ora anche i promemoria manuali
+- dagli eventi del calendario si può aprire direttamente la sezione di origine
+- visite con luogo mantengono Apple Maps / Google Maps
+
+### Promemoria
+- nuovo Centro Promemoria sincronizzato via stato Fagiolini
+- raccoglie automaticamente:
+  - visite e medicine
+  - bollette / abbonamenti
+  - manutenzioni casa
+  - assicurazione, bollo, revisione, tagliando e altre scadenze auto
+- mostra "da vedere", scaduti e prossimi
+- destinatario JJ / Kiki / entrambi
+- anticipo: giorno stesso / 1 / 3 / 7 / 30 giorni dove previsto
+- possibilità di creare promemoria manuali
+- possibilità di archiviare un avviso già visto
+- i promemoria manuali possono essere modificati, completati o eliminati
+- la Home segnala quanti promemoria sono da vedere
+
+Nota tecnica: in V8.3 i promemoria sono gestiti e sincronizzati dentro Fagiolini.
+L'invio automatico fuori dall'app è previsto nella V8.4 con Telegram.
+
+### Fix Menu V8.3
+- "Genera tutta la settimana" chiede conferma se esistono già pasti compilati
+- "Completa solo i campi vuoti" preserva integralmente tutto ciò che JJ/Kiki hanno scritto manualmente
+- rimangono disponibili modifica diretta e cambio del singolo pasto
+- nessuna modalità manuale separata: ogni campo resta sempre editabile
+
+### Roadmap
+- V8 Stable: base Supabase
+- V8.1: Casa + Auto
+- V8.1.1: Salute + Maps
+- V8.2: Menu completo
+- V8.3: Calendario + Promemoria + fix Menu
+- V8.4: Telegram
+- V9: restyling mobile-first
+- V9.1: test e pulizia
+- V10: release stabile
+
+Autenticazione, Supabase, family_id e sincronizzazione non modificati.
