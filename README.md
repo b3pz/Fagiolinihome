@@ -231,3 +231,62 @@ kiki-avatar.jpg
 Nessun link immagine esterno.
 
 Autenticazione, Supabase, family_id, sincronizzazione e service worker non modificati.
+
+
+## V8.4.1 — Piano Casa + Soldi Smart + Timeout
+
+### Piano Casa
+- le routine diventano vere task pending
+- generazione dei prossimi 7 giorni
+- "Completa ciò che manca" senza sovrascrivere task già presenti
+- tutte le task sono modificabili, spostabili ed eliminabili
+- task manuali straordinarie
+- assegnazione JJ / Kiki / entrambi
+- Fatto → task completata + registrazione nello storico
+- Rimanda → +1 giorno
+- frequenze modificabili:
+  - ogni giorno
+  - giorni alterni
+  - ogni 3 giorni
+  - 2 volte/settimana
+  - 3 volte/settimana
+  - settimanale
+  - solo manuale
+- Lavatrice → Asciugatrice è una dipendenza strutturale:
+  - ogni lavatrice generata crea la sua asciugatrice
+  - asciugatrice bloccata finché la lavatrice non è completata
+  - se la lavatrice viene rimandata, l'asciugatrice collegata segue
+  - asciugatrice non può essere programmata prima della lavatrice
+- le task Casa compaiono nel Calendario
+- le task pending entrano anche nel Centro Promemoria
+- Home Casa usa il numero reale delle task pending di oggi
+
+### Soldi Smart
+Macro categorie:
+- Casa
+- Spesa
+- Bollette
+- Auto
+- Bambini
+- Salute
+- Svago
+- Personali
+- Altro
+
+Aggiunto:
+- grafico a torta mensile
+- importo e percentuale per macro gruppo
+- classificazione automatica delle spese esistenti
+- filtro cliccabile per macro categoria
+- dettaglio delle voci filtrate
+- compatibilità con spesa, auto, manutenzioni, abbonamenti e spese personali già esistenti
+
+### Sicurezza Login
+- timeout sessione: 3 ore di INATTIVITÀ
+- ogni utilizzo dell'app rinnova il timer
+- se Fagiolini resta inattiva per 3 ore, alla riapertura richiede nuovamente il login
+- messaggio "Sessione scaduta dopo 3 ore di inattività"
+- logout Supabase reale
+- nessun dato familiare viene cancellato
+
+Il collegamento diretto al family_id e la sincronizzazione family_state restano invariati.

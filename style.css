@@ -216,3 +216,50 @@ body[data-page="home"] .accountBtn{display:none}
  .loginCard{padding:23px 20px 20px;border-radius:32px;margin-top:42vh}
  .loginCard h1{font-size:37px}.loginLead{font-size:15px}
 }
+
+/* V8.4.1 — Piano Casa */
+.housePlanIntro .inlineBtns{margin-top:12px}
+.pendingBadge{min-width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#f3e2cc;color:#8d5d25;font-weight:900}
+.houseTaskRow{align-items:flex-start}
+.houseTaskRow.locked{opacity:.62;background:#f7f3ee}
+.taskIcon{font-size:24px}
+.houseTaskActions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.houseTaskActions button{min-height:36px}
+.houseTaskActions button:disabled{opacity:.45;cursor:not-allowed}
+.houseDayPlan{border:1px solid var(--line);border-radius:18px;padding:12px;margin-bottom:10px;background:#fff}
+.houseDayPlan.today{outline:2px solid var(--accent)}
+.houseDayHead{display:flex;justify-content:space-between;align-items:center;padding:1px 2px 8px;text-transform:capitalize}
+.houseDayHead span{font-size:11px;color:var(--muted);font-weight:800}
+.houseDayEmpty{padding:10px 2px}
+.emptyPlan{display:grid;gap:5px;text-align:center;padding:22px 10px;color:var(--muted)}
+.houseRulesGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.houseRule{display:grid;gap:7px;border:1px solid var(--line);border-radius:15px;padding:11px;background:#fff;font-size:12px;font-weight:800}
+.houseRule select{width:100%;border:1px solid var(--line);border-radius:11px;padding:9px;background:#fff}
+.lockedRule{opacity:.7}
+
+/* V8.4.1 — Soldi Smart */
+.moneyChartLayout{display:grid;grid-template-columns:minmax(180px,230px) 1fr;gap:22px;align-items:center}
+.moneyPie{width:min(100%,230px);aspect-ratio:1;border-radius:50%;margin:auto;position:relative;display:grid;place-items:center;transition:background .25s ease}
+.moneyPie:after{content:"";position:absolute;width:55%;height:55%;border-radius:50%;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.moneyPieCenter{position:relative;z-index:2;text-align:center;display:grid;gap:3px}
+.moneyPieCenter small{letter-spacing:0;font-size:11px}
+.moneyPieCenter b{font-size:18px}
+.moneyMacroLegend{display:grid;gap:6px}
+.macroLegendItem{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:#fff;border-radius:13px;padding:9px;text-align:left}
+.macroLegendItem.active{outline:2px solid var(--accent)}
+.macroLegendItem i{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
+.macroLegendItem span{display:grid}.macroLegendItem b{font-size:12px}.macroLegendItem small{font-size:10px;letter-spacing:0}
+.moneyCategory.smart{width:100%;border:0;background:transparent;text-align:left;cursor:pointer}
+.moneyCategory.smart.active{background:var(--soft);border-radius:12px;padding-left:10px;padding-right:10px}
+.moneyCategory.smart span{display:flex;gap:7px;align-items:center}.moneyCategory.smart small{letter-spacing:0;font-size:10px}
+@media(max-width:600px){
+ .houseRulesGrid{grid-template-columns:1fr}
+ .houseTaskRow{display:grid;grid-template-columns:auto 1fr auto}
+ .houseTaskActions{grid-column:2/4;justify-content:flex-start}
+ .moneyChartLayout{grid-template-columns:1fr}
+ .moneyPie{max-width:205px}
+ .moneyMacroLegend{grid-template-columns:1fr 1fr}
+}
+
+/* session timeout status in Account */
+.sessionTimeoutNote{font-size:12px;color:var(--muted)}

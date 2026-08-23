@@ -14,6 +14,42 @@ let cloudPollTimer=null;
 let realtimeChannel=null;
 let lastCloudUpdatedAt=null;
 
+
+const SESSION_TIMEOUT_MS=3*60*60*1000;
+const SESSION_ACTIVITY_KEY='fagioliniSessionActivityV1';
+let sessionExpiryTimer=null;
+let lastActivityWrite=0;
+function sessionLastActivity(){return Number(localStorage.getItem(SESSION_ACTIVITY_KEY)||0)}
+function sessionIsExpired(){let last=sessionLastActivity();return !!last&&(Date.now()-last>=SESSION_TIMEOUT_MS)}
+function scheduleSessionExpiry(){
+ if(sessionExpiryTimer)clearTimeout(sessionExpiryTimer);
+ if(!cloudSession)return;
+ let last=sessionLastActivity()||Date.now(),remaining=Math.max(500,SESSION_TIMEOUT_MS-(Date.now()-last));
+ sessionExpiryTimer=setTimeout(()=>checkSessionExpiry(true),remaining+250)
+}
+function markSessionActivity(){
+ if(!cloudSession||!loginScreen.classList.contains('hidden'))return;
+ let now=Date.now();
+ if(now-lastActivityWrite<30000)return;
+ lastActivityWrite=now;localStorage.setItem(SESSION_ACTIVITY_KEY,String(now));scheduleSessionExpiry()
+}
+async function checkSessionExpiry(force=false){
+ if(!cloudSession)return false;
+ if(sessionIsExpired()){
+  if(sessionExpiryTimer)clearTimeout(sessionExpiryTimer);
+  localStorage.removeItem(SESSION_ACTIVITY_KEY);
+  await cloudLogout();
+  loginMessage.textContent='Sessione scaduta dopo 3 ore di inattività. Accedi nuovamente.';
+  return true
+ }
+ if(force)scheduleSessionExpiry();
+ return false
+}
+function startSessionActivityTracking(){
+ ['pointerdown','keydown','touchstart'].forEach(evt=>document.addEventListener(evt,markSessionActivity,{passive:true}));
+ window.addEventListener('focus',()=>checkSessionExpiry(true));
+}
+
 const KEY='familyHubV2';
 const DEFAULT={
  children:[
@@ -26,6 +62,8 @@ const DEFAULT={
   {id:crypto.randomUUID(),text:'Pulire bagno',owner:'Famiglia',frequency:'settimanale',done:[]}
  ],
  shopping:[],menu:{},expenses:[],health:[],manualReminders:[],dismissedReminders:[],
+ houseTasks:[],
+ housePlanRules:{sweep:'daily',mop:'alternate',washer:'threeWeek',sheets:'weekly',towels:'every3'},
  menuBackup:null,
  recipeFeedback:{},
  profiles:{
@@ -43,7 +81,7 @@ const META={
  pappa:['🍼','Pappa'],pannolino:['🚼','Pannolino'],cacca:['💩','Cacca'],nanna:['😴','Nanna'],bagnetto:['🛁','Bagnetto'],
  traversina:['🐾','Traversina'],pipi:['💧','Pipì'],farmaco:['💊','Farmaco'],toeletta:['🛁','Toeletta']
 };
-let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null;
+let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null,editingHouseTaskId=null,moneyMacroFilter=null;
 
 function load(){
  let out=structuredClone(DEFAULT);
@@ -77,6 +115,8 @@ function load(){
  out.autoExpenses=Array.isArray(out.autoExpenses)?out.autoExpenses:[];
  out.manualReminders=Array.isArray(out.manualReminders)?out.manualReminders:[];
  out.dismissedReminders=Array.isArray(out.dismissedReminders)?out.dismissedReminders:[];
+ out.houseTasks=Array.isArray(out.houseTasks)?out.houseTasks:[];
+ out.housePlanRules={...DEFAULT.housePlanRules,...(out.housePlanRules||{})};
  out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
   return out
 }
@@ -105,12 +145,57 @@ function personName(id){return ({caty:'Caty',kiko:'Kiko',astro:'Astro',jj:'JJ',k
 
 const HOUSE_ROUTINES=[
  {id:'sweep',emoji:'🧹',name:'Spazzare'},
- {id:'mop',emoji:'🧽',name:'Dare il mocio'},
+ {id:'mop',emoji:'🧽',name:'Lavare pavimenti / mocio'},
  {id:'washer',emoji:'🧺',name:'Lavatrice'},
  {id:'dryer',emoji:'♨️',name:'Asciugatrice'},
  {id:'sheets',emoji:'🛏️',name:'Cambio lenzuola'},
  {id:'towels',emoji:'🚿',name:'Cambio asciugamani / asciugaculo'}
 ];
+const HOUSE_FREQ_OPTIONS=[
+ ['daily','Ogni giorno'],['alternate','Giorni alterni'],['every3','Ogni 3 giorni'],
+ ['twiceWeek','2 volte / settimana'],['threeWeek','3 volte / settimana'],['weekly','1 volta / settimana'],['manual','Solo manuale']
+];
+function houseRoutine(id){return HOUSE_ROUTINES.find(r=>r.id===id)}
+function houseTaskIcon(t){return t.routineId==='custom'?'🧹':(houseRoutine(t.routineId)?.emoji||'🧹')}
+function houseTaskTitle(t){return t.title||houseRoutine(t.routineId)?.name||'Faccenda'}
+function taskOwnerLabel(v){return v==='jj'?'JJ':v==='kiki'?'Kiki':'JJ + Kiki'}
+function houseWeekDates(){return Array.from({length:7},(_,i)=>dateKey(offsetDate(i)))}
+function ruleOffsets(rule){
+ return ({daily:[0,1,2,3,4,5,6],alternate:[0,2,4,6],every3:[0,3,6],twiceWeek:[1,4],threeWeek:[0,3,5],weekly:[5],manual:[]})[rule]||[]
+}
+function taskExists(routineId,date){return s.houseTasks.some(t=>t.routineId===routineId&&t.date===date&&t.status!=='cancelled')}
+function makeHouseTask(routineId,date,generated=true,owner='family',title=''){
+ return {id:crypto.randomUUID(),routineId,title:title||houseRoutine(routineId)?.name||'Faccenda',date,by:owner,status:'pending',generated,manual:!generated,note:'',completedAt:null,dependsOnId:null,linkedTaskId:null}
+}
+function addWasherPair(date,generated=true,owner='family'){
+ let washer=makeHouseTask('washer',date,generated,owner);
+ let dryer=makeHouseTask('dryer',date,generated,owner);
+ washer.linkedTaskId=dryer.id;
+ dryer.dependsOnId=washer.id;
+ dryer.linkedTaskId=washer.id;
+ s.houseTasks.push(washer,dryer);
+ return washer
+}
+function generateHousePlan(fillOnly=false){
+ let dates=houseWeekDates();
+ if(!fillOnly){
+  let has=s.houseTasks.some(t=>dates.includes(t.date)&&t.status==='pending'&&t.generated);
+  if(has&&!confirm('Rigenerare il Piano Casa dei prossimi 7 giorni? Le task generate ancora pending verranno sostituite; quelle manuali e quelle già completate restano.'))return;
+  s.houseTasks=s.houseTasks.filter(t=>!(dates.includes(t.date)&&t.status==='pending'&&t.generated));
+ }
+ ['sweep','mop','washer','sheets','towels'].forEach(rid=>{
+  let rule=s.housePlanRules[rid]||DEFAULT.housePlanRules[rid];
+  ruleOffsets(rule).forEach(off=>{
+   let date=dates[off];
+   if(rid==='washer'){
+    if(!taskExists('washer',date))addWasherPair(date,true,'family');
+   }else if(!taskExists(rid,date))s.houseTasks.push(makeHouseTask(rid,date,true,'family'));
+  })
+ });
+ save();
+ go('house')
+}
+
 const COOKBOOK=[
  {name:'Pasta al pomodoro',category:'vegetariano',tags:['pasta','pomodoro'],allergens:['glutine'],time:'20 min',ingredients:[['Pasta',320,'g'],['Passata di pomodoro',400,'g'],['Parmigiano',40,'g']],steps:['Cuoci la pasta.','Scalda la passata con un filo d’olio.','Scola, condisci e completa con parmigiano.']},
  {name:'Pasta e lenticchie',category:'legumi',tags:['pasta','lenticchie','legumi'],allergens:['glutine'],time:'35 min',ingredients:[['Pasta piccola',280,'g'],['Lenticchie cotte',300,'g'],['Passata di pomodoro',150,'g']],steps:['Scalda le lenticchie con il pomodoro.','Aggiungi acqua quanto basta.','Cuoci la pasta direttamente nel condimento.']},
@@ -237,7 +322,7 @@ function openRecipe(name){
 }
 
 function notifyLabel(v){return v==='jj'?'JJ':v==='kiki'?'Kiki':'JJ + Kiki'}
-function reminderSourceLabel(v){return ({health:'Salute',subscription:'Soldi',maintenance:'Casa',auto:'Auto',manual:'Manuale'})[v]||v}
+function reminderSourceLabel(v){return ({health:'Salute',subscription:'Soldi',maintenance:'Casa',auto:'Auto',manual:'Manuale',houseTask:'Casa'})[v]||v}
 function subtractDays(k,n){let d=dateObj(k);d.setDate(d.getDate()-Number(n||0));return dateKey(d)}
 function reminderKey(source,id,date){return `${source}:${id}:${date}`}
 function reminderIsDismissed(x){return s.dismissedReminders.includes(x.key)}
@@ -284,6 +369,15 @@ function collectReminders(){
    key:reminderKey('auto',x.id,x.date),source:'auto',sourceId:x.id,
    icon:autoIcon(x.type),title:x.title,date:x.date,time:x.time||'',reminderDays:days,notify:x.notify||'both',
    note:x.note||'',triggerDate:subtractDays(x.date,days)
+  })
+ });
+ s.houseTasks.filter(x=>x.status==='pending').forEach(x=>{
+  if(!x.date)return;
+  out.push({
+   key:reminderKey('houseTask',x.id,x.date),source:'houseTask',sourceId:x.id,
+   icon:houseTaskIcon(x),title:houseTaskTitle(x),date:x.date,time:'',reminderDays:0,
+   notify:x.by==='family'?'both':x.by,note:taskDependencyReady(x)?'Task Piano Casa':'Dopo la lavatrice collegata',
+   triggerDate:x.date
   })
  });
  s.manualReminders.filter(x=>!x.done).forEach(x=>{
@@ -335,6 +429,7 @@ function openSourceItem(source,id){
  else if(source==='subscription'){go('money')}
  else if(source==='manual'){go('reminders');openReminder(id)}
  else if(source==='menu'){go('menu')}
+ else if(source==='houseTask'){go('house');if(id)openHouseTask(id)}
  else if(source==='house'){go('house')}
  else if(source==='event'){let e=s.events.find(x=>x.id===id);if(e){current=e.childId;go('person');renderPerson()}}
 }
@@ -370,7 +465,8 @@ function isMeaningfulState(data){
  return ['events','shopping','expenses','health'].some(k=>Array.isArray(data[k])&&data[k].length)
    || (data.menu&&Object.keys(data.menu).length)
    || (Array.isArray(data.house)&&data.house.length)
-   || (Array.isArray(data.tasks)&&data.tasks.length);
+   || (Array.isArray(data.tasks)&&data.tasks.length)
+   || (Array.isArray(data.houseTasks)&&data.houseTasks.length);
 }
 
 function normalizeRemoteState(data){
@@ -400,6 +496,8 @@ function normalizeRemoteState(data){
  out.autoExpenses=Array.isArray(out.autoExpenses)?out.autoExpenses:[];
  out.manualReminders=Array.isArray(out.manualReminders)?out.manualReminders:[];
  out.dismissedReminders=Array.isArray(out.dismissedReminders)?out.dismissedReminders:[];
+ out.houseTasks=Array.isArray(out.houseTasks)?out.houseTasks:[];
+ out.housePlanRules={...DEFAULT.housePlanRules,...(out.housePlanRules||{})};
  out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
  return out
 }
@@ -415,6 +513,8 @@ async function cloudLogin(email,password){
   if(!data?.session)throw new Error('Sessione Supabase non ricevuta');
 
   cloudSession=data.session;
+  localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
+  scheduleSessionExpiry();
 
   // Da qui il login è riuscito: entra subito.
   loginScreen.classList.add('hidden');
@@ -570,6 +670,8 @@ function updateAccountInfo(){
 }
 
 async function cloudLogout(){
+ if(sessionExpiryTimer)clearTimeout(sessionExpiryTimer);
+ localStorage.removeItem(SESSION_ACTIVITY_KEY);
  cloudReady=false;
  cloudFamilyId=null;
  cloudMemberName='';
@@ -586,14 +688,31 @@ async function bootCloud(){
  if(!navigator.onLine)setCloudStatus('error','Offline');
  const {data}=await sb.auth.getSession();
  cloudSession=data.session;
- if(cloudSession)await initializeCloud();
- else loginScreen.classList.remove('hidden');
+
+ if(cloudSession){
+  let last=sessionLastActivity();
+  if(last&&Date.now()-last>=SESSION_TIMEOUT_MS){
+   await sb.auth.signOut();
+   cloudSession=null;
+   localStorage.removeItem(SESSION_ACTIVITY_KEY);
+   loginScreen.classList.remove('hidden');
+   loginMessage.textContent='Sessione scaduta dopo 3 ore di inattività. Accedi nuovamente.';
+  }else{
+   if(!last)localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
+   scheduleSessionExpiry();
+   await initializeCloud();
+  }
+ }else loginScreen.classList.remove('hidden');
 
  sb.auth.onAuthStateChange(async(event,session)=>{
   cloudSession=session;
   if(event==='SIGNED_OUT'){
    cloudReady=false;
+   if(sessionExpiryTimer)clearTimeout(sessionExpiryTimer);
    loginScreen.classList.remove('hidden');
+  }else if(session){
+   if(!sessionLastActivity())localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
+   scheduleSessionExpiry()
   }
  });
 }
@@ -631,13 +750,7 @@ function renderHome(){
  peopleCards.querySelectorAll('[data-adult]').forEach(b=>b.onclick=()=>{currentAdult=b.dataset.adult;go('adult')});
 
  const healthToday=s.health.filter(h=>h.date===dateKey());
- const dueHouse=HOUSE_ROUTINES.filter(r=>{
-  const last=latestHouse(r.id);
-  if(!last)return true;
-  const days=(Date.now()-new Date(last.at).getTime())/86400000;
-  const limits={sweep:1,mop:2,washer:3,dryer:3,sheets:7,towels:3};
-  return days>=(limits[r.id]||7);
- }).map(r=>({emoji:r.emoji,title:r.name,freq:'Routine casa',owner:'Famiglia'}));
+ const dueHouse=s.houseTasks.filter(t=>t.date===dateKey()&&t.status==='pending'&&t.status!=='cancelled');
 
  const reminderCount=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x))).length;
  const todayCommitments=reminderCount+healthToday.length;
@@ -1244,8 +1357,14 @@ function dayData(k){
  // Bambini / Astro
  s.events.filter(e=>dateKey(new Date(e.at))===k).forEach(e=>out.push({icon:META[e.type]?.[0]||'•',text:`${personName(e.childId)}: ${META[e.type]?.[1]||e.type} · ${timeLabel(e.at)}`,source:'event',id:e.id}));
 
- // Routine casa registrate
- s.houseLogs.filter(x=>dateKey(new Date(x.at))===k).forEach(x=>out.push({icon:houseIcon(x.routineId),text:`${houseName(x.routineId)} · ${personName(x.by)} · ${localTimeFromIso(x.at)}`,source:'house',id:x.id}));
+ // Piano Casa: task pending/completate vere
+ s.houseTasks.filter(x=>x.date===k&&x.status!=='cancelled').forEach(x=>out.push({
+  icon:houseTaskIcon(x),
+  text:`${houseTaskTitle(x)} · ${taskOwnerLabel(x.by)} · ${x.status==='done'?'✅ Completata':(!taskDependencyReady(x)?'🔒 Dopo lavatrice':'⏳ Da fare')}`,
+  source:'houseTask',id:x.id
+ }));
+ // Storico manuale non legato a una task
+ s.houseLogs.filter(x=>!x.taskId&&dateKey(new Date(x.at))===k).forEach(x=>out.push({icon:houseIcon(x.routineId),text:`${x.title||houseName(x.routineId)} · ${personName(x.by)} · ${localTimeFromIso(x.at)}`,source:'house',id:x.id}));
 
  // Bollette / abbonamenti
  s.subscriptions.filter(x=>x.dueDate===k).forEach(x=>out.push({icon:'⏰',text:`${x.name} · ${euro(x.amount)}`,source:'subscription',id:x.id}));
@@ -1275,7 +1394,7 @@ function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedD
    <a href="${appleMapsUrl(x.location)}" target="_blank" rel="noopener">🍎 Apple Maps</a>
    <a href="${googleMapsUrl(x.location)}" target="_blank" rel="noopener">📍 Google Maps</a>
   </div>`:'';
- let canOpen=['health','maintenance','auto','subscription','manual','menu','house','event'].includes(x.source);
+ let canOpen=['health','maintenance','auto','subscription','manual','menu','house','houseTask','event'].includes(x.source);
  return `<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}${maps}</div>${canOpen?`<button data-cal-open="${x.source}" data-cal-id="${x.id||''}">Apri</button>`:''}</div>`;
 }).join(''):'<div class="muted">Niente in programma o registrato.</div>';
  calendarDetails.querySelectorAll('[data-cal-open]').forEach(b=>b.onclick=()=>openSourceItem(b.dataset.calOpen,b.dataset.calId))
@@ -1283,26 +1402,162 @@ function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedD
 calPrev.onclick=()=>{calOffset--;renderCalendar()};calNext.onclick=()=>{calOffset++;renderCalendar()};
 
 
+function taskDependencyReady(t){
+ if(!t.dependsOnId)return true;
+ let parent=s.houseTasks.find(x=>x.id===t.dependsOnId);
+ return !!parent&&parent.status==='done'
+}
+function renderHouseTaskRow(t,compact=false){
+ let locked=!taskDependencyReady(t)&&t.status!=='done';
+ let state=t.status==='done'?'✅ Completata':locked?'🔒 Dopo la lavatrice':(t.date<dateKey()?'⚠️ In ritardo':'⏳ Da fare');
+ return `<div class="row houseTaskRow ${t.status==='done'?'done':''} ${locked?'locked':''}">
+  <span class="taskIcon">${houseTaskIcon(t)}</span>
+  <div class="grow">
+   <b>${esc(houseTaskTitle(t))}</b>
+   <div class="meta">${birthLabel(t.date)} · ${taskOwnerLabel(t.by)} · ${state}</div>
+   ${t.note?`<div class="meta">${esc(t.note)}</div>`:''}
+  </div>
+  ${t.status!=='done'?`<div class="houseTaskActions">
+   <button class="primary smallBtn" data-task-done="${t.id}" ${locked?'disabled':''}>✓ Fatto</button>
+   <button class="smallBtn" data-task-postpone="${t.id}">→ +1g</button>
+   <button class="editBtn" data-task-edit="${t.id}">✎</button>
+  </div>`:''}
+  <button class="del" data-task-del="${t.id}">✕</button>
+ </div>`
+}
+function bindHouseTaskActions(root){
+ root.querySelectorAll('[data-task-done]').forEach(b=>b.onclick=()=>completeHouseTask(b.dataset.taskDone));
+ root.querySelectorAll('[data-task-postpone]').forEach(b=>b.onclick=()=>postponeHouseTask(b.dataset.taskPostpone));
+ root.querySelectorAll('[data-task-edit]').forEach(b=>b.onclick=()=>openHouseTask(b.dataset.taskEdit));
+ root.querySelectorAll('[data-task-del]').forEach(b=>b.onclick=()=>deleteHouseTask(b.dataset.taskDel));
+}
 function renderHouse(){
- houseRoutineGrid.innerHTML=HOUSE_ROUTINES.map(r=>{
-  let last=latestHouse(r.id);
-  return `<div class="houseRoutineCard"><div class="houseRoutineHead"><span>${r.emoji}</span><div><b>${esc(r.name)}</b><small>${last?`Ultima: ${longDate(new Date(last.at))} · ${localTimeFromIso(last.at)} · ${personName(last.by)}`:'Mai registrata'}</small></div></div><div class="houseRoutineActions"><button class="primary" data-hnow="${r.id}">✓ Fatto adesso</button><button data-hmanual="${r.id}">✎ Inserisci</button></div></div>`
+ let today=dateKey(),todayTasks=s.houseTasks.filter(t=>t.date===today&&t.status!=='cancelled').sort(houseTaskSort);
+ let pending=todayTasks.filter(t=>t.status==='pending');
+ housePendingCount.textContent=pending.length;
+ houseTodayTasks.innerHTML=todayTasks.length?todayTasks.map(t=>renderHouseTaskRow(t)).join(''):'<div class="emptyPlan"><b>Nessuna task per oggi.</b><span>Genera la settimana oppure aggiungine una a mano.</span></div>';
+ bindHouseTaskActions(houseTodayTasks);
+
+ houseWeekPlan.innerHTML=houseWeekDates().map(k=>{
+  let tasks=s.houseTasks.filter(t=>t.date===k&&t.status!=='cancelled').sort(houseTaskSort);
+  return `<div class="houseDayPlan ${k===today?'today':''}">
+   <div class="houseDayHead"><b>${k===today?'Oggi':longDate(dateObj(k))}</b><span>${tasks.filter(t=>t.status==='pending').length} pending</span></div>
+   ${tasks.length?tasks.map(t=>renderHouseTaskRow(t,true)).join(''):'<div class="muted houseDayEmpty">Niente programmato</div>'}
+  </div>`
  }).join('');
- houseRoutineGrid.querySelectorAll('[data-hnow]').forEach(b=>b.onclick=()=>{s.houseLogs.push({id:crypto.randomUUID(),routineId:b.dataset.hnow,by:(cloudMemberName==='Kiki'?'kiki':'jj'),at:new Date().toISOString(),note:''});save();renderHouse()});
- houseRoutineGrid.querySelectorAll('[data-hmanual]').forEach(b=>b.onclick=()=>openHouseEdit(null,b.dataset.hmanual));
+ bindHouseTaskActions(houseWeekPlan);
+
+ houseRulesGrid.innerHTML=[
+  ...['sweep','mop','washer','sheets','towels'].map(rid=>{
+   let r=houseRoutine(rid),val=s.housePlanRules[rid]||DEFAULT.housePlanRules[rid];
+   return `<label class="houseRule"><span>${r.emoji} ${esc(r.name)}</span><select data-house-rule="${rid}">${HOUSE_FREQ_OPTIONS.map(([v,l])=>`<option value="${v}" ${v===val?'selected':''}>${l}</option>`).join('')}</select></label>`
+  }),
+  `<label class="houseRule lockedRule"><span>♨️ Asciugatrice</span><select disabled><option>Dopo ogni lavatrice</option></select></label>`
+ ].join('');
+ houseRulesGrid.querySelectorAll('[data-house-rule]').forEach(sel=>sel.onchange=()=>{s.housePlanRules[sel.dataset.houseRule]=sel.value;save()});
+
  let logs=[...s.houseLogs].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,30);
- houseHistory.innerHTML=logs.length?logs.map(x=>`<div class="row"><span>${houseIcon(x.routineId)}</span><div class="grow"><b>${esc(houseName(x.routineId))}</b><div class="meta">${personName(x.by)} · ${longDate(new Date(x.at))} · ${localTimeFromIso(x.at)}${x.note?' · '+esc(x.note):''}</div></div><button class="editBtn" data-hedit="${x.id}">✎</button><button class="del" data-hlogdel="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna attività registrata.</div>';
+ houseHistory.innerHTML=logs.length?logs.map(x=>`<div class="row"><span>${houseIcon(x.routineId)}</span><div class="grow"><b>${esc(houseName(x.routineId))}</b><div class="meta">${personName(x.by)} · ${longDate(new Date(x.at))} · ${localTimeFromIso(x.at)}${x.note?' · '+esc(x.note):''}</div></div><button class="editBtn" data-hedit="${x.id}">✎</button><button class="del" data-hlogdel="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna attività completata.</div>';
  houseHistory.querySelectorAll('[data-hedit]').forEach(b=>b.onclick=()=>openHouseEdit(b.dataset.hedit));
  houseHistory.querySelectorAll('[data-hlogdel]').forEach(b=>b.onclick=()=>{s.houseLogs=s.houseLogs.filter(x=>x.id!==b.dataset.hlogdel);save();renderHouse()})
 }
+function houseTaskSort(a,b){
+ if(a.status!==b.status)return a.status==='pending'?-1:1;
+ if(a.routineId==='dryer'&&b.routineId==='washer')return 1;
+ if(a.routineId==='washer'&&b.routineId==='dryer')return -1;
+ return houseTaskTitle(a).localeCompare(houseTaskTitle(b),'it')
+}
+function completeHouseTask(id){
+ let t=s.houseTasks.find(x=>x.id===id);if(!t)return;
+ if(!taskDependencyReady(t)){alert('Prima devi completare la lavatrice collegata.');return}
+ if(t.status==='done')return;
+ t.status='done';t.completedAt=new Date().toISOString();
+ let rid=t.routineId==='custom'?'custom':t.routineId;
+ let log={id:crypto.randomUUID(),routineId:rid,by:(t.by==='family'?(cloudMemberName==='Kiki'?'kiki':'jj'):t.by),at:t.completedAt,note:t.note||'',taskId:t.id,title:houseTaskTitle(t)};
+ t.logId=log.id;s.houseLogs.push(log);
+ save();renderHouse()
+}
+function postponeHouseTask(id){
+ let t=s.houseTasks.find(x=>x.id===id);if(!t||t.status==='done')return;
+ let d=dateObj(t.date);d.setDate(d.getDate()+1);t.date=dateKey(d);
+ if(t.routineId==='washer'&&t.linkedTaskId){
+  let dryer=s.houseTasks.find(x=>x.id===t.linkedTaskId);
+  if(dryer&&dryer.status==='pending')dryer.date=t.date
+ }
+ save();renderHouse()
+}
+function deleteHouseTask(id){
+ let t=s.houseTasks.find(x=>x.id===id);if(!t)return;
+ if(!confirm(`Eliminare "${houseTaskTitle(t)}"?`))return;
+ let linked=t.linkedTaskId;
+ s.houseTasks=s.houseTasks.filter(x=>x.id!==id);
+ if(t.routineId==='washer'&&linked){
+  let d=s.houseTasks.find(x=>x.id===linked);
+  if(d&&d.status==='pending')s.houseTasks=s.houseTasks.filter(x=>x.id!==linked)
+ }
+ save();renderHouse()
+}
+function openHouseTask(id=null,date=null){
+ editingHouseTaskId=id;
+ let t=id?s.houseTasks.find(x=>x.id===id):null;
+ houseTaskRoutine.value=t?.routineId||'custom';
+ houseTaskTitle.value=t?.title||'';
+ houseTaskDate.value=t?.date||date||dateKey();
+ houseTaskWho.value=t?.by||'family';
+ houseTaskNote.value=t?.note||'';
+ if(t?.routineId==='dryer'){
+  houseTaskRoutine.disabled=true
+ }else houseTaskRoutine.disabled=false;
+ houseTaskDialog.showModal()
+}
+addHouseTaskBtn.onclick=()=>openHouseTask();
+generateHouseWeek.onclick=()=>generateHousePlan(false);
+fillHouseWeek.onclick=()=>generateHousePlan(true);
+houseTaskRoutine.onchange=()=>{
+ let rid=houseTaskRoutine.value;
+ if(rid!=='custom')houseTaskTitle.value=houseRoutine(rid)?.name||''
+};
+houseTaskForm.onsubmit=e=>{
+ e.preventDefault();
+ let rid=houseTaskRoutine.value,date=houseTaskDate.value,title=houseTaskTitle.value.trim(),by=houseTaskWho.value,note=houseTaskNote.value.trim();
+
+ if(editingHouseTaskId){
+  let t=s.houseTasks.find(x=>x.id===editingHouseTaskId);if(!t)return;
+  let oldDate=t.date;
+  if(t.routineId==='dryer'&&rid!=='dryer')rid='dryer';
+  if(rid==='dryer'){
+   let washer=s.houseTasks.find(x=>x.id===t.dependsOnId);
+   if(!washer){alert('Questa asciugatrice non ha più una lavatrice collegata.');return}
+   if(date<washer.date){alert('L’asciugatrice non può essere programmata prima della lavatrice.');return}
+  }
+  Object.assign(t,{routineId:rid,title,date,by,note});
+  if(t.routineId==='washer'&&t.linkedTaskId&&oldDate!==date){
+   let dryer=s.houseTasks.find(x=>x.id===t.linkedTaskId);
+   if(dryer&&dryer.status==='pending')dryer.date=date
+  }
+ }else{
+  if(rid==='dryer'){
+   let washer=[...s.houseTasks].reverse().find(x=>x.routineId==='washer'&&x.date===date&&x.status!=='cancelled');
+   if(!washer){alert('Per aggiungere un’asciugatrice serve prima una lavatrice nello stesso giorno.');return}
+   let t=makeHouseTask('dryer',date,false,by,title);t.note=note;t.dependsOnId=washer.id;t.linkedTaskId=washer.id;washer.linkedTaskId=t.id;s.houseTasks.push(t)
+  }else if(rid==='washer'){
+   let w=addWasherPair(date,false,by);w.title=title||houseRoutine('washer').name;w.note=note
+  }else{
+   let t=makeHouseTask(rid,date,false,by,title);t.note=note;s.houseTasks.push(t)
+  }
+ }
+ editingHouseTaskId=null;houseTaskRoutine.disabled=false;houseTaskForm.reset();houseTaskDialog.close();save();renderHouse()
+};
+
 function openHouseEdit(logId,routineId){
  editingHouseId=logId||null;let x=logId?s.houseLogs.find(v=>v.id===logId):null;let rid=x?.routineId||routineId;
- houseEditDialog.dataset.routine=rid;houseEditTitle.textContent=`${houseIcon(rid)} ${houseName(rid)}`;
+ houseEditDialog.dataset.routine=rid;houseEditTitle.textContent=`${houseIcon(rid)} ${x?.title||houseName(rid)}`;
  houseEditWho.value=x?.by||(cloudMemberName==='Kiki'?'kiki':'jj');let now=x?new Date(x.at):new Date();
  houseEditDate.value=dateKey(now);houseEditTime.value=now.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});houseEditNote.value=x?.note||'';
  houseEditDialog.showModal()
 }
 houseEditForm.onsubmit=e=>{e.preventDefault();let rid=houseEditDialog.dataset.routine,payload={routineId:rid,by:houseEditWho.value,at:isoFromLocal(houseEditDate.value,houseEditTime.value),note:houseEditNote.value.trim()};if(editingHouseId){let x=s.houseLogs.find(v=>v.id===editingHouseId);Object.assign(x,payload)}else s.houseLogs.push({id:crypto.randomUUID(),...payload});houseEditDialog.close();save();renderHouse()};
+
 
 shopForm.onsubmit=e=>{e.preventDefault();s.shopping.push({id:crypto.randomUUID(),text:shopText.value.trim(),qty:shopQty.value.trim(),category:shopCat.value,url:shopUrl.value.trim(),expectedPrice:Number(shopExpected.value||0),actualPrice:0,done:false});shopForm.reset();save();renderShop()};
 function renderShop(){
@@ -1318,15 +1573,54 @@ function monthKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStar
 function moneyDate(){return monthBase(moneyOffset)}
 function euro(v){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(v)||0)}
 function ensureRecurring(){let k=monthKey(moneyDate()),sources=s.expenses.filter(x=>x.recurring&&!x.sourceId),existing=new Set(s.expenses.filter(x=>x.month===k&&x.sourceId).map(x=>x.sourceId));sources.forEach(x=>{if(x.month!==k&&!existing.has(x.id))s.expenses.push({...x,id:crypto.randomUUID(),month:k,sourceId:x.id,date:k+'-01'})})}
-moneyForm.onsubmit=e=>{e.preventDefault();let d=moneyDate(),k=monthKey(d);s.expenses.push({id:crypto.randomUUID(),name:moneyName.value.trim(),amount:Number(moneyAmount.value),category:moneyCat.value,recurring:moneyRecurring.checked,month:k,date:moneyOffset===0?dateKey():k+'-01'});moneyName.value='';moneyAmount.value='';moneyRecurring.checked=false;save();renderMoney()};
+const MONEY_MACROS=[
+ {id:'Casa',icon:'🏠',color:'#6f9f72'},
+ {id:'Spesa',icon:'🛒',color:'#e1a34e'},
+ {id:'Bollette',icon:'💡',color:'#7e8fb2'},
+ {id:'Auto',icon:'🚗',color:'#a77d5e'},
+ {id:'Bambini',icon:'👧',color:'#e98e86'},
+ {id:'Salute',icon:'❤️',color:'#d86f6f'},
+ {id:'Svago',icon:'🍕',color:'#9a79b7'},
+ {id:'Personali',icon:'👤',color:'#62a2a5'},
+ {id:'Altro',icon:'📦',color:'#a7a7a7'}
+];
+function moneyMacroMeta(id){return MONEY_MACROS.find(x=>x.id===id)||MONEY_MACROS[MONEY_MACROS.length-1]}
+function macroForExpense(x){
+ if(x.person)return 'Personali';
+ let c=String(x.category||x.personalCategory||'').toLowerCase();
+ let n=String(x.name||'').toLowerCase();
+ let source=String(x.source||'');
+ if(source==='maintenance')return 'Casa';
+ if(source==='autoExpense'||source==='autoDeadline')return 'Auto';
+ if(source==='shopping'||source==='recipe'||source==='menu')return 'Spesa';
+ if(source==='subscription'){
+  if(c.includes('trasport'))return 'Auto';
+  if(c.includes('stream')||n.includes('netflix')||n.includes('disney')||n.includes('spotify'))return 'Svago';
+  return 'Bollette'
+ }
+ if(c.includes('casa')||c.includes('manut'))return 'Casa';
+ if(c.includes('spesa')||c.includes('aliment')||c.includes('supermerc'))return 'Spesa';
+ if(c.includes('bollett')||c.includes('uten')||c.includes('abbon'))return 'Bollette';
+ if(c.includes('auto')||c.includes('benz')||c.includes('parchegg')||c.includes('pedagg'))return 'Auto';
+ if(c.includes('bambin')||c.includes('pannolin')||c.includes('scuola'))return 'Bambini';
+ if(c.includes('salut')||c.includes('farmac')||c.includes('medic'))return 'Salute';
+ if(c.includes('svago')||c.includes('ristor')||c.includes('cinema')||c.includes('vacanz')||c.includes('stream'))return 'Svago';
+ if(c.includes('personal')||c.includes('lavoro'))return 'Personali';
+ if(c.includes('cane'))return 'Casa';
+ return MONEY_MACROS.some(m=>m.id===x.category)?x.category:'Altro'
+}
+moneyForm.onsubmit=e=>{
+ e.preventDefault();let d=moneyDate(),k=monthKey(d);
+ s.expenses.push({id:crypto.randomUUID(),name:moneyName.value.trim(),amount:Number(moneyAmount.value),category:moneyCat.value,recurring:moneyRecurring.checked,month:k,date:moneyOffset===0?dateKey():k+'-01'});
+ moneyName.value='';moneyAmount.value='';moneyRecurring.checked=false;save();renderMoney()
+};
 function renderMoney(){
  ensureRecurring();
- let d=moneyDate(),k=monthKey(d),a=s.expenses.filter(x=>x.month===k);
- let tot=a.reduce((q,x)=>q+Number(x.amount||0),0);
- let fixed=a.filter(x=>x.recurring).reduce((q,x)=>q+Number(x.amount||0),0);
- let jj=a.filter(x=>x.person==='jj').reduce((q,x)=>q+Number(x.amount||0),0);
- let kiki=a.filter(x=>x.person==='kiki').reduce((q,x)=>q+Number(x.amount||0),0);
- let personal=jj+kiki;
+ let d=moneyDate(),k=monthKey(d),all=s.expenses.filter(x=>x.month===k);
+ let tot=all.reduce((q,x)=>q+Number(x.amount||0),0);
+ let fixed=all.filter(x=>x.recurring).reduce((q,x)=>q+Number(x.amount||0),0);
+ let jj=all.filter(x=>x.person==='jj').reduce((q,x)=>q+Number(x.amount||0),0);
+ let kiki=all.filter(x=>x.person==='kiki').reduce((q,x)=>q+Number(x.amount||0),0);
 
  moneyMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(d);
  moneyNext.disabled=moneyOffset>=0;
@@ -1338,35 +1632,58 @@ function renderMoney(){
   ['Kiki personale',euro(kiki)]
  ].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
 
- moneyList.innerHTML=a.length?a.map(x=>{
+ let totals={};MONEY_MACROS.forEach(m=>totals[m.id]=0);
+ all.forEach(x=>totals[macroForExpense(x)]=(totals[macroForExpense(x)]||0)+Number(x.amount||0));
+ renderMoneyPie(totals,tot);
+
+ let a=moneyMacroFilter?all.filter(x=>macroForExpense(x)===moneyMacroFilter):all;
+ moneyListTitle.textContent=moneyMacroFilter?`Voci · ${moneyMacroFilter}`:'Voci del mese';
+ moneyFilterLabel.textContent=moneyMacroFilter?`Filtro attivo: ${moneyMacroMeta(moneyMacroFilter).icon} ${moneyMacroFilter}`:'Tocca una macro categoria per filtrare le voci.';
+
+ moneyList.innerHTML=a.length?a.sort((x,y)=>String(y.date||'').localeCompare(String(x.date||''))).map(x=>{
   let who=x.person?` · ${personName(x.person)}`:'';
   let cat=x.personalCategory||x.category||'Altro';
-  let icon=x.person?adultExpenseIcon(cat):'💶';
+  let macro=macroForExpense(x),meta=moneyMacroMeta(macro);
   return `<div class="row">
-   <span>${icon}</span>
-   <div class="grow"><b>${esc(x.name)}</b><div class="meta">${esc(cat)}${who}${x.recurring?' · mensile':''}</div></div>
+   <span>${meta.icon}</span>
+   <div class="grow"><b>${esc(x.name)}</b><div class="meta">${esc(cat)} · <strong>${macro}</strong>${who}${x.recurring?' · mensile':''}</div></div>
    <b>${euro(x.amount)}</b>
    <button class="del" data-exp="${x.id}">✕</button>
   </div>`
- }).join(''):'<div class="muted">Nessuna spesa.</div>';
+ }).join(''):'<div class="muted">Nessuna spesa in questa categoria.</div>';
 
  moneyList.querySelectorAll('[data-exp]').forEach(b=>b.onclick=()=>{
-  s.expenses=s.expenses.filter(x=>x.id!==b.dataset.exp);
-  save();
-  renderMoney()
+  s.expenses=s.expenses.filter(x=>x.id!==b.dataset.exp);save();renderMoney()
  });
 
- let cats={};
- a.forEach(x=>{
-  let c=x.person?`Personale ${personName(x.person)}`:(x.category||'Altro');
-  cats[c]=(cats[c]||0)+Number(x.amount||0)
- });
- moneyCategories.innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>
-  `<div class="moneyCategory"><span>${esc(c)}</span><b>${euro(v)}</b></div>`
- ).join('')||'<div class="muted">Nessun dato.</div>';
+ moneyCategories.innerHTML=MONEY_MACROS.filter(m=>totals[m.id]>0).sort((a,b)=>totals[b.id]-totals[a.id]).map(m=>{
+  let pct=tot?Math.round(totals[m.id]/tot*100):0;
+  return `<button class="moneyCategory smart ${moneyMacroFilter===m.id?'active':''}" data-money-macro="${m.id}"><span>${m.icon} ${m.id}<small>${pct}%</small></span><b>${euro(totals[m.id])}</b></button>`
+ }).join('')||'<div class="muted">Nessun dato.</div>';
+ moneyCategories.querySelectorAll('[data-money-macro]').forEach(b=>b.onclick=()=>{moneyMacroFilter=b.dataset.moneyMacro;renderMoney()})
 }
-moneyPrev.onclick=()=>{moneyOffset--;renderMoney()};moneyNext.onclick=()=>{if(moneyOffset<0){moneyOffset++;renderMoney()}};
-
+function renderMoneyPie(totals,total){
+ moneyPieTotal.textContent=euro(total);
+ let active=MONEY_MACROS.filter(m=>totals[m.id]>0);
+ if(!total||!active.length){
+  moneyPie.style.background='#eee5da';
+  moneyMacroLegend.innerHTML='<div class="muted">Registra una spesa per vedere il grafico.</div>';
+  return
+ }
+ let cursor=0,segments=[];
+ active.forEach(m=>{
+  let start=cursor,end=cursor+(totals[m.id]/total*100);segments.push(`${m.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`);cursor=end
+ });
+ moneyPie.style.background=`conic-gradient(${segments.join(',')})`;
+ moneyMacroLegend.innerHTML=active.sort((a,b)=>totals[b.id]-totals[a.id]).map(m=>{
+  let pct=Math.round(totals[m.id]/total*100);
+  return `<button class="macroLegendItem ${moneyMacroFilter===m.id?'active':''}" data-pie-macro="${m.id}"><i style="background:${m.color}"></i><span><b>${m.icon} ${m.id}</b><small>${euro(totals[m.id])} · ${pct}%</small></span></button>`
+ }).join('');
+ moneyMacroLegend.querySelectorAll('[data-pie-macro]').forEach(b=>b.onclick=()=>{moneyMacroFilter=b.dataset.pieMacro;renderMoney()})
+}
+moneyClearFilter.onclick=()=>{moneyMacroFilter=null;renderMoney()};
+moneyPrev.onclick=()=>{moneyOffset--;moneyMacroFilter=null;renderMoney()};
+moneyNext.onclick=()=>{if(moneyOffset<0){moneyOffset++;moneyMacroFilter=null;renderMoney()}};
 
 
 function renderSubscriptions(){
@@ -1411,9 +1728,9 @@ syncNowBtn.onclick=async()=>{
 };
 window.addEventListener('online',()=>{setCloudStatus('syncing','Online…');if(cloudSession)initializeCloud()});
 window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)pullCloudState(true)});
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'){if(await checkSessionExpiry(true))return;if(cloudReady)pullCloudState(true)}});
 
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
 function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-renderHome();fillHealthPeople();bootCloud();
+renderHome();fillHealthPeople();startSessionActivityTracking();bootCloud();
