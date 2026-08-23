@@ -83,8 +83,7 @@ function renderReminders(){let a=[];s.health.forEach(x=>a.push({date:x.date,titl
 function openQuick(){quickPerson='caty';renderQuick();quickDialog.showModal()}function renderQuick(){quickPeople.innerHTML=s.children.map(c=>`<button class="personCard ${c.type==='dog'?'pet':''}" data-qp="${c.id}"><i>${c.emoji}</i><b>${c.name}</b></button>`).join('');quickPeople.querySelectorAll('[data-qp]').forEach(b=>b.onclick=()=>{quickPerson=b.dataset.qp;renderQuick()});let c=s.children.find(x=>x.id===quickPerson);quickActions.innerHTML=actionKeys(c).map(k=>`<button data-qa="${k}">${icon(k,quickPerson)}<small>${META[k][1]}</small></button>`).join('');quickActions.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{quickDialog.close();handleAction(quickPerson,b.dataset.qa)})}quickRecord.onclick=openQuick;navQuick.onclick=openQuick;
 
 let upTimer=null;
-let authBooting=false;
-let appEntered=false;
+let manualLogout=false;
 
 function setSync(cls,t){
  syncStatus.className='syncStatus '+cls;
@@ -92,76 +91,66 @@ function setSync(cls,t){
 }
 
 function enterApp(){
- appEntered=true;
  loginScreen.classList.add('hidden');
- renderAll();
 }
 
 function showLogin(msg=''){
- appEntered=false;
  loginScreen.classList.remove('hidden');
- loginMessage.textContent=msg;
+ loginMessage.textContent=msg
 }
 
 async function boot(){
- if(authBooting)return;
- authBooting=true;
  try{
   const {data,error}=await sb.auth.getSession();
   if(error)throw error;
 
-  session=data.session||null;
+  session=data?.session||null;
 
   if(session){
    enterApp();
+   renderAll();
    setSync('','Connessione…');
-   await initCloud();
+   initCloud(); // volutamente non blocca l'ingresso
   }else{
-   showLogin();
+   showLogin()
   }
  }catch(err){
-  console.error('Boot auth error:',err);
-  showLogin('Errore durante il controllo della sessione. Ricarica la pagina.')
- }finally{
-  authBooting=false
+  console.error('BOOT:',err);
+  showLogin('Errore iniziale: '+(err?.message||'connessione Supabase'))
  }
 }
 
 loginForm.onsubmit=async e=>{
  e.preventDefault();
 
- if(authBooting)return;
- authBooting=true;
-
  loginMessage.textContent='';
  loginBtn.disabled=true;
  loginBtn.textContent='Accesso...';
 
  try{
-  const email=loginEmail.value.trim();
-  const password=loginPassword.value;
+  const {data,error}=await sb.auth.signInWithPassword({
+   email:loginEmail.value.trim(),
+   password:loginPassword.value
+  });
 
-  const {data,error}=await sb.auth.signInWithPassword({email,password});
   if(error)throw error;
-
-  if(!data?.session){
-   throw new Error('Supabase non ha restituito una sessione valida.')
-  }
+  if(!data?.session)throw new Error('Sessione non ricevuta da Supabase');
 
   session=data.session;
+  manualLogout=false;
 
-  // Punto fondamentale: da qui la login NON viene più mostrata.
+  // LOGIN RIUSCITO: da qui non si torna più alla schermata login.
   enterApp();
+  renderAll();
   setSync('','Connessione…');
 
-  // Il cloud non determina più se entrare o meno nell'app.
-  await initCloud();
+  // Inizializzazione cloud separata dal login.
+  initCloud();
 
  }catch(err){
-  console.error('Login error:',err);
-  showLogin('Accesso non riuscito: '+(err?.message||'controlla email e password'))
+  console.error('LOGIN:',err);
+  showLogin('Accesso non riuscito: '+(err?.message||'controlla le credenziali'))
  }finally{
-  authBooting=false;
   loginBtn.disabled=false;
   loginBtn.textContent='Accedi'
  }
@@ -173,62 +162,61 @@ async function initCloud(){
  try{
   const uid=session.user.id;
 
-  const {data:member,error:memberError}=await sb
+  const memberResult=await sb
    .from('family_members')
    .select('family_id,display_name')
    .eq('user_id',uid)
    .maybeSingle();
 
-  if(memberError)throw memberError;
+  if(memberResult.error)throw memberResult.error;
 
-  if(!member){
+  if(!memberResult.data){
    cloudReady=false;
    familyId=null;
    memberName=session.user.user_metadata?.display_name||'';
-   setSync('error','Non associato');
+   setSync('error','Account non associato');
    return
   }
 
-  familyId=member.family_id;
-  memberName=member.display_name||session.user.user_metadata?.display_name||'';
+  familyId=memberResult.data.family_id;
+  memberName=memberResult.data.display_name||session.user.user_metadata?.display_name||'';
 
-  const {data:row,error:stateError}=await sb
+  const stateResult=await sb
    .from('family_state')
    .select('data,updated_at')
    .eq('family_id',familyId)
    .maybeSingle();
 
-  if(stateError)throw stateError;
+  if(stateResult.error)throw stateResult.error;
+
+  const row=stateResult.data;
 
   if(row?.data && Object.keys(row.data).length){
    s=normalize(row.data);
-   localStorage.setItem(LS,JSON.stringify(s));
    lastUpdated=row.updated_at||null;
+   localStorage.setItem(LS,JSON.stringify(s));
+   renderAll()
   }else{
-   // Database vuoto: usa lo stato locale e prova a caricarlo.
-   await upload();
+   await upload()
   }
 
   cloudReady=true;
   setSync('online','Sincronizzato');
-  renderAll();
 
   if(poll)clearInterval(poll);
   poll=setInterval(pull,8000);
 
  }catch(err){
-  console.error('Cloud init error:',err);
-
-  // IMPORTANTE: mai tornare alla schermata login qui.
+  // MAI showLogin qui.
+  console.error('CLOUD INIT:',err);
   cloudReady=false;
-  setSync('error','Cloud non disponibile');
-  renderAll()
+  setSync('error','Solo locale');
  }
 }
 
 function uploadSoon(){
  clearTimeout(upTimer);
- if(!cloudReady||!familyId)return;
+ if(!cloudReady||!familyId||!session)return;
  setSync('','Salvataggio…');
  upTimer=setTimeout(upload,400)
 }
@@ -251,9 +239,8 @@ async function upload(){
   lastUpdated=data?.updated_at||now;
   cloudReady=true;
   setSync('online','Sincronizzato')
-
  }catch(err){
-  console.error('Upload error:',err);
+  console.error('UPLOAD:',err);
   cloudReady=false;
   setSync('error','Da sincronizzare')
  }
@@ -280,16 +267,15 @@ async function pull(){
 
   cloudReady=true;
   setSync('online','Sincronizzato')
-
  }catch(err){
-  console.error('Pull error:',err);
+  console.error('PULL:',err);
   cloudReady=false;
   setSync('error','Offline')
  }
 }
 
 accountBtn.onclick=()=>{
- accountInfo.innerHTML=`<div class="row"><span>👤</span><div><b>${esc(memberName||session?.user?.user_metadata?.display_name||'Fagiolini')}</b><div class="meta">${esc(session?.user?.email||'')}</div><div class="meta">${cloudReady?'Cloud sincronizzato':'Modalità locale/cache'}</div></div></div>`;
+ accountInfo.innerHTML=`<div class="row"><span>👤</span><div><b>${esc(memberName||session?.user?.user_metadata?.display_name||'Fagiolini')}</b><div class="meta">${esc(session?.user?.email||'')}</div><div class="meta">${cloudReady?'☁️ Sincronizzato':'📱 Dati locali'}</div></div></div>`;
  accountDialog.showModal()
 };
 
@@ -297,9 +283,8 @@ syncNow.onclick=async()=>{
  syncNow.disabled=true;
  syncNow.textContent='Sincronizzo...';
 
- if(!familyId){
-  await initCloud()
- }else{
+ if(!familyId)await initCloud();
+ else{
   await pull();
   await upload()
  }
@@ -309,14 +294,15 @@ syncNow.onclick=async()=>{
 };
 
 logoutBtn.onclick=async()=>{
+ manualLogout=true;
+
  if(poll)clearInterval(poll);
  poll=null;
  cloudReady=false;
  familyId=null;
  memberName='';
- appEntered=false;
 
- await sb.auth.signOut();
+ try{await sb.auth.signOut()}catch{}
 
  session=null;
  accountDialog.close();
@@ -325,21 +311,13 @@ logoutBtn.onclick=async()=>{
  setSync('','Locale')
 };
 
-// Auth listener: gestisce SOLO logout.
-// Non riapre mai la login durante SIGNED_IN / TOKEN_REFRESHED.
+// Supabase può emettere eventi auth durante refresh/network.
+// NON devono mai riaprire la login.
+// La login viene mostrata solo da boot() senza sessione o dal logout manuale.
 sb.auth.onAuthStateChange((event,newSession)=>{
- session=newSession||session;
-
- if(event==='SIGNED_OUT'){
-  if(poll)clearInterval(poll);
-  poll=null;
-  cloudReady=false;
-  familyId=null;
-  memberName='';
-  session=null;
-  showLogin();
- }else if(newSession && appEntered){
-  session=newSession
+ if(newSession){
+  session=newSession;
+  if(!manualLogout)enterApp()
  }
 });
 

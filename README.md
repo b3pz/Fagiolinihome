@@ -44,3 +44,8 @@ Non inserire il token del bot nel repository GitHub.
 - errori su family_members / family_state / RLS non rimandano più alla login
 - `onAuthStateChange` riapre la login esclusivamente su SIGNED_OUT
 - Supabase può fallire senza bloccare l'interfaccia
+
+## LOGIN HARD FIX
+La UI di login non dipende più dagli eventi Auth di Supabase.
+Dopo una sessione valida l'app resta aperta anche in caso di refresh token,
+errore RLS, errore family_state o perdita temporanea di rete.
