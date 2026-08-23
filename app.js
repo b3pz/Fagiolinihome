@@ -61,8 +61,11 @@ const DEFAULT={
   {id:crypto.randomUUID(),text:'Riordinare cucina',owner:'Famiglia',frequency:'giornaliera',done:[]},
   {id:crypto.randomUUID(),text:'Pulire bagno',owner:'Famiglia',frequency:'settimanale',done:[]}
  ],
- shopping:[],menu:{},expenses:[],health:[],manualReminders:[],dismissedReminders:[],
+ shopping:[],menu:{},expenses:[],incomes:[],health:[],manualReminders:[],dismissedReminders:[],
  houseTasks:[],
+ savingsGoal:500,
+ savingsGoals:{},
+ wasteSchedule:{},
  housePlanRules:{sweep:'daily',mop:'alternate',washer:'threeWeek',sheets:'weekly',towels:'every3'},
  menuBackup:null,
  recipeFeedback:{},
@@ -81,7 +84,7 @@ const META={
  pappa:['🍼','Pappa'],pannolino:['🚼','Pannolino'],cacca:['💩','Cacca'],nanna:['😴','Nanna'],bagnetto:['🛁','Bagnetto'],
  traversina:['🐾','Traversina'],pipi:['💧','Pipì'],farmaco:['💊','Farmaco'],toeletta:['🛁','Toeletta']
 };
-let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null,editingHouseTaskId=null,moneyMacroFilter=null;
+let s=load(),current='caty',currentAdult='jj',dayOffset=0,personInsightDays=7,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null,editingHouseTaskId=null,moneyMacroFilter=null;
 
 function load(){
  let out=structuredClone(DEFAULT);
@@ -97,6 +100,10 @@ function load(){
  out.events=(out.events||[]).map(e=>e.childId==='domenico'?{...e,childId:'kiko'}:e);
  out.health=Array.isArray(out.health)?out.health:[];
  out.expenses=Array.isArray(out.expenses)?out.expenses:[];
+ out.incomes=Array.isArray(out.incomes)?out.incomes:[];
+ out.savingsGoal=Number(out.savingsGoal||500);
+ out.savingsGoals=out.savingsGoals&&typeof out.savingsGoals==='object'?out.savingsGoals:{};
+ out.wasteSchedule=out.wasteSchedule&&typeof out.wasteSchedule==='object'?out.wasteSchedule:{};
  out.profiles={...DEFAULT.profiles,...(out.profiles||{})};
  out.house=Array.isArray(out.house)?out.house:[];
  out.shopping=Array.isArray(out.shopping)?out.shopping:[];
@@ -484,6 +491,10 @@ function normalizeRemoteState(data){
  out.house=Array.isArray(out.house)?out.house:[];
  out.shopping=Array.isArray(out.shopping)?out.shopping:[];
  out.expenses=Array.isArray(out.expenses)?out.expenses:[];
+ out.incomes=Array.isArray(out.incomes)?out.incomes:[];
+ out.savingsGoal=Number(out.savingsGoal||500);
+ out.savingsGoals=out.savingsGoals&&typeof out.savingsGoals==='object'?out.savingsGoals:{};
+ out.wasteSchedule=out.wasteSchedule&&typeof out.wasteSchedule==='object'?out.wasteSchedule:{};
  out.health=Array.isArray(out.health)?out.health:[];
  out.menu=out.menu||{};
  out.profiles={...DEFAULT.profiles,...(out.profiles||{})};
@@ -720,73 +731,103 @@ async function bootCloud(){
 function go(id){
  document.body.dataset.page=id;
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
- document.getElementById(id).classList.add('on');
+ const target=document.getElementById(id);if(!target)return;
+ target.classList.add('on');
  document.querySelectorAll('nav [data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
- const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi',maintenance:'Manutenzioni casa',auto:'Auto',reminders:'Promemoria'};
+ const titles={home:'La nostra giornata',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Risparmi',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',organize:'Organizza'};
  pageTitle.textContent=titles[id]||'Fagiolini';
- if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
+ if(id==='home')renderHome();if(id==='today')renderToday();if(id==='organize')renderOrganize();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
  scrollTo(0,0)
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
+if(insight7)insight7.onclick=()=>{personInsightDays=7;renderPersonInsights()};
+if(insight30)insight30.onclick=()=>{personInsightDays=30;renderPersonInsights()};
+if(todayQuickAdd)todayQuickAdd.onclick=()=>{reminderDate.value=dateKey();reminderDialog.showModal();reminderTitle.focus()};
+if(organizeAccountBtn)organizeAccountBtn.onclick=()=>accountDialog.showModal();
 
 function renderHome(){
+ const now=new Date(),hour=now.getHours();
  todayLabel.textContent=longDate();
+ homeDateText.textContent=longDate();
+ homeGreeting.textContent=(hour<12?'Buongiorno':hour<18?'Buon pomeriggio':'Buonasera')+' 🌿';
 
  const avatars={caty:'caty-avatar.jpg',kiko:'kiko-avatar.jpg',astro:'astro-avatar.jpg',jj:'jj-avatar.jpg',kiki:'kiki-avatar.jpg'};
- const childCards=s.children.map(c=>`
-  <button class="familyMemberCard ${c.type==='dog'?'pet':''}" data-person="${c.id}">
-   <img src="${avatars[c.id]||''}" alt="${esc(c.name)}">
-   <b>${esc(c.name)}</b>
-   <span>${c.id==='caty'?'♥':'♥'}</span>
-  </button>`).join('');
-
- const adultCards=`
-  <button class="familyMemberCard" data-adult="jj"><img src="${avatars.jj}" alt="JJ"><b>JJ</b><span>♥</span></button>
-  <button class="familyMemberCard" data-adult="kiki"><img src="${avatars.kiki}" alt="Kiki"><b>Kiki</b><span class="orangeHeart">♥</span></button>`;
-
+ const childCards=s.children.map(c=>`<button class="familyMemberCard ${c.type==='dog'?'pet':''}" data-person="${c.id}"><img src="${avatars[c.id]||''}" alt="${esc(c.name)}"><b>${esc(c.name)}</b></button>`).join('');
+ const adultCards=`<button class="familyMemberCard" data-adult="jj"><img src="${avatars.jj}" alt="JJ"><b>JJ</b></button><button class="familyMemberCard" data-adult="kiki"><img src="${avatars.kiki}" alt="Kiki"><b>Kiki</b></button>`;
  peopleCards.innerHTML=childCards+adultCards;
- peopleCards.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>openPerson(b.dataset.person));
- peopleCards.querySelectorAll('[data-adult]').forEach(b=>b.onclick=()=>{currentAdult=b.dataset.adult;go('adult')});
+ peopleCards.querySelectorAll('[data-person]').forEach(b=>b.onclick=e=>{e.stopPropagation();openPerson(b.dataset.person)});
+ peopleCards.querySelectorAll('[data-adult]').forEach(b=>b.onclick=e=>{e.stopPropagation();currentAdult=b.dataset.adult;go('adult')});
 
- const healthToday=s.health.filter(h=>h.date===dateKey());
- const dueHouse=s.houseTasks.filter(t=>t.date===dateKey()&&t.status==='pending'&&t.status!=='cancelled');
+ const today=dateKey(),items=dayData(today),pendingHouse=s.houseTasks.filter(t=>t.date===today&&t.status==='pending'&&t.status!=='cancelled');
+ const urgentRem=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x)));
+ const healthToday=s.health.filter(h=>h.date===today);
+ const totalToday=new Set(items.filter(x=>x.source!=='menu').map((x,i)=>x.source+'-'+(x.id||i))).size;
+ homeTodayBrief.innerHTML=totalToday?`<b>${totalToday} ${totalToday===1?'cosa':'cose'} da seguire oggi</b>`:'<b>Giornata tranquilla ✨</b>';
+ homeTodayList.innerHTML=items.filter(x=>x.source!=='menu').slice(0,3).map(x=>`<span><i>${x.icon}</i>${esc(String(x.text).replace(/ · JJ \+ Kiki| · ⏳ Da fare/g,''))}</span>`).join('')||'<span><i>✓</i>Niente di urgente.</span>';
 
- const reminderCount=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x))).length;
- const todayCommitments=reminderCount+healthToday.length;
- todayOverview.innerHTML=`
-  <b class="summaryBig">${todayCommitments}</b>
-  <span>${todayCommitments===1?'impegno':'impegni'}</span>
-  <em>${reminderCount} ${reminderCount===1?'promemoria':'promemoria'}</em>`;
+ const doneHouse=s.houseTasks.filter(t=>t.date===today&&t.status==='done').length,totalHouse=s.houseTasks.filter(t=>t.date===today&&t.status!=='cancelled').length;
+ homeHouseBrief.innerHTML=totalHouse?`<b>${doneHouse} / ${totalHouse} fatte</b>`:'<b>Niente programmato</b>';
+ homeHouseText.textContent=pendingHouse.length?`Mancano ${pendingHouse.slice(0,2).map(houseTaskTitle).join(' e ')}${pendingHouse.length>2?'…':''}.`:'Tutto fatto per oggi ✓';
 
- let md=s.menu[dateKey()]||{};
- let firstMeal=md.lunch||md.dinner||'Da impostare';
- let secondMeal=md.caty?.snackPM||md.breakfast||'';
- menuToday.innerHTML=`
-  <b>${esc(firstMeal)}</b>
-  <em>${secondMeal?esc(secondMeal):'Apri il menu'}</em>`;
+ const md=s.menu[today]||{};
+ homeMealsBrief.innerHTML=`<div><small>PRANZO</small><b>${esc(md.lunch||'Da scegliere')}</b></div><div><small>CENA</small><b>${esc(md.dinner||'Da scegliere')}</b></div>`;
 
- houseToday.innerHTML=`
-  <b class="summaryBig">${dueHouse.length}</b>
-  <span>${dueHouse.length===1?'attività':'attività'}</span>
-  <em>da completare</em>`;
+ const familyBits=[];
+ const catyPoop=count('caty','cacca'),kikoMeals=count('kiko','pappa'),astroPoop=count('astro','cacca');
+ familyBits.push(`Caty · 💩 ${catyPoop}`);familyBits.push(`Kiko · 🍼 ${kikoMeals}`);familyBits.push(`Astro · 💩 ${astroPoop}`);
+ homeFamilyBrief.innerHTML=familyBits.map(x=>`<span>${x}</span>`).join('');
 
- let mk=monthKey(new Date()),ex=s.expenses.filter(x=>x.month===mk),tot=ex.reduce((a,x)=>a+Number(x.amount||0),0);
- moneyToday.innerHTML=`
-  <b class="summaryMoney">${euro(tot)}</b>
-  <span>${ex.length} ${ex.length===1?'voce':'voci'}</span>
-  <em>registrate</em>`;
+ const mk=monthKey(now),expenses=s.expenses.filter(x=>x.month===mk).reduce((a,x)=>a+Number(x.amount||0),0),income=s.incomes.filter(x=>x.month===mk).reduce((a,x)=>a+Number(x.amount||0),0),saved=income-expenses,goal=Number(s.savingsGoals?.[mk]??s.savingsGoal??0);
+ if(income>0){homeSavingsBrief.innerHTML=`<b>${euro(saved)} risparmiati</b>`;let pct=goal>0?Math.max(0,Math.min(100,saved/goal*100)):0;homeSavingsProgress.style.width=pct+'%';homeSavingsText.textContent=goal>0?(saved>=goal?`Obiettivo di ${euro(goal)} raggiunto ✓`:`Mancano ${euro(Math.max(0,goal-saved))} all’obiettivo.`):'Imposta un obiettivo mensile.'}
+ else{homeSavingsBrief.innerHTML=`<b>${euro(expenses)} spesi</b>`;homeSavingsProgress.style.width='0%';homeSavingsText.textContent='Aggiungi le entrate per vedere il risparmio reale.'}
 
- const bell=document.querySelector('.reminderBell .bellDot');
- if(bell)bell.classList.toggle('show',reminderCount>0);
+ const bell=document.querySelector('.reminderBell .bellDot');if(bell)bell.classList.toggle('show',urgentRem.length>0);
+}
+
+function cleanAgendaText(x){return String(x||'').replace(/ · JJ \+ Kiki/g,'').replace(/ · ⏳ Da fare/g,'').replace(/ · ✅ Completata/g,' · Fatto')}
+function renderToday(){
+ const k=dateKey(),items=dayData(k),pending=s.houseTasks.filter(x=>x.date===k&&x.status==='pending'),done=s.houseTasks.filter(x=>x.date===k&&x.status==='done').length;
+ todayPageDate.textContent=longDate();
+ const appointments=s.health.filter(x=>x.date===k).length;
+ todayHero.innerHTML=`<div class="todayHeroNumbers"><div><b>${pending.length}</b><span>da fare</span></div><div><b>${appointments}</b><span>${appointments===1?'appuntamento':'appuntamenti'}</span></div><div><b>${done}</b><span>fatte</span></div></div><p>${items.length?'Qui trovi tutto quello che riguarda oggi, senza cercarlo nelle altre sezioni.':'Giornata tranquilla: non c’è niente di urgente.'}</p>`;
+ const order={health:1,manual:2,houseTask:3,maintenance:4,auto:5,subscription:6,event:7,menu:8,house:9};
+ const sorted=[...items].sort((a,b)=>(order[a.source]||99)-(order[b.source]||99));
+ todayAgenda.innerHTML=sorted.length?sorted.map(x=>`<div class="agendaItem"><span>${x.icon}</span><div class="grow"><b>${esc(cleanAgendaText(x.text))}</b><small>${({health:'Salute',manual:'Promemoria',houseTask:'Casa',maintenance:'Casa & lavori',auto:'Auto',subscription:'Scadenza',event:'Famiglia',menu:'Pasti',house:'Casa'})[x.source]||'Oggi'}</small></div>${['health','maintenance','auto','manual','houseTask','menu'].includes(x.source)?`<button data-today-open="${x.source}" data-today-id="${x.id||''}">Apri</button>`:''}</div>`).join(''):'<div class="friendlyEmpty"><b>Tutto tranquillo ✨</b><span>Non c’è niente da fare o ricordare oggi.</span></div>';
+ todayAgenda.querySelectorAll('[data-today-open]').forEach(b=>b.onclick=()=>openSourceItem(b.dataset.todayOpen,b.dataset.todayId));
+}
+function renderOrganize(){
+ const pendingShop=s.shopping.filter(x=>!x.done).length,month=monthKey(new Date()),monthSpend=s.expenses.filter(x=>x.month===month).reduce((a,x)=>a+Number(x.amount||0),0);
+ organizeShopText.textContent=pendingShop?`${pendingShop} ${pendingShop===1?'cosa':'cose'} da comprare`:'Lista vuota';
+ organizeMoneyText.textContent=`${euro(monthSpend)} spesi questo mese`;
+ const nextHealth=[...s.health].filter(x=>x.date>=dateKey()).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')))[0];
+ organizeHealthText.textContent=nextHealth?`${nextHealth.title} · ${birthLabel(nextHealth.date)}`:'Nessuna visita vicina';
+ const nextAuto=[...s.autoDeadlines].filter(x=>x.status!=='done'&&x.date>=dateKey()).sort((a,b)=>a.date.localeCompare(b.date))[0];
+ organizeAutoText.textContent=nextAuto?`${nextAuto.title} · ${birthLabel(nextAuto.date)}`:'Nessuna scadenza vicina';
+ const nextMaint=[...s.maintenance].filter(x=>x.status!=='done'&&x.date>=dateKey()).sort((a,b)=>a.date.localeCompare(b.date))[0];
+ organizeMaintenanceText.textContent=nextMaint?`${nextMaint.title} · ${birthLabel(nextMaint.date)}`:'Nessun lavoro urgente';
+ const rem=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue','upcoming'].includes(reminderState(x))).length;
+ organizeReminderText.textContent=rem?`${rem} ${rem===1?'promemoria':'promemoria'} da vedere`:'Niente da ricordare';
 }
 function openPerson(id){current=id;dayOffset=0;go('person');renderPerson()}
 function personActionKeys(c){return c.type==='dog'?['pappa','traversina','cacca','pipi','farmaco','toeletta']:['pappa','pannolino','cacca','nanna','bagnetto']}
 function actionIcon(type,person){if(type==='pappa'&&person==='astro')return '🍽️';return META[type]?.[0]||'•'}
+function countRange(person,type,days){let vals=[];for(let i=days-1;i>=0;i--){let d=offsetDate(-i),n=count(person,type,d);vals.push({date:d,count:n})}return vals}
+function renderPersonInsights(){
+ const c=s.children.find(x=>x.id===current);if(!c)return;
+ const vals=countRange(current,'cacca',personInsightDays),total=vals.reduce((a,x)=>a+x.count,0),prevVals=[];
+ for(let i=personInsightDays*2-1;i>=personInsightDays;i--){let d=offsetDate(-i),n=count(current,'cacca',d);prevVals.push(n)}
+ const prev=prevVals.reduce((a,x)=>a+x,0),diff=total-prev;
+ personInsightText.innerHTML=`<b>💩 ${total} ${total===1?'cacca':'cacche'} negli ultimi ${personInsightDays} giorni</b><span>${diff===0?'Come nel periodo precedente.':diff>0?`${diff} in più del periodo precedente.`:`${Math.abs(diff)} in meno del periodo precedente.`}</span>`;
+ const max=Math.max(1,...vals.map(x=>x.count));
+ poopChart.innerHTML=vals.map((x,i)=>{let label=personInsightDays===7?new Intl.DateTimeFormat('it-IT',{weekday:'short'}).format(x.date).slice(0,2):((i%5===0||i===vals.length-1)?String(x.date.getDate()):'');return `<div class="barCol" title="${x.count}"><div class="barValue">${x.count||''}</div><i style="height:${Math.max(x.count?12:3,x.count/max*100)}%"></i><small>${label}</small></div>`}).join('');
+ if(insight7)insight7.classList.toggle('active',personInsightDays===7);if(insight30)insight30.classList.toggle('active',personInsightDays===30);
+}
 function renderPerson(){
  let c=s.children.find(x=>x.id===current);personTitle.textContent=`${c.emoji} ${c.name}`;
- if(c.type==='dog')personStats.innerHTML=[['🦮 Passeggiate',count(current,'passeggiata')],['🍽️ Pappe',count(current,'pappa')],['💩 Cacche',count(current,'cacca')],['💧 Pipì',count(current,'pipi')]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ if(c.type==='dog')personStats.innerHTML=[['🐾 Traversine',count(current,'traversina')],['🍽️ Pappe',count(current,'pappa')],['💩 Cacche',count(current,'cacca')],['💧 Pipì',count(current,'pipi')]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
  else personStats.innerHTML=[['💩 Cacche',count(current,'cacca')],['🚼 Pannolini',count(current,'pannolino')],['🍼 Pappe',count(current,'pappa')],['😴 Sonno',duration(sleepMinutes(current))]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ renderPersonInsights();
  personActions.innerHTML=personActionKeys(c).map(k=>`<button data-action="${k}">${actionIcon(k,current)}<small>${META[k][1]}</small></button>`).join('');
  personActions.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>handleAction(current,b.dataset.action));
  let d=offsetDate(dayOffset);dayLabel.textContent=dayOffset===0?'Oggi':longDate(d);dayNext.disabled=dayOffset>=0;
@@ -893,7 +934,7 @@ function renderQuick(){
  quickActions.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{quickDialog.close();handleAction(quickPerson,b.dataset.qa)})
 }
 function openQuick(){quickPerson='caty';renderQuick();quickDialog.showModal()}
-navQuick.onclick=openQuick;quickRecord.onclick=openQuick;
+const navQuickBtn=document.getElementById('navQuick'),quickRecordBtn=document.getElementById('quickRecord');if(navQuickBtn)navQuickBtn.onclick=openQuick;if(quickRecordBtn)quickRecordBtn.onclick=openQuick;
 
 function csv(v){return String(v||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean)}
 function profileAllowed(item,p){
@@ -1053,6 +1094,7 @@ function mealRow(k,person,meal,icon,label,value){
  </div>`
 }
 function renderMenu(){
+ let coreMeals=[];for(let i=0;i<7;i++){let m=s.menu[dateKey(offsetDate(i))]||{};coreMeals.push(m.breakfast||'',m.lunch||'',m.dinner||'')}let filled=coreMeals.filter(x=>String(x).trim()).length,missing=21-filled,unique=new Set(coreMeals.filter(x=>String(x).trim()).map(x=>String(x).trim().toLowerCase())).size;if(document.getElementById('menuWeekSummary'))menuWeekSummary.innerHTML=`<div class="summaryNumbers"><div><b>${filled}</b><span>pasti organizzati</span></div><div><b>${missing}</b><span>ancora da scegliere</span></div></div><p>${missing===0?`Settimana completa ✓ Avete ${unique} piatti diversi nel menu.`:`Mancano ${missing} pasti della famiglia. Finora ci sono ${unique} piatti diversi.`}</p>`;
  menuWeek.innerHTML='';
  for(let i=0;i<7;i++){
   let d=offsetDate(i),k=dateKey(d),m=s.menu[k]||{},caty=m.caty||{},kiko=m.kiko||{};
@@ -1226,6 +1268,11 @@ visitForm.onsubmit=e=>{
 };
 medicineForm.onsubmit=e=>{e.preventDefault();let payload={kind:'medicine',person:medPerson.value,name:medName.value.trim(),title:medName.value.trim(),dose:medDose.value.trim(),date:medDate.value,time:medTime.value,note:medNote.value.trim(),reminderDays:Number(medReminder.value),notify:medNotify.value};if(medicineForm.dataset.edit){let x=s.health.find(v=>v.id===medicineForm.dataset.edit);Object.assign(x,payload);delete medicineForm.dataset.edit}else s.health.push({id:crypto.randomUUID(),...payload});medicineForm.reset();save();renderHealth()};
 function renderHealth(){
+ let upcomingHealth=[...s.health].filter(h=>h.date>=dateKey()).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+ let nextHealth=upcomingHealth[0];
+ let visits30=upcomingHealth.filter(h=>h.kind==='visit'&&dateObj(h.date)-dateObj(dateKey())<=30*86400000).length;
+ let meds=upcomingHealth.filter(h=>h.kind==='medicine').length;
+ if(document.getElementById('healthSummary'))healthSummary.innerHTML=`<div class="summaryNumbers"><div><b>${visits30}</b><span>visite nei prossimi 30 giorni</span></div><div><b>${meds}</b><span>medicine da ricordare</span></div></div><p>${nextHealth?`La prossima cosa è <strong>${esc(nextHealth.title)}</strong> per ${personName(nextHealth.person)} il ${birthLabel(nextHealth.date)}${nextHealth.time?' alle '+esc(nextHealth.time):''}.`:'Nessuna scadenza sanitaria in arrivo.'}</p>`;
  let upcoming=[...s.health]
   .filter(h=>h.date>=dateKey())
   .sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
@@ -1432,16 +1479,17 @@ function bindHouseTaskActions(root){
  root.querySelectorAll('[data-task-del]').forEach(b=>b.onclick=()=>deleteHouseTask(b.dataset.taskDel));
 }
 function renderHouse(){
+ let weekKeys=houseWeekDates(),weekTasks=s.houseTasks.filter(t=>weekKeys.includes(t.date)&&t.status!=='cancelled'),weekDone=weekTasks.filter(t=>t.status==='done').length,weekPending=weekTasks.filter(t=>t.status==='pending').length,weekPct=weekTasks.length?Math.round(weekDone/weekTasks.length*100):0;if(document.getElementById('houseWeekSummary'))houseWeekSummary.innerHTML=`<div class="summaryNumbers"><div><b>${weekDone}</b><span>fatte nei prossimi 7 giorni</span></div><div><b>${weekPending}</b><span>ancora da fare</span></div></div><p>${weekTasks.length?`${weekPct}% del piano è già completato. ${weekPending?`Le prossime da fare sono ${weekTasks.filter(t=>t.status==='pending').slice(0,2).map(houseTaskTitle).join(' e ')}.`:'Tutto fatto ✓'}`:'Non hai ancora organizzato la settimana.'}</p>`;
  let today=dateKey(),todayTasks=s.houseTasks.filter(t=>t.date===today&&t.status!=='cancelled').sort(houseTaskSort);
  let pending=todayTasks.filter(t=>t.status==='pending');
  housePendingCount.textContent=pending.length;
- houseTodayTasks.innerHTML=todayTasks.length?todayTasks.map(t=>renderHouseTaskRow(t)).join(''):'<div class="emptyPlan"><b>Nessuna task per oggi.</b><span>Genera la settimana oppure aggiungine una a mano.</span></div>';
+ houseTodayTasks.innerHTML=todayTasks.length?todayTasks.map(t=>renderHouseTaskRow(t)).join(''):'<div class="emptyPlan"><b>Tutto tranquillo per oggi ✨</b><span>Organizza la settimana oppure aggiungi una faccenda.</span></div>';
  bindHouseTaskActions(houseTodayTasks);
 
  houseWeekPlan.innerHTML=houseWeekDates().map(k=>{
   let tasks=s.houseTasks.filter(t=>t.date===k&&t.status!=='cancelled').sort(houseTaskSort);
   return `<div class="houseDayPlan ${k===today?'today':''}">
-   <div class="houseDayHead"><b>${k===today?'Oggi':longDate(dateObj(k))}</b><span>${tasks.filter(t=>t.status==='pending').length} pending</span></div>
+   <div class="houseDayHead"><b>${k===today?'Oggi':longDate(dateObj(k))}</b><span>${tasks.filter(t=>t.status==='pending').length} da fare</span></div>
    ${tasks.length?tasks.map(t=>renderHouseTaskRow(t,true)).join(''):'<div class="muted houseDayEmpty">Niente programmato</div>'}
   </div>`
  }).join('');
@@ -1559,8 +1607,96 @@ function openHouseEdit(logId,routineId){
 houseEditForm.onsubmit=e=>{e.preventDefault();let rid=houseEditDialog.dataset.routine,payload={routineId:rid,by:houseEditWho.value,at:isoFromLocal(houseEditDate.value,houseEditTime.value),note:houseEditNote.value.trim()};if(editingHouseId){let x=s.houseLogs.find(v=>v.id===editingHouseId);Object.assign(x,payload)}else s.houseLogs.push({id:crypto.randomUUID(),...payload});houseEditDialog.close();save();renderHouse()};
 
 
+/* V8.5 — manutenzioni e auto: moduli completi */
+function openMaintenance(id=''){
+ editingMaintenanceId=id||null;
+ let x=id?s.maintenance.find(v=>v.id===id):null;
+ maintenanceForm.reset();
+ maintType.value=x?.type||'Manutenzione generica';
+ maintTitle.value=x?.title||'';
+ maintDate.value=x?.date||dateKey();
+ maintTime.value=x?.time||'';
+ maintExpected.value=x?.expected||'';
+ maintActual.value=x?.actual||'';
+ maintFrequency.value=x?.frequency||'once';
+ maintStatus.value=x?.status||'planned';
+ maintReminder.value=String(x?.reminderDays??7);
+ maintNotify.value=x?.notify||'both';
+ maintNote.value=x?.note||'';
+ maintenanceDialog.showModal();
+ if(!x)maintTitle.focus()
+}
+function renderMaintenance(){
+ let list=[...s.maintenance].sort((a,b)=>(a.status==='done')-(b.status==='done')||String(a.date).localeCompare(String(b.date)));
+ let pending=list.filter(x=>x.status!=='done'),next=pending.find(x=>x.date>=dateKey());
+ let year=new Date().getFullYear();
+ let spent=s.expenses.filter(x=>x.source==='maintenance'&&String(x.date||'').startsWith(String(year))).reduce((a,x)=>a+Number(x.amount||0),0);
+ if(document.getElementById('maintenanceSummary'))maintenanceSummary.innerHTML=`<div class="summaryNumbers"><div><b>${pending.length}</b><span>lavori aperti</span></div><div><b>${euro(spent)}</b><span>spesi quest’anno</span></div></div><p>${next?`La prossima manutenzione è <strong>${esc(next.title)}</strong> il ${birthLabel(next.date)}.`:'Nessun lavoro urgente in programma.'}</p>`;
+ maintenanceList.innerHTML=list.length?list.map(x=>`<div class="row ${x.status==='done'?'done':''} ${x.date<dateKey()&&x.status!=='done'?'overdue':''}"><span>${maintenanceIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${birthLabel(x.date)}${x.time?' · '+esc(x.time):''} · ${x.status==='done'?'Fatta':'Da fare'}${x.actual?` · ${euro(x.actual)}`:x.expected?` · previsto ${euro(x.expected)}`:''}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div>${x.status!=='done'?`<button class="primary smallBtn" data-maint-done="${x.id}">✓ Fatto</button>`:''}<button class="editBtn" data-maint-edit="${x.id}">✎</button><button class="del" data-maint-del="${x.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessuna manutenzione registrata</b><span>Per ora è tutto in ordine.</span></div>';
+ maintenanceList.querySelectorAll('[data-maint-edit]').forEach(b=>b.onclick=()=>openMaintenance(b.dataset.maintEdit));
+ maintenanceList.querySelectorAll('[data-maint-del]').forEach(b=>b.onclick=()=>{s.maintenance=s.maintenance.filter(x=>x.id!==b.dataset.maintDel);save();renderMaintenance()});
+ maintenanceList.querySelectorAll('[data-maint-done]').forEach(b=>b.onclick=()=>{let x=s.maintenance.find(v=>v.id===b.dataset.maintDone);if(!x)return;x.status='done';if(Number(x.actual||x.expected||0)>0){x.actual=Number(x.actual||x.expected||0);ensureExpenseOnce('maintenance',x.id,x.title,x.actual,'Casa',x.date)}save();renderMaintenance()})
+}
+addMaintenanceBtn.onclick=()=>openMaintenance();
+maintenanceForm.onsubmit=e=>{
+ e.preventDefault();
+ let payload={type:maintType.value,title:maintTitle.value.trim(),date:maintDate.value,time:maintTime.value,expected:Number(maintExpected.value||0),actual:Number(maintActual.value||0),frequency:maintFrequency.value,status:maintStatus.value,reminderDays:Number(maintReminder.value||0),notify:maintNotify.value,note:maintNote.value.trim()};
+ let x=editingMaintenanceId?s.maintenance.find(v=>v.id===editingMaintenanceId):null;
+ if(x)Object.assign(x,payload);else{x={id:crypto.randomUUID(),...payload};s.maintenance.push(x)}
+ if(x.status==='done'&&Number(x.actual||x.expected||0)>0){x.actual=Number(x.actual||x.expected||0);ensureExpenseOnce('maintenance',x.id,x.title,x.actual,'Casa',x.date)}
+ editingMaintenanceId=null;maintenanceDialog.close();save();renderMaintenance()
+};
+
+function openAutoDeadline(id=''){
+ editingAutoDeadlineId=id||null;
+ let x=id?s.autoDeadlines.find(v=>v.id===id):null;
+ autoDeadlineForm.reset();
+ autoDeadlineType.value=x?.type||'Manutenzione';
+ autoDeadlineTitle.value=x?.title||'';
+ autoDeadlineDate.value=x?.date||dateKey();
+ autoDeadlineTime.value=x?.time||'';
+ autoDeadlineCost.value=x?.cost||'';
+ autoDeadlineKm.value=x?.km||'';
+ autoDeadlineFrequency.value=x?.frequency||'once';
+ autoDeadlineStatus.value=x?.status||'planned';
+ autoDeadlineReminder.value=String(x?.reminderDays??7);
+ autoDeadlineNotify.value=x?.notify||'both';
+ autoDeadlineNote.value=x?.note||'';
+ autoDeadlineDialog.showModal();
+ if(!x)autoDeadlineTitle.focus()
+}
+function renderAuto(){
+ let list=[...s.autoDeadlines].sort((a,b)=>(a.status==='done')-(b.status==='done')||String(a.date).localeCompare(String(b.date)));
+ let pending=list.filter(x=>x.status!=='done'),next=pending.find(x=>x.date>=dateKey());
+ let year=new Date().getFullYear();
+ let spent=s.expenses.filter(x=>macroForExpense(x)==='Auto'&&String(x.date||'').startsWith(String(year))).reduce((a,x)=>a+Number(x.amount||0),0);
+ if(document.getElementById('autoSummary'))autoSummary.innerHTML=`<div class="summaryNumbers"><div><b>${pending.length}</b><span>scadenze aperte</span></div><div><b>${euro(spent)}</b><span>spesi quest’anno</span></div></div><p>${next?`La prossima scadenza è <strong>${esc(next.title)}</strong> il ${birthLabel(next.date)}.`:'Nessuna scadenza vicina.'}</p>`;
+ autoDeadlineList.innerHTML=list.length?list.map(x=>`<div class="row ${x.status==='done'?'done':''} ${x.date<dateKey()&&x.status!=='done'?'overdue':''}"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${birthLabel(x.date)}${x.time?' · '+esc(x.time):''} · ${x.status==='done'?'Fatta':'Da fare'}${x.cost?` · ${euro(x.cost)}`:''}${x.km?` · ${Number(x.km).toLocaleString('it-IT')} km`:''}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div>${x.status!=='done'?`<button class="primary smallBtn" data-auto-done="${x.id}">✓ Fatto</button>`:''}<button class="editBtn" data-auto-edit="${x.id}">✎</button><button class="del" data-auto-del="${x.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessuna scadenza registrata</b><span>Per ora l’auto non richiede attenzione.</span></div>';
+ autoDeadlineList.querySelectorAll('[data-auto-edit]').forEach(b=>b.onclick=()=>openAutoDeadline(b.dataset.autoEdit));
+ autoDeadlineList.querySelectorAll('[data-auto-del]').forEach(b=>b.onclick=()=>{s.autoDeadlines=s.autoDeadlines.filter(x=>x.id!==b.dataset.autoDel);save();renderAuto()});
+ autoDeadlineList.querySelectorAll('[data-auto-done]').forEach(b=>b.onclick=()=>{let x=s.autoDeadlines.find(v=>v.id===b.dataset.autoDone);if(!x)return;x.status='done';if(Number(x.cost||0)>0)ensureExpenseOnce('autoDeadline',x.id,x.title,x.cost,'Auto',x.date);save();renderAuto()});
+ autoExpenseHistory.innerHTML=s.autoExpenses.length?[...s.autoExpenses].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,30).map(x=>`<div class="row"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.type)}</b><div class="meta">${birthLabel(x.date)}${x.km?` · ${Number(x.km).toLocaleString('it-IT')} km`:''}${x.note?` · ${esc(x.note)}`:''}</div></div><b>${euro(x.amount)}</b><button class="del" data-auto-exp-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna spesa auto registrata.</div>';
+ autoExpenseHistory.querySelectorAll('[data-auto-exp-del]').forEach(b=>b.onclick=()=>{let id=b.dataset.autoExpDel;s.autoExpenses=s.autoExpenses.filter(x=>x.id!==id);s.expenses=s.expenses.filter(x=>!(x.source==='autoExpense'&&x.sourceId===id));save();renderAuto()});
+ if(!fuelDate.value)fuelDate.value=dateKey();if(!fuelTime.value)fuelTime.value=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})
+}
+addAutoDeadlineBtn.onclick=()=>openAutoDeadline();
+autoDeadlineForm.onsubmit=e=>{
+ e.preventDefault();
+ let payload={type:autoDeadlineType.value,title:autoDeadlineTitle.value.trim(),date:autoDeadlineDate.value,time:autoDeadlineTime.value,cost:Number(autoDeadlineCost.value||0),km:Number(autoDeadlineKm.value||0),frequency:autoDeadlineFrequency.value,status:autoDeadlineStatus.value,reminderDays:Number(autoDeadlineReminder.value||0),notify:autoDeadlineNotify.value,note:autoDeadlineNote.value.trim()};
+ let x=editingAutoDeadlineId?s.autoDeadlines.find(v=>v.id===editingAutoDeadlineId):null;
+ if(x)Object.assign(x,payload);else{x={id:crypto.randomUUID(),...payload};s.autoDeadlines.push(x)}
+ if(x.status==='done'&&Number(x.cost||0)>0)ensureExpenseOnce('autoDeadline',x.id,x.title,x.cost,'Auto',x.date);
+ editingAutoDeadlineId=null;autoDeadlineDialog.close();save();renderAuto()
+};
+fuelForm.onsubmit=e=>{
+ e.preventDefault();let id=crypto.randomUUID(),amount=Number(fuelAmount.value||0),date=fuelDate.value||dateKey();let row={id,type:fuelType.value,amount,km:Number(fuelKm.value||0),note:fuelNote.value.trim(),date,time:fuelTime.value||''};s.autoExpenses.push(row);if(amount>0)ensureExpenseOnce('autoExpense',id,row.type,amount,'Auto',date);fuelForm.reset();fuelDate.value=dateKey();fuelTime.value=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});save();renderAuto()
+};
+
+
 shopForm.onsubmit=e=>{e.preventDefault();s.shopping.push({id:crypto.randomUUID(),text:shopText.value.trim(),qty:shopQty.value.trim(),category:shopCat.value,url:shopUrl.value.trim(),expectedPrice:Number(shopExpected.value||0),actualPrice:0,done:false});shopForm.reset();save();renderShop()};
 function renderShop(){
+ let openShop=s.shopping.filter(x=>!x.done),expectedShop=openShop.reduce((a,x)=>a+Number(x.expectedPrice||0),0);
+ if(document.getElementById('shopSummary'))shopSummary.innerHTML=`<div class="summaryNumbers"><div><b>${openShop.length}</b><span>${openShop.length===1?'cosa da comprare':'cose da comprare'}</span></div><div><b>${expectedShop?euro(expectedShop):'—'}</b><span>previsti</span></div></div><p>${openShop.length?`In lista ci sono soprattutto ${openShop.slice(0,3).map(x=>esc(x.text)).join(', ')}${openShop.length>3?'…':''}.`:'La lista è vuota: per ora non manca niente.'}</p>`;
  let a=[...s.shopping].sort((a,b)=>Number(a.done)-Number(b.done));
  shopList.innerHTML=a.length?a.map(x=>`<div class="shopRow ${x.done?'done':''}"><button data-buy="${x.id}">${x.done?'✅':'⬜️'}</button><div class="grow"><b>${esc(x.text)}</b><div class="meta">${esc(x.category)}${x.qty?' · '+esc(x.qty):''}${x.expectedPrice?` · Previsto ${euro(x.expectedPrice)}`:''}${x.actualPrice?` · Pagato ${euro(x.actualPrice)}`:''}</div></div>${x.url?`<a class="linkBtn" href="${esc(x.url)}" target="_blank" rel="noopener">🔗</a>`:''}<button class="editBtn" data-sedit="${x.id}">✎</button><button class="del" data-sdel="${x.id}">✕</button></div>`).join(''):'<div class="muted">Lista vuota.</div>';
  shopList.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{let x=s.shopping.find(i=>i.id===b.dataset.buy);if(x.done){x.done=false;x.actualPrice=0;save();renderShop();return}buyingShopId=x.id;boughtName.textContent=x.text;boughtPrice.value=x.expectedPrice||'';boughtDate.value=dateKey();boughtWho.value='';boughtDialog.showModal()});
@@ -1609,6 +1745,8 @@ function macroForExpense(x){
  if(c.includes('cane'))return 'Casa';
  return MONEY_MACROS.some(m=>m.id===x.category)?x.category:'Altro'
 }
+incomeForm.onsubmit=e=>{e.preventDefault();let d=moneyDate(),k=monthKey(d);s.incomes.push({id:crypto.randomUUID(),name:incomeName.value.trim(),amount:Number(incomeAmount.value),person:incomePerson.value,month:k,date:moneyOffset===0?dateKey():k+'-01'});incomeForm.reset();save();renderMoney()};
+savingsGoalForm.onsubmit=e=>{e.preventDefault();let k=monthKey(moneyDate());s.savingsGoals=s.savingsGoals||{};s.savingsGoals[k]=Number(savingsGoalInput.value||0);save();renderMoney()};
 moneyForm.onsubmit=e=>{
  e.preventDefault();let d=moneyDate(),k=monthKey(d);
  s.expenses.push({id:crypto.randomUUID(),name:moneyName.value.trim(),amount:Number(moneyAmount.value),category:moneyCat.value,recurring:moneyRecurring.checked,month:k,date:moneyOffset===0?dateKey():k+'-01'});
@@ -1619,17 +1757,31 @@ function renderMoney(){
  let d=moneyDate(),k=monthKey(d),all=s.expenses.filter(x=>x.month===k);
  let tot=all.reduce((q,x)=>q+Number(x.amount||0),0);
  let fixed=all.filter(x=>x.recurring).reduce((q,x)=>q+Number(x.amount||0),0);
- let jj=all.filter(x=>x.person==='jj').reduce((q,x)=>q+Number(x.amount||0),0);
- let kiki=all.filter(x=>x.person==='kiki').reduce((q,x)=>q+Number(x.amount||0),0);
+ let incomeRows=s.incomes.filter(x=>x.month===k),incomeTot=incomeRows.reduce((q,x)=>q+Number(x.amount||0),0),saved=incomeTot-tot,goal=Number(s.savingsGoals?.[k]??s.savingsGoal??0);
+ let prevD=new Date(d);prevD.setMonth(prevD.getMonth()-1);let prevK=monthKey(prevD),prevAll=s.expenses.filter(x=>x.month===prevK),prevTot=prevAll.reduce((q,x)=>q+Number(x.amount||0),0),prevIncome=s.incomes.filter(x=>x.month===prevK).reduce((q,x)=>q+Number(x.amount||0),0),prevSaved=prevIncome-prevTot;
 
  moneyMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(d);
- moneyNext.disabled=moneyOffset>=0;
+ moneyNext.disabled=moneyOffset>=0;savingsGoalInput.value=goal||'';
+ savingsResult.textContent=incomeTot>0?euro(saved):'—';
+ let pct=incomeTot>0&&goal>0?Math.max(0,Math.min(100,saved/goal*100)):0;savingsProgressBar.style.width=pct+'%';
+ if(!incomeTot)savingsReportText.textContent='Aggiungi le entrate del mese per calcolare il risparmio reale.';
+ else if(goal<=0)savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Imposta un obiettivo per confrontarlo.`;
+ else if(saved>=goal)savingsReportText.textContent=`Obiettivo raggiunto: ${euro(saved)} messi da parte su ${euro(goal)}.`;
+ else savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Mancano ${euro(Math.max(0,goal-saved))} all’obiettivo di ${euro(goal)}.`;
+ let expenseDiff=tot-prevTot,saveDiff=(incomeTot&&prevIncome)?saved-prevSaved:null,currentByMacro={},prevByMacro={};
+ MONEY_MACROS.forEach(m=>{currentByMacro[m.id]=0;prevByMacro[m.id]=0});
+ all.forEach(x=>currentByMacro[macroForExpense(x)]+=Number(x.amount||0));
+ prevAll.forEach(x=>prevByMacro[macroForExpense(x)]+=Number(x.amount||0));
+ let biggest=MONEY_MACROS.map(m=>({id:m.id,diff:currentByMacro[m.id]-prevByMacro[m.id],icon:m.icon})).sort((a,b)=>b.diff-a.diff)[0];
+ savingsCompare.innerHTML=`<span>${expenseDiff>0?'🔺':expenseDiff<0?'🔻':'•'} Spese ${expenseDiff===0?'uguali':`${euro(Math.abs(expenseDiff))} ${expenseDiff>0?'in più':'in meno'}`}</span>${saveDiff===null?'':`<span>${saveDiff>=0?'🌱':'↘️'} Risparmio ${euro(Math.abs(saveDiff))} ${saveDiff>=0?'in più':'in meno'}</span>`}${biggest&&biggest.diff>0?`<span>${biggest.icon} ${biggest.id} +${euro(biggest.diff)}</span>`:''}`;
+ incomeList.innerHTML=incomeRows.length?incomeRows.map(x=>`<div class="row"><span>＋</span><div class="grow"><b>${esc(x.name)}</b><div class="meta">${x.person==='family'?'Famiglia':personName(x.person)}</div></div><b>${euro(x.amount)}</b><button class="del" data-income-del="${x.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessuna entrata registrata</b><span>Aggiungile per calcolare il risparmio reale.</span></div>';
+ incomeList.querySelectorAll('[data-income-del]').forEach(b=>b.onclick=()=>{s.incomes=s.incomes.filter(x=>x.id!==b.dataset.incomeDel);save();renderMoney()});
 
  moneyStats.innerHTML=[
-  ['Totale famiglia',euro(tot)],
-  ['Ricorrenti',euro(fixed)],
-  ['JJ personale',euro(jj)],
-  ['Kiki personale',euro(kiki)]
+  ['Entrate',euro(incomeTot)],
+  ['Spese',euro(tot)],
+  ['Obiettivo',goal?euro(goal):'Da impostare'],
+  ['Ricorrenti',euro(fixed)]
  ].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
 
  let totals={};MONEY_MACROS.forEach(m=>totals[m.id]=0);
@@ -1637,8 +1789,8 @@ function renderMoney(){
  renderMoneyPie(totals,tot);
 
  let a=moneyMacroFilter?all.filter(x=>macroForExpense(x)===moneyMacroFilter):all;
- moneyListTitle.textContent=moneyMacroFilter?`Voci · ${moneyMacroFilter}`:'Voci del mese';
- moneyFilterLabel.textContent=moneyMacroFilter?`Filtro attivo: ${moneyMacroMeta(moneyMacroFilter).icon} ${moneyMacroFilter}`:'Tocca una macro categoria per filtrare le voci.';
+ moneyListTitle.textContent=moneyMacroFilter?`Spese · ${moneyMacroFilter}`:'Le spese di questo mese';
+ moneyFilterLabel.textContent=moneyMacroFilter?`Stai guardando: ${moneyMacroMeta(moneyMacroFilter).icon} ${moneyMacroFilter}`:'Tocca una categoria per vedere solo quelle spese.';
 
  moneyList.innerHTML=a.length?a.sort((x,y)=>String(y.date||'').localeCompare(String(x.date||''))).map(x=>{
   let who=x.person?` · ${personName(x.person)}`:'';
@@ -1731,6 +1883,6 @@ window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'){if(await checkSessionExpiry(true))return;if(cloudReady)pullCloudState(true)}});
 
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
-function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
+function renderAll(){renderHome();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();startSessionActivityTracking();bootCloud();

@@ -52,73 +52,82 @@
 
 <main>
 <section id="home" class="view on">
-  <div class="homeHero">
+  <div class="homeWelcome">
+    <div>
+      <small>LA NOSTRA FAMIGLIA</small>
+      <h2 id="homeGreeting">Buongiorno 🌿</h2>
+      <p id="homeDateText" class="muted"></p>
+    </div>
+    <button class="homeProfileButton" data-go="organize" aria-label="Apri Organizza">☰</button>
+  </div>
+
+  <div class="homeHero homeHeroCompact">
     <img src="family-hero.jpg" alt="La famiglia Fagiolini">
     <div class="homeHeroShade"></div>
-    <div class="homeHeroText">Tutto quello che serve oggi,<br>in un posto solo.</div>
-    <div class="heroHeart">♥</div>
+    <div class="homeHeroText">La giornata della famiglia,<br>in un colpo d’occhio.</div>
   </div>
 
-  <div class="sectionTitle familyTitle">
-    <h2>La nostra famiglia <span>♥</span></h2>
-  </div>
-  <div id="peopleCards" class="familyStrip"></div>
+  <button class="dashboardCard dashboardHero" data-go="today">
+    <div class="dashboardCardHead"><span class="dashboardIcon">📅</span><div><small>OGGI</small><h3>La nostra giornata</h3></div><em>›</em></div>
+    <div id="homeTodayBrief" class="dashboardBigText"></div>
+    <div id="homeTodayList" class="dashboardPreviewList"></div>
+  </button>
 
-  <div class="quickHome">
-    <button id="quickRecord" class="homeAction actionGreen">
-      <span class="homeActionIcon">✓</span><div><b>Segna</b><small>Appunti, note e promemoria</small></div><em>›</em>
+  <div class="homeDashboardGrid">
+    <button class="dashboardCard" data-go="house">
+      <div class="dashboardCardHead"><span class="dashboardIcon">🧹</span><div><small>CASA</small><h3>Faccende</h3></div><em>›</em></div>
+      <div id="homeHouseBrief" class="dashboardBigText"></div>
+      <p id="homeHouseText" class="dashboardNote"></p>
     </button>
-    <button data-go="menu" class="homeAction actionOrange">
-      <span class="homeActionIcon">♨</span><div><b>Menu</b><small>Pianifica i pasti della famiglia</small></div><em>›</em>
+
+    <button class="dashboardCard" data-go="menu">
+      <div class="dashboardCardHead"><span class="dashboardIcon">🍽️</span><div><small>PASTI</small><h3>Oggi mangiamo</h3></div><em>›</em></div>
+      <div id="homeMealsBrief" class="mealBrief"></div>
     </button>
-    <button data-go="calendar" class="homeAction actionGreen">
-      <span class="homeActionIcon">▦</span><div><b>Calendario</b><small>Eventi e impegni di tutti</small></div><em>›</em>
-    </button>
-    <button data-go="health" class="homeAction actionGreen">
-      <span class="homeActionIcon">♡</span><div><b>Salute</b><small>Visite, farmaci e benessere</small></div><em>›</em>
-    </button>
-    <button data-go="house" class="homeAction actionGold">
-      <span class="homeActionIcon">⌂</span><div><b>Routine Casa</b><small>Compiti e routine settimanali</small></div><em>›</em>
-    </button>
-    <button data-go="shop" class="homeAction actionGreen">
-      <span class="homeActionIcon">🛒</span><div><b>Spesa</b><small>Lista della spesa e prodotti</small></div><em>›</em>
-    </button>
-    <button data-go="money" class="homeAction actionOrange">
-      <span class="homeActionIcon">◔</span><div><b>Soldi</b><small>Gestisci il budget della famiglia</small></div><em>›</em>
-    </button>
-    <div class="homeMiniPair">
-      <button data-go="maintenance"><span>🔧</span><b>Manutenzioni</b><small>Casa e impianti</small></button>
-      <button data-go="auto"><span>🚗</span><b>Auto</b><small>Scadenze e manutenzione</small></button>
-    </div>
   </div>
 
-  <div class="homeSummaryGrid">
-    <button class="homeSummaryCard" data-go="reminders">
-      <div class="summaryBadge green">✓</div>
-      <small>Oggi</small>
-      <div id="todayOverview"></div>
-    </button>
-    <button class="homeSummaryCard" data-go="menu">
-      <div class="summaryBadge orange">♨</div>
-      <small>Menu di oggi</small>
-      <div id="menuToday"></div>
-    </button>
-    <button class="homeSummaryCard" data-go="house">
-      <div class="summaryBadge gold">⌂</div>
-      <small>Casa</small>
-      <div id="houseToday"></div>
-    </button>
-    <button class="homeSummaryCard" data-go="money">
-      <div class="summaryBadge orange">▰</div>
-      <small>Spese del mese</small>
-      <div id="moneyToday"></div>
-    </button>
+  <div class="dashboardCard familyDashboardCard">
+    <div class="dashboardCardHead"><span class="dashboardIcon">👨‍👩‍👧‍👦</span><div><small>FAMIGLIA</small><h3>Come va oggi</h3></div><button class="familyHeaderLink" data-go="organize" aria-label="Apri famiglia">›</button></div>
+    <div id="peopleCards" class="familyStrip familyStripHome"></div>
+    <div id="homeFamilyBrief" class="familyMiniSummary"></div>
+  </div>
+
+  <button class="dashboardCard savingsHomeCard" data-go="money">
+    <div class="dashboardCardHead"><span class="dashboardIcon">💶</span><div><small>RISPARMI</small><h3>Questo mese</h3></div><em>›</em></div>
+    <div id="homeSavingsBrief" class="dashboardBigText"></div>
+    <div class="progressTrack"><i id="homeSavingsProgress"></i></div>
+    <p id="homeSavingsText" class="dashboardNote"></p>
+  </button>
+
+  <button class="dashboardCard wasteHomeCard" data-go="organize">
+    <div class="dashboardCardHead"><span class="dashboardIcon">♻️</span><div><small>RACCOLTA</small><h3>Rifiuti</h3></div><em>›</em></div>
+    <p id="homeWasteText" class="dashboardNote">Turni da impostare: la sezione è pronta.</p>
+  </button>
+</section>
+
+<section id="today" class="view">
+  <div class="sectionTitle pageIntro"><div><small>LA GIORNATA</small><h2>📅 Oggi</h2><p id="todayPageDate" class="muted"></p></div><button data-go="calendar">Calendario</button></div>
+  <div id="todayHero" class="card todayHeroCard"></div>
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>DA FARE E DA RICORDARE</small><h3>Tutto in ordine</h3></div><button id="todayQuickAdd">＋ Aggiungi</button></div>
+    <div id="todayAgenda"></div>
+  </div>
+  <div class="todayQuickGrid">
+    <button data-go="house"><span>🧹</span><b>Faccende</b><small>Casa di oggi</small></button>
+    <button data-go="menu"><span>🍽️</span><b>Pasti</b><small>Pranzo e cena</small></button>
+    <button data-go="reminders"><span>🔔</span><b>Promemoria</b><small>Quelli in arrivo</small></button>
+    <button data-go="calendar"><span>📆</span><b>Calendario</b><small>Vista completa</small></button>
   </div>
 </section>
 
 <section id="person" class="view">
   <div class="sectionTitle"><div><small>FAGIOLINI</small><h2 id="personTitle"></h2></div><button data-go="home">← Home</button></div>
   <div id="personStats" class="stats"></div>
+  <div class="card personInsightCard">
+    <div class="sectionTitle compact"><div><small>IN BREVE</small><h3>Andamento</h3></div><div class="insightSwitch"><button id="insight7" class="active">7 giorni</button><button id="insight30">30 giorni</button></div></div>
+    <div id="personInsightText" class="insightText"></div>
+    <div id="poopChart" class="miniBarChart"></div>
+  </div>
   <div class="card">
     <h3>Segna adesso</h3>
     <div id="personActions" class="actions"></div>
@@ -168,16 +177,17 @@
   <div class="card"><h3>Prossimi impegni</h3><div id="adultHealth"></div></div>
 </section>
 <section id="menu" class="view">
-  <div class="sectionTitle"><div><small>MENU FAMIGLIA</small><h2>🍝 Settimana alimentare</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle pageIntro"><div><small>PASTI</small><h2>🍽️ Cosa mangiamo</h2><p class="muted">La settimana della famiglia, semplice da cambiare.</p></div></div>
+  <div id="menuWeekSummary" class="card sectionSummaryCard"></div>
 
   <div class="card introCard">
-    <h3>Menu bilanciato, ma sempre modificabile</h3>
+    <h3>Organizza i pasti della settimana</h3>
     <p class="muted">Fagiolini propone una settimana varia usando preferenze, esclusioni e ricette reali. <b>Ogni campo può essere riscritto liberamente</b>: se una proposta non va bene, basta scrivere quello che mangerà davvero la persona.</p>
     <div class="inlineBtns">
-      <button id="generateMenu" class="primary">✨ Genera tutta la settimana</button>
-      <button id="generateEmptyMenu">✨ Completa solo i campi vuoti</button>
+      <button id="generateMenu" class="primary">✨ Organizza la settimana</button>
+      <button id="generateEmptyMenu">Aggiungi quello che manca</button>
       <button id="undoMenu">↩️ Annulla</button>
-      <button id="menuToShop">🛒 Spesa dalla settimana</button>
+      <button id="menuToShop">🛒 Crea lista della spesa</button>
       <button data-go="profiles">⚙️ Preferenze</button>
     </div>
     <p class="tiny">Per Kiko in fase di svezzamento le proposte sono volutamente semplici e generiche: potete sostituirle direttamente, per esempio con “Semolino”, “Crema di riso” o ciò che state usando.</p>
@@ -208,7 +218,8 @@
 </section>
 
 <section id="health" class="view">
-  <div class="sectionTitle"><div><small>SALUTE</small><h2>❤️ Visite e medicine</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle pageIntro"><div><small>SALUTE</small><h2>❤️ Salute</h2><p class="muted">Visite e medicine da ricordare.</p></div></div>
+  <div id="healthSummary" class="card sectionSummaryCard"></div>
 
   <form id="visitForm" class="card form healthForm">
     <h3>Nuova visita / appuntamento</h3>
@@ -262,8 +273,40 @@
 </section>
 
 
+<section id="organize" class="view">
+  <div class="sectionTitle pageIntro"><div><small>TUTTO IL RESTO</small><h2>☰ Organizza</h2><p class="muted">Le cose importanti che non servono ogni minuto.</p></div></div>
+
+  <div class="organizeGrid">
+    <button class="organizeCard" data-go="shop"><span>🛒</span><div><b>Spesa</b><small id="organizeShopText">Lista della spesa</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="money"><span>💶</span><div><b>Risparmi</b><small id="organizeMoneyText">Spese e obiettivi</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="health"><span>❤️</span><div><b>Salute</b><small id="organizeHealthText">Visite e medicine</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="auto"><span>🚗</span><div><b>Auto</b><small id="organizeAutoText">Scadenze e costi</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="maintenance"><span>🔧</span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Manutenzioni</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="reminders"><span>🔔</span><div><b>Promemoria</b><small id="organizeReminderText">Da ricordare</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="calendar"><span>📆</span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
+  </div>
+
+  <div class="card telegramCard">
+    <div class="sectionTitle compact"><div><small>NOTIFICHE</small><h3>✈️ Telegram</h3></div><span class="connectedPill">● Collegato</span></div>
+    <p>I promemoria della famiglia vengono controllati automaticamente ogni 5 minuti e inviati nel gruppo.</p>
+    <div class="telegramFacts"><span>🏠 Casa</span><span>🩺 Salute</span><span>🚗 Auto</span><span>💳 Bollette</span><span>🔔 Promemoria</span></div>
+  </div>
+
+  <div class="card wasteCard">
+    <div class="sectionTitle compact"><div><small>PREPARATA PER DOMANI</small><h3>♻️ Raccolta differenziata</h3></div></div>
+    <p class="muted">Qui comparirà subito cosa buttare oggi e cosa preparare per domani.</p>
+    <div class="wastePlaceholder"><b>Turni ancora da impostare</b><span>Quando avremo il calendario reale basterà inserirlo una volta.</span></div>
+  </div>
+
+  <div class="card settingsCard">
+    <div class="sectionTitle compact"><div><small>ACCOUNT</small><h3>⚙️ Impostazioni</h3></div><button id="organizeAccountBtn">Apri</button></div>
+    <p class="muted">Account, sincronizzazione e accesso alla famiglia.</p>
+  </div>
+</section>
+
 <section id="maintenance" class="view">
-  <div class="sectionTitle"><div><small>CASA</small><h2>🧰 Manutenzioni</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle pageIntro"><div><small>CASA & LAVORI</small><h2>🔧 Manutenzioni</h2><p class="muted">Scadenze e lavori importanti della casa.</p></div></div>
+  <div id="maintenanceSummary" class="card sectionSummaryCard"></div>
 
   <div class="card">
     <div class="sectionTitle compact"><div><small>PROGRAMMATE</small><h3>Casa</h3></div><button id="addMaintenanceBtn">＋</button></div>
@@ -273,7 +316,8 @@
 </section>
 
 <section id="auto" class="view">
-  <div class="sectionTitle"><div><small>FAGIOLINI</small><h2>🚗 Auto</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle pageIntro"><div><small>AUTO</small><h2>🚗 Auto</h2><p class="muted">Scadenze, manutenzione e costi.</p></div></div>
+  <div id="autoSummary" class="card sectionSummaryCard"></div>
 
   <form id="fuelForm" class="card form">
     <h3>⛽ Spesa veloce auto</h3>
@@ -320,7 +364,7 @@
 
 
 <section id="reminders" class="view">
-  <div class="sectionTitle"><div><small>TUTTO INSIEME</small><h2>🔔 Promemoria</h2></div><button data-go="calendar">📅 Calendario</button></div>
+  <div class="sectionTitle pageIntro"><div><small>DA RICORDARE</small><h2>🔔 Promemoria</h2><p class="muted">Quello che non deve sfuggire.</p></div><button data-go="calendar">Calendario</button></div>
 
   <div id="reminderAlert" class="card reminderAlert"></div>
 
@@ -329,7 +373,7 @@
       <div><small>MANUALE</small><h3>Aggiungi promemoria</h3></div>
       <button id="addReminderBtn">＋</button>
     </div>
-    <p class="muted">Per qualcosa che non appartiene già a Salute, Auto, Casa o Soldi.</p>
+    <p class="muted">Hai qualcosa da ricordare? Aggiungilo qui.</p>
   </div>
 
   <div class="card">
@@ -347,46 +391,48 @@
     <div id="manualReminderList"></div>
   </div>
 
-  <p class="tiny card">In V8.3 i promemoria sono sincronizzati e visibili dentro Fagiolini. La consegna automatica fuori dall'app verrà collegata a Telegram nella V8.4.</p>
+  <p class="tiny card">✈️ Telegram è collegato: i promemoria automatici vengono controllati ogni 5 minuti.</p>
 </section>
 
 <section id="house" class="view">
-  <div class="sectionTitle"><div><small>CASA</small><h2>🏠 Piano Casa</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle pageIntro"><div><small>CASA</small><h2>🧹 Faccende di casa</h2><p class="muted">Quello che c’è da fare, senza complicazioni.</p></div></div>
+  <div id="houseWeekSummary" class="card sectionSummaryCard"></div>
 
   <div class="card housePlanIntro">
-    <h3>Le cose da fare, non solo un contatore</h3>
-    <p class="muted">Fagiolini prepara una proposta della settimana. Ogni task resta sempre modificabile, spostabile o eliminabile.</p>
+    <h3>Organizza la settimana</h3>
+    <p class="muted">Prepara automaticamente le faccende e poi cambia, rimanda o completa quello che vuoi.</p>
     <div class="inlineBtns">
-      <button id="generateHouseWeek" class="primary">✨ Genera settimana</button>
-      <button id="fillHouseWeek">✨ Completa ciò che manca</button>
-      <button id="addHouseTaskBtn">＋ Aggiungi task</button>
+      <button id="generateHouseWeek" class="primary">✨ Organizza la settimana</button>
+      <button id="fillHouseWeek">Aggiungi quello che manca</button>
+      <button id="addHouseTaskBtn">＋ Aggiungi una faccenda</button>
     </div>
   </div>
 
   <div class="card">
-    <div class="sectionTitle compact"><div><small>OGGI</small><h3>Task pending</h3></div><div id="housePendingCount" class="pendingBadge">0</div></div>
+    <div class="sectionTitle compact"><div><small>OGGI</small><h3>Da fare oggi</h3></div><div id="housePendingCount" class="pendingBadge">0</div></div>
     <div id="houseTodayTasks"></div>
   </div>
 
   <div class="card">
-    <div class="sectionTitle compact"><div><small>PROSSIMI 7 GIORNI</small><h3>Programma</h3></div></div>
+    <div class="sectionTitle compact"><div><small>QUESTA SETTIMANA</small><h3>Il piano</h3></div></div>
     <div id="houseWeekPlan"></div>
   </div>
 
   <div class="card">
-    <div class="sectionTitle compact"><div><small>REGOLE MODIFICABILI</small><h3>Frequenza routine</h3></div></div>
+    <div class="sectionTitle compact"><div><small>ORGANIZZAZIONE</small><h3>Ogni quanto farlo</h3></div></div>
     <p class="muted">L'asciugatrice è sempre collegata a una lavatrice e si sblocca solo dopo che la lavatrice è stata completata.</p>
     <div id="houseRulesGrid" class="houseRulesGrid"></div>
   </div>
 
   <div class="card">
-    <div class="sectionTitle compact"><h3>Storico completate</h3></div>
+    <div class="sectionTitle compact"><h3>Fatte di recente</h3></div>
     <div id="houseHistory"></div>
   </div>
 </section>
 
 <section id="shop" class="view">
-  <div class="sectionTitle"><h2>🛒 Spesa</h2><button data-go="home">← Home</button></div>
+  <div class="sectionTitle pageIntro"><div><small>SPESA</small><h2>🛒 Da comprare</h2><p class="muted">La lista della famiglia, senza doppioni.</p></div></div>
+  <div id="shopSummary" class="card sectionSummaryCard"></div>
   <form id="shopForm" class="card form">
     <input id="shopText" placeholder="Es. Pannolini" required>
     <input id="shopQty" placeholder="Qtà">
@@ -399,12 +445,40 @@
 </section>
 
 <section id="money" class="view">
-  <div class="sectionTitle"><div><small>BILANCIO</small><h2>💶 Soldi</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle pageIntro"><div><small>RISPARMI</small><h2>💶 Come stiamo andando</h2><p class="muted">Entrate, spese e obiettivo del mese in un colpo d’occhio.</p></div></div>
   <div class="monthSwitch card"><button id="moneyPrev">←</button><h3 id="moneyMonth"></h3><button id="moneyNext">→</button></div>
+
+  <div class="card savingsReportCard">
+    <div class="sectionTitle compact"><div><small>IN BREVE</small><h3>Risparmio del mese</h3></div><strong id="savingsResult">€0</strong></div>
+    <div class="progressTrack savingsProgress"><i id="savingsProgressBar"></i></div>
+    <p id="savingsReportText" class="reportText"></p>
+    <div id="savingsCompare" class="compareChips"></div>
+  </div>
+
   <div id="moneyStats" class="stats"></div>
 
+  <div class="financeFormsGrid">
+    <form id="incomeForm" class="card form compactFinanceForm">
+      <h3>＋ Entrata</h3>
+      <input id="incomeName" placeholder="Es. Stipendio" required>
+      <input id="incomeAmount" type="number" min="0" step="0.01" placeholder="Importo €" required>
+      <select id="incomePerson"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
+      <button class="primary">Aggiungi entrata</button>
+    </form>
+    <form id="savingsGoalForm" class="card form compactFinanceForm">
+      <h3>🎯 Obiettivo</h3>
+      <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="savingsGoalInput" type="number" min="0" step="10" placeholder="Es. 500"></label>
+      <button>Salva obiettivo</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>ENTRATE</small><h3>Entrate del mese</h3></div></div>
+    <div id="incomeList"></div>
+  </div>
+
   <div class="card moneyChartCard">
-    <div class="sectionTitle compact"><div><small>MACRO GRUPPI</small><h3>Dove vanno i soldi</h3></div><button id="moneyClearFilter" class="smallBtn">Tutte</button></div>
+    <div class="sectionTitle compact"><div><small>QUESTO MESE</small><h3>Dove spendiamo</h3></div><button id="moneyClearFilter" class="smallBtn">Tutte</button></div>
     <div class="moneyChartLayout">
       <div id="moneyPie" class="moneyPie"><div class="moneyPieCenter"><small>Totale</small><b id="moneyPieTotal">€0</b></div></div>
       <div id="moneyMacroLegend" class="moneyMacroLegend"></div>
@@ -415,18 +489,18 @@
   <form id="moneyForm" class="card form">
     <label class="fieldLabel">Descrizione<input id="moneyName" placeholder="Es. Affitto, luce, cinema..." required></label>
     <label class="fieldLabel">Importo<input id="moneyAmount" type="number" min="0" step="0.01" placeholder="€" required></label>
-    <label class="fieldLabel">Macro categoria
+    <label class="fieldLabel">Dove la mettiamo?
       <select id="moneyCat">
         <option>Casa</option><option>Spesa</option><option>Bollette</option><option>Auto</option>
         <option>Bambini</option><option>Salute</option><option>Svago</option><option>Personali</option><option>Altro</option>
       </select>
     </label>
     <label class="check"><input id="moneyRecurring" type="checkbox"> Si ripete ogni mese</label>
-    <button class="primary">Salva spesa</button>
+    <button class="primary">Aggiungi spesa</button>
   </form>
 
-  <div class="card"><h3 id="moneyListTitle">Voci del mese</h3><div id="moneyList"></div></div>
-  <div class="card"><h3>Riepilogo macro categorie</h3><div id="moneyCategories"></div></div>
+  <div class="card"><h3 id="moneyListTitle">Le spese di questo mese</h3><div id="moneyList"></div></div>
+  <div class="card"><h3>Riepilogo spese</h3><div id="moneyCategories"></div></div>
 
   <div class="card">
     <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3>⏰ Scadenze</h3></div><button id="addSubscriptionBtn">＋</button></div>
@@ -436,12 +510,12 @@
 </section>
 </main>
 
-<nav>
-  <button data-go="home"><span>🏠</span><small>Oggi</small></button>
-  <button data-go="calendar"><span>📅</span><small>Calendario</small></button>
-  <button id="navQuick" class="plus"><span>＋</span><small>Segna</small></button>
-  <button data-go="menu"><span>🍝</span><small>Menu</small></button>
-  <button data-go="health"><span>❤️</span><small>Salute</small></button>
+<nav aria-label="Navigazione principale">
+  <button class="navHome" data-go="home"><span>🏠</span><small>Home</small></button>
+  <button data-go="today"><span>📅</span><small>Oggi</small></button>
+  <button data-go="house"><span>🧹</span><small>Casa</small></button>
+  <button data-go="menu"><span>🍽️</span><small>Pasti</small></button>
+  <button data-go="organize"><span>☰</span><small>Organizza</small></button>
 </nav>
 </div>
 

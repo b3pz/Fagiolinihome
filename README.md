@@ -290,3 +290,21 @@ Aggiunto:
 - nessun dato familiare viene cancellato
 
 Il collegamento diretto al family_id e la sincronizzazione family_state restano invariati.
+
+
+## V8.5 — Family-first UX
+
+Questa build parte dalla V8.4.1 stabile e mantiene login, Supabase, sessione 3 ore, Piano Casa, Menu, Calendario, Salute, Auto, Spesa e Soldi.
+
+Novità principali:
+- Home ridisegnata come riepilogo familiare.
+- Bottom bar fissa: Home, Oggi, Casa, Pasti, Organizza.
+- Testi e controlli più grandi.
+- Nuova pagina Oggi con agenda aggregata.
+- Nuova pagina Organizza con accesso a Spesa, Risparmi, Salute, Auto, manutenzioni, Promemoria e Calendario.
+- Soldi diventa Risparmi: entrate, obiettivo mensile, confronto con mese precedente e grafico spese esistente.
+- Profili bambini/animale con mini andamento cacche 7/30 giorni.
+- Stato Telegram visibile in app (backend e Cron rimangono esterni e non contengono segreti nel repository).
+- Raccolta differenziata predisposta, turni da configurare successivamente.
+
+Nota: i controlli Telegram restano lato backend; questa build mostra lo stato del collegamento senza esporre token o secret.
