@@ -1,38 +1,16 @@
-# Fagiolini V5
+# Fagiolini V5.1 FIX
 
-Versione più semplice e user friendly.
+Versione ricostruita sulla base stabile.
 
-## Famiglia
-- JJ
-- Kiki
-- Caty
-- Kiko
-- Astro
+- Caty, Kiko e Astro insieme nella Home
+- Astro ha azioni dedicate da cane
+- aggiunta rapida
+- Casa
+- Task
+- Spesa
+- Menu
+- Soldi con totale mensile, categorie e spese ricorrenti
+- storico mese per mese
+- migrazione dei dati già presenti
 
-## Novità V5
-- Astro compare insieme a Caty e Kiko nella sezione principale
-- Astro ha una scheda propria con:
-  - pappa
-  - passeggiata
-  - cacca
-  - pipì
-  - farmaco
-  - toeletta
-- Home più chiara
-- pulsanti rapidi per Segna qualcosa / Spesa / Soldi
-- navigazione inferiore semplificata
-- riepilogo familiare più leggibile
-- testi meno tecnici
-- mantenimento di Casa, Menu, Task, Spesa e Bilancio
-- migrazione automatica dei dati precedenti
-
-## GitHub Pages
-Carica direttamente nella root:
-- index.html
-- style.css
-- app.js
-- manifest.json
-- sw.js
-- README.md
-
-Nessuna cartella necessaria.
+Tutti i file vanno direttamente nella root di GitHub Pages.
