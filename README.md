@@ -1,6 +1,6 @@
-# Fagiolini V4
+# Fagiolini V5
 
-Web-app familiare per GitHub Pages.
+Versione più semplice e user friendly.
 
 ## Famiglia
 - JJ
@@ -9,21 +9,25 @@ Web-app familiare per GitHub Pages.
 - Kiko
 - Astro
 
-## Moduli
-- Bambini
-- Astro
-- Casa
-- Task
-- Spesa
-- Menu
-- Soldi / bilancio mensile
-
-## Aggiornamento dalla versione precedente
-La V4 converte automaticamente i vecchi dati di Domenico in Kiko e mantiene lo storico.
-Le assegnazioni Papà/Mamma vengono convertite in JJ/Kiki.
+## Novità V5
+- Astro compare insieme a Caty e Kiko nella sezione principale
+- Astro ha una scheda propria con:
+  - pappa
+  - passeggiata
+  - cacca
+  - pipì
+  - farmaco
+  - toeletta
+- Home più chiara
+- pulsanti rapidi per Segna qualcosa / Spesa / Soldi
+- navigazione inferiore semplificata
+- riepilogo familiare più leggibile
+- testi meno tecnici
+- mantenimento di Casa, Menu, Task, Spesa e Bilancio
+- migrazione automatica dei dati precedenti
 
 ## GitHub Pages
-Carica direttamente nella root del repository:
+Carica direttamente nella root:
 - index.html
 - style.css
 - app.js
