@@ -127,15 +127,37 @@
   <div class="card"><h3>Prossimi impegni</h3><div id="adultHealth"></div></div>
 </section>
 <section id="menu" class="view">
-  <div class="sectionTitle"><div><small>ASSISTENTE MENU</small><h2>🍝 Menu famiglia</h2></div><button data-go="home">← Home</button></div>
+  <div class="sectionTitle"><div><small>MENU FAMIGLIA</small><h2>🍝 Settimana alimentare</h2></div><button data-go="home">← Home</button></div>
 
   <div class="card introCard">
-    <h3>Genera una settimana</h3>
-    <p class="muted">Il generatore usa età, preferenze e allergeni salvati nei profili. Tutto avviene sul telefono.</p>
-    <div class="inlineBtns"><button id="generateMenu" class="primary">✨ Genera menu</button><button id="undoMenu">↩️ Annulla ultima generazione</button><button data-go="profiles">⚙️ Profili alimentari</button></div>
-    <p class="tiny">Per bambini piccoli, allergie o esigenze cliniche, il menu va sempre verificato con pediatra/professionista sanitario.</p>
+    <h3>Menu bilanciato, ma sempre modificabile</h3>
+    <p class="muted">Fagiolini propone una settimana varia usando preferenze, esclusioni e ricette reali. <b>Ogni campo può essere riscritto liberamente</b>: se una proposta non va bene, basta scrivere quello che mangerà davvero la persona.</p>
+    <div class="inlineBtns">
+      <button id="generateMenu" class="primary">✨ Genera settimana</button>
+      <button id="undoMenu">↩️ Annulla</button>
+      <button id="menuToShop">🛒 Spesa dalla settimana</button>
+      <button data-go="profiles">⚙️ Preferenze</button>
+    </div>
+    <p class="tiny">Per Kiko in fase di svezzamento le proposte sono volutamente semplici e generiche: potete sostituirle direttamente, per esempio con “Semolino”, “Crema di riso” o ciò che state usando.</p>
   </div>
-  <div id="menuWeek"></div><p class="tiny">Tocca 👨‍🍳 accanto a un piatto per vedere ingredienti e preparazione.</p>
+
+  <div class="card">
+    <div class="sectionTitle compact"><div><small>VARIETÀ</small><h3>🥗 Equilibrio settimanale</h3></div></div>
+    <div id="menuBalance" class="menuBalance"></div>
+    <p class="tiny">Indicatore di varietà, non una prescrizione dietetica o calorica.</p>
+  </div>
+
+  <div id="menuWeek"></div>
+
+  <div class="card">
+    <h3>Come funziona</h3>
+    <div class="miniGuide">
+      <span>✨ genera una proposta</span>
+      <span>🔄 cambia solo quel pasto</span>
+      <span>✏️ scrivi direttamente quello che vuoi</span>
+      <span>👨‍🍳 apre la ricetta quando disponibile</span>
+    </div>
+  </div>
 </section>
 
 <section id="profiles" class="view">
@@ -150,8 +172,14 @@
     <h3>Nuova visita / appuntamento</h3>
     <select id="visitPerson"></select>
     <input id="visitTitle" placeholder="Es. Pediatra, dentista..." required>
-    <input id="visitDate" type="date" required>
-    <input id="visitTime" type="time">
+    <label class="fieldLabel">📅 Data appuntamento<input id="visitDate" type="date" required></label>
+    <label class="fieldLabel">🕒 Ora appuntamento<input id="visitTime" type="time"></label>
+    <label class="fieldLabel">📍 Luogo / indirizzo
+      <input id="visitLocation" placeholder="Es. Ospedale Santa Maria Nuova, Firenze">
+    </label>
+    <label class="fieldLabel">🔗 Link mappa opzionale
+      <input id="visitMapUrl" type="url" placeholder="Incolla link Apple Maps o Google Maps">
+    </label>
     <input id="visitNote" placeholder="Nota facoltativa">
     <button class="primary">Salva visita</button>
   </form>
@@ -161,8 +189,8 @@
     <select id="medPerson"></select>
     <input id="medName" placeholder="Nome medicina" required>
     <input id="medDose" placeholder="Dose / indicazione">
-    <input id="medDate" type="date" required>
-    <input id="medTime" type="time">
+    <label class="fieldLabel">📅 Data<input id="medDate" type="date" required></label>
+    <label class="fieldLabel">🕒 Ora<input id="medTime" type="time"></label>
     <input id="medNote" placeholder="Nota facoltativa">
     <button class="primary">Salva medicina</button>
   </form>

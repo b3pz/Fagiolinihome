@@ -112,3 +112,47 @@ Aggiunto:
 
 IMPORTANTE:
 Autenticazione, Supabase, family_id e sincronizzazione sono rimasti invariati.
+
+
+## V8.1.1 — Salute + Maps
+Micro-upgrade della V8.1 stabile.
+
+Aggiunto:
+- etichette visibili per Data e Ora nelle visite
+- etichette visibili per Data e Ora nelle medicine
+- campo Luogo / indirizzo per visite
+- campo link mappa opzionale
+- pulsanti Apple Maps e Google Maps generati automaticamente dal luogo
+- link mappa salvato, se incollato
+- luogo mostrato nella lista Salute
+- luogo mostrato nel Calendario
+- Maps apribili anche dal dettaglio del Calendario
+- modifica visita mantiene luogo e link mappa
+
+Autenticazione, Supabase, family_id e sincronizzazione non modificati.
+
+
+## V8.2 — Menu finale
+Il modulo Menu è stato chiuso come funzione completa prima di proseguire con la roadmap.
+
+Funzioni:
+- ricettario iniziale con oltre 40 piatti reali e ingredienti
+- proposta settimanale con varietà tra legumi, pesce, uova, carne, vegetariani e formaggi
+- preferenze, cibi non graditi e allergeni/esclusioni
+- feedback ricette: Preferita, Piaciuta, Non riproporre
+- JJ + Kiki: colazione, pranzo e cena
+- Caty: colazione, merenda mattina, pranzo, merenda pomeriggio, cena
+- Kiko: colazione, merenda mattina, pranzo, merenda pomeriggio, cena
+- proposte molto semplici per la fase di svezzamento
+- OGNI campo è sempre modificabile direttamente a mano
+- cambio di un singolo pasto con pulsante 🔄
+- ricetta disponibile con 👨‍🍳
+- indicatore di varietà settimanale
+- lista spesa generata dall'intera settimana
+- ingredienti delle ricette accorpati quando possibile
+- pasti manuali non riconosciuti vengono aggiunti alla spesa con il loro nome
+- il calendario continua a mostrare i pasti principali e ora anche la colazione
+
+Nota: l'indicatore è pensato per varietà organizzativa, non come prescrizione dietetica o calorica.
+
+Autenticazione, Supabase, family_id e sincronizzazione non modificati.

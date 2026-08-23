@@ -27,6 +27,7 @@ const DEFAULT={
  ],
  shopping:[],menu:{},expenses:[],health:[],
  menuBackup:null,
+ recipeFeedback:{},
  profiles:{
   caty:{ageMonths:20,likes:'',dislikes:'',allergens:''},
   kiko:{ageMonths:6,likes:'',dislikes:'',allergens:''},
@@ -64,6 +65,7 @@ function load(){
  out.tasks=Array.isArray(out.tasks)?out.tasks:[];
  out.menu=out.menu||{};
  out.menuBackup=out.menuBackup||null;
+ out.recipeFeedback=out.recipeFeedback&&typeof out.recipeFeedback==='object'?out.recipeFeedback:{};
  out.profiles.caty.ageMonths=monthsFromBirth('2024-12-10');
  out.profiles.kiko.ageMonths=monthsFromBirth('2026-02-11');
  out.profiles.jj.ageMonths=monthsFromBirth('1991-05-31');
@@ -107,16 +109,81 @@ const HOUSE_ROUTINES=[
  {id:'sheets',emoji:'🛏️',name:'Cambio lenzuola'},
  {id:'towels',emoji:'🚿',name:'Cambio asciugamani / asciugaculo'}
 ];
-const RECIPE_DETAILS={
- 'Pasta al pomodoro':{time:'20 min',ingredients:['Pasta','Passata di pomodoro','Olio EVO','Parmigiano'],steps:['Cuoci la pasta.','Scalda la passata con poco olio.','Scola e condisci.']},
- 'Pasta e lenticchie':{time:'35 min',ingredients:['Pasta piccola','Lenticchie','Passata di pomodoro','Olio EVO'],steps:['Cuoci le lenticchie.','Aggiungi pomodoro e acqua.','Unisci la pasta e porta a cottura.']},
- 'Risotto con zucchine':{time:'30 min',ingredients:['Riso','Zucchine','Brodo vegetale','Parmigiano'],steps:['Cuoci le zucchine.','Aggiungi il riso.','Porta a cottura con il brodo e manteca.']},
- 'Riso con verdure e pollo':{time:'35 min',ingredients:['Riso','Verdure','Pollo','Olio EVO'],steps:['Cuoci pollo e verdure.','Cuoci il riso.','Unisci e servi.']},
- 'Frittata con verdure':{time:'25 min',ingredients:['Uova','Verdure','Parmigiano'],steps:['Cuoci le verdure.','Sbatti le uova.','Unisci e cuoci bene.']},
- 'Pesce al forno con patate':{time:'45 min',ingredients:['Pesce','Patate','Olio EVO'],steps:['Taglia le patate.','Aggiungi il pesce.','Cuoci completamente in forno.']},
- 'Pasta con crema di zucchine':{time:'25 min',ingredients:['Pasta','Zucchine','Olio EVO','Parmigiano'],steps:['Cuoci le zucchine.','Frullale.','Condisci la pasta.']},
- 'Riso con piselli':{time:'30 min',ingredients:['Riso','Piselli','Brodo vegetale'],steps:['Cuoci i piselli.','Aggiungi il riso.','Porta a cottura.']}
+const COOKBOOK=[
+ {name:'Pasta al pomodoro',category:'vegetariano',tags:['pasta','pomodoro'],allergens:['glutine'],time:'20 min',ingredients:[['Pasta',320,'g'],['Passata di pomodoro',400,'g'],['Parmigiano',40,'g']],steps:['Cuoci la pasta.','Scalda la passata con un filo d’olio.','Scola, condisci e completa con parmigiano.']},
+ {name:'Pasta e lenticchie',category:'legumi',tags:['pasta','lenticchie','legumi'],allergens:['glutine'],time:'35 min',ingredients:[['Pasta piccola',280,'g'],['Lenticchie cotte',300,'g'],['Passata di pomodoro',150,'g']],steps:['Scalda le lenticchie con il pomodoro.','Aggiungi acqua quanto basta.','Cuoci la pasta direttamente nel condimento.']},
+ {name:'Pasta e ceci',category:'legumi',tags:['pasta','ceci','legumi'],allergens:['glutine'],time:'30 min',ingredients:[['Pasta piccola',280,'g'],['Ceci cotti',300,'g'],['Passata di pomodoro',120,'g']],steps:['Scalda i ceci.','Frullane una piccola parte per rendere il condimento cremoso.','Aggiungi la pasta e porta a cottura.']},
+ {name:'Pasta e fagioli',category:'legumi',tags:['pasta','fagioli','legumi'],allergens:['glutine'],time:'35 min',ingredients:[['Pasta piccola',280,'g'],['Fagioli cotti',320,'g'],['Passata di pomodoro',150,'g']],steps:['Scalda i fagioli con il pomodoro.','Aggiungi acqua.','Cuoci la pasta nel composto fino alla consistenza desiderata.']},
+ {name:'Riso e lenticchie',category:'legumi',tags:['riso','lenticchie','legumi'],allergens:[],time:'30 min',ingredients:[['Riso',300,'g'],['Lenticchie cotte',300,'g'],['Carota',1,'pz']],steps:['Cuoci la carota tritata.','Unisci lenticchie e riso.','Porta a cottura aggiungendo acqua o brodo.']},
+ {name:'Cous cous con ceci e verdure',category:'legumi',tags:['cous cous','ceci','verdure','legumi'],allergens:['glutine'],time:'25 min',ingredients:[['Cous cous',280,'g'],['Ceci cotti',250,'g'],['Zucchine',2,'pz'],['Carote',2,'pz']],steps:['Cuoci le verdure a pezzetti.','Prepara il cous cous.','Unisci ceci, verdure e cous cous.']},
+
+ {name:'Merluzzo al forno con patate',category:'pesce',tags:['pesce','merluzzo','patate'],allergens:['pesce'],time:'40 min',ingredients:[['Filetti di merluzzo',600,'g'],['Patate',700,'g'],['Limone',1,'pz']],steps:['Taglia le patate sottili e avvia la cottura in forno.','Aggiungi il merluzzo.','Completa la cottura e servi con limone.']},
+ {name:'Salmone con zucchine e riso',category:'pesce',tags:['pesce','salmone','zucchine','riso'],allergens:['pesce'],time:'35 min',ingredients:[['Salmone',500,'g'],['Riso',280,'g'],['Zucchine',2,'pz']],steps:['Cuoci il riso.','Cuoci salmone e zucchine.','Servi insieme regolando la consistenza per i bambini.']},
+ {name:'Orata al forno con verdure',category:'pesce',tags:['pesce','orata','verdure'],allergens:['pesce'],time:'45 min',ingredients:[['Filetti di orata',600,'g'],['Zucchine',2,'pz'],['Patate',500,'g']],steps:['Prepara le verdure.','Disponi pesce e verdure in teglia.','Cuoci fino a completa cottura.']},
+ {name:'Pasta con tonno e pomodoro',category:'pesce',tags:['pasta','tonno','pomodoro','pesce'],allergens:['glutine','pesce'],time:'20 min',ingredients:[['Pasta',320,'g'],['Tonno al naturale',240,'g'],['Passata di pomodoro',300,'g']],steps:['Scalda il pomodoro.','Aggiungi il tonno sgocciolato.','Condisci la pasta cotta.']},
+ {name:'Polpette di pesce e patate',category:'pesce',tags:['pesce','patate'],allergens:['pesce','uova','glutine'],time:'45 min',ingredients:[['Pesce bianco',450,'g'],['Patate',500,'g'],['Uova',1,'pz'],['Pangrattato',60,'g']],steps:['Cuoci pesce e patate.','Schiaccia e amalgama con uovo e pangrattato.','Forma le polpette e cuoci in forno.']},
+
+ {name:'Frittata di zucchine',category:'uova',tags:['uova','zucchine'],allergens:['uova','latte'],time:'25 min',ingredients:[['Uova',6,'pz'],['Zucchine',2,'pz'],['Parmigiano',40,'g']],steps:['Cuoci le zucchine.','Sbatti le uova con parmigiano.','Unisci e cuoci bene la frittata.']},
+ {name:'Frittata di patate e verdure',category:'uova',tags:['uova','patate','verdure'],allergens:['uova'],time:'35 min',ingredients:[['Uova',6,'pz'],['Patate',400,'g'],['Verdure miste',250,'g']],steps:['Cuoci patate e verdure.','Aggiungi le uova sbattute.','Cuoci completamente da entrambi i lati o in forno.']},
+ {name:'Uova strapazzate con pane e verdure',category:'uova',tags:['uova','pane','verdure'],allergens:['uova','glutine'],time:'20 min',ingredients:[['Uova',6,'pz'],['Pane',250,'g'],['Verdure miste',400,'g']],steps:['Cuoci le verdure.','Cuoci bene le uova strapazzate.','Servi con il pane.']},
+ {name:'Sformato di patate e uova',category:'uova',tags:['uova','patate'],allergens:['uova','latte'],time:'45 min',ingredients:[['Patate',800,'g'],['Uova',4,'pz'],['Parmigiano',50,'g']],steps:['Lessa e schiaccia le patate.','Unisci uova e parmigiano.','Cuoci in forno fino a completa cottura.']},
+
+ {name:'Pollo al forno con patate',category:'carne',tags:['pollo','carne','patate'],allergens:[],time:'50 min',ingredients:[['Pollo',650,'g'],['Patate',800,'g'],['Rosmarino',1,'q.b.']],steps:['Taglia le patate.','Disponi pollo e patate in teglia.','Cuoci fino a completa cottura del pollo.']},
+ {name:'Riso con pollo e verdure',category:'carne',tags:['pollo','riso','verdure','carne'],allergens:[],time:'35 min',ingredients:[['Riso',300,'g'],['Petto di pollo',450,'g'],['Verdure miste',400,'g']],steps:['Cuoci il riso.','Cuoci pollo e verdure a pezzetti.','Unisci e servi.']},
+ {name:'Polpette di tacchino e patate',category:'carne',tags:['tacchino','carne','patate'],allergens:['uova','glutine'],time:'40 min',ingredients:[['Tacchino macinato',500,'g'],['Patate',400,'g'],['Uova',1,'pz'],['Pangrattato',50,'g']],steps:['Cuoci e schiaccia le patate.','Unisci tacchino, patate, uovo e pangrattato.','Forma le polpette e cuoci bene in forno.']},
+ {name:'Tacchino con piselli e riso',category:'carne',tags:['tacchino','piselli','riso','carne'],allergens:[],time:'35 min',ingredients:[['Tacchino',500,'g'],['Piselli',300,'g'],['Riso',280,'g']],steps:['Cuoci il riso.','Cuoci tacchino e piselli.','Servi insieme.']},
+ {name:'Spezzatino di pollo con verdure',category:'carne',tags:['pollo','verdure','carne'],allergens:[],time:'45 min',ingredients:[['Pollo',600,'g'],['Carote',2,'pz'],['Zucchine',2,'pz'],['Patate',400,'g']],steps:['Taglia tutto a pezzi.','Rosola leggermente il pollo.','Aggiungi le verdure e cuoci con poca acqua fino a completa cottura.']},
+ {name:'Pasta al ragù semplice',category:'carne',tags:['pasta','carne','pomodoro'],allergens:['glutine'],time:'45 min',ingredients:[['Pasta',320,'g'],['Macinato magro',350,'g'],['Passata di pomodoro',400,'g']],steps:['Cuoci bene il macinato.','Aggiungi la passata e lascia sobbollire.','Condisci la pasta.']},
+
+ {name:'Risotto con zucchine',category:'vegetariano',tags:['riso','zucchine','verdure'],allergens:['latte'],time:'30 min',ingredients:[['Riso',320,'g'],['Zucchine',3,'pz'],['Parmigiano',50,'g']],steps:['Cuoci le zucchine.','Aggiungi il riso.','Porta a cottura aggiungendo brodo e manteca con parmigiano.']},
+ {name:'Risotto alla zucca',category:'vegetariano',tags:['riso','zucca','verdure'],allergens:['latte'],time:'35 min',ingredients:[['Riso',320,'g'],['Zucca',500,'g'],['Parmigiano',50,'g']],steps:['Cuoci la zucca.','Aggiungi il riso.','Porta a cottura e manteca.']},
+ {name:'Pasta con crema di zucchine',category:'vegetariano',tags:['pasta','zucchine','verdure'],allergens:['glutine','latte'],time:'25 min',ingredients:[['Pasta',320,'g'],['Zucchine',3,'pz'],['Parmigiano',40,'g']],steps:['Cuoci le zucchine.','Frullane una parte.','Condisci la pasta con la crema.']},
+ {name:'Pasta con broccoli',category:'vegetariano',tags:['pasta','broccoli','verdure'],allergens:['glutine'],time:'30 min',ingredients:[['Pasta',320,'g'],['Broccoli',500,'g']],steps:['Cuoci i broccoli.','Cuoci la pasta nella stessa acqua se pratico.','Unisci e schiaccia parte dei broccoli per creare il condimento.']},
+ {name:'Gnocchi al pomodoro',category:'vegetariano',tags:['gnocchi','pomodoro','patate'],allergens:['glutine'],time:'20 min',ingredients:[['Gnocchi',800,'g'],['Passata di pomodoro',400,'g'],['Parmigiano',40,'g']],steps:['Scalda il pomodoro.','Cuoci gli gnocchi.','Condisci e completa con parmigiano.']},
+ {name:'Minestrone con riso',category:'vegetariano',tags:['verdure','riso'],allergens:[],time:'40 min',ingredients:[['Verdure miste',800,'g'],['Riso',240,'g'],['Patate',300,'g']],steps:['Cuoci le verdure e le patate.','Aggiungi il riso.','Porta a cottura lasciando la consistenza desiderata.']},
+ {name:'Vellutata di zucca e patate',category:'vegetariano',tags:['zucca','patate','verdure'],allergens:[],time:'35 min',ingredients:[['Zucca',600,'g'],['Patate',500,'g'],['Carota',1,'pz']],steps:['Taglia le verdure.','Cuoci in acqua o brodo.','Frulla fino alla consistenza desiderata.']},
+ {name:'Cous cous con verdure',category:'vegetariano',tags:['cous cous','verdure'],allergens:['glutine'],time:'25 min',ingredients:[['Cous cous',300,'g'],['Zucchine',2,'pz'],['Carote',2,'pz'],['Peperone',1,'pz']],steps:['Cuoci le verdure.','Prepara il cous cous.','Unisci e servi.']},
+ {name:'Riso con piselli',category:'vegetariano',tags:['riso','piselli','verdure'],allergens:[],time:'30 min',ingredients:[['Riso',320,'g'],['Piselli',350,'g']],steps:['Cuoci i piselli.','Aggiungi il riso.','Porta a cottura con acqua o brodo.']},
+ {name:'Pasta ricotta e zucchine',category:'formaggio',tags:['pasta','ricotta','zucchine'],allergens:['glutine','latte'],time:'25 min',ingredients:[['Pasta',320,'g'],['Ricotta',250,'g'],['Zucchine',2,'pz']],steps:['Cuoci le zucchine.','Amalgama la ricotta con poca acqua di cottura.','Unisci pasta, zucchine e crema di ricotta.']},
+ {name:'Pasta ricotta e pomodoro',category:'formaggio',tags:['pasta','ricotta','pomodoro'],allergens:['glutine','latte'],time:'20 min',ingredients:[['Pasta',320,'g'],['Ricotta',250,'g'],['Passata di pomodoro',300,'g']],steps:['Scalda il pomodoro.','Unisci la ricotta a fuoco spento.','Condisci la pasta.']},
+ {name:'Polenta con verdure e formaggio',category:'formaggio',tags:['polenta','verdure','formaggio'],allergens:['latte'],time:'40 min',ingredients:[['Farina per polenta',350,'g'],['Verdure miste',500,'g'],['Formaggio',180,'g']],steps:['Cuoci le verdure.','Prepara la polenta.','Servi con verdure e una piccola quantità di formaggio.']},
+ {name:'Piadina con ricotta e verdure',category:'formaggio',tags:['piadina','ricotta','verdure'],allergens:['glutine','latte'],time:'20 min',ingredients:[['Piadine',4,'pz'],['Ricotta',250,'g'],['Verdure miste',400,'g']],steps:['Cuoci le verdure.','Scalda le piadine.','Farcisci con ricotta e verdure.']},
+
+ {name:'Zuppa di ceci e patate',category:'legumi',tags:['ceci','patate','legumi'],allergens:[],time:'35 min',ingredients:[['Ceci cotti',350,'g'],['Patate',500,'g'],['Carote',2,'pz']],steps:['Cuoci patate e carote.','Aggiungi i ceci.','Lascia insaporire e schiaccia una parte se desideri una consistenza più cremosa.']},
+ {name:'Polpette di lenticchie',category:'legumi',tags:['lenticchie','legumi'],allergens:['uova','glutine'],time:'40 min',ingredients:[['Lenticchie cotte',400,'g'],['Patate',300,'g'],['Uova',1,'pz'],['Pangrattato',70,'g']],steps:['Schiaccia lenticchie e patate.','Unisci uovo e pangrattato.','Forma le polpette e cuoci in forno.']},
+ {name:'Burger di ceci e patate',category:'legumi',tags:['ceci','patate','legumi'],allergens:['glutine'],time:'40 min',ingredients:[['Ceci cotti',400,'g'],['Patate',350,'g'],['Pangrattato',60,'g']],steps:['Schiaccia ceci e patate.','Aggiungi pangrattato fino a ottenere un composto modellabile.','Forma i burger e cuoci in forno.']},
+ {name:'Insalata di riso con verdure e ceci',category:'legumi',tags:['riso','ceci','verdure','legumi'],allergens:[],time:'30 min',ingredients:[['Riso',300,'g'],['Ceci cotti',250,'g'],['Verdure miste',400,'g']],steps:['Cuoci il riso e lascialo intiepidire.','Cuoci o prepara le verdure.','Unisci ceci, riso e verdure.']},
+ {name:'Pasta con crema di piselli',category:'legumi',tags:['pasta','piselli','legumi'],allergens:['glutine'],time:'25 min',ingredients:[['Pasta',320,'g'],['Piselli',400,'g']],steps:['Cuoci i piselli.','Frullane una parte.','Condisci la pasta con la crema e i piselli restanti.']},
+
+ {name:'Pasta con melanzane e pomodoro',category:'vegetariano',tags:['pasta','melanzane','pomodoro','verdure'],allergens:['glutine'],time:'35 min',ingredients:[['Pasta',320,'g'],['Melanzane',2,'pz'],['Passata di pomodoro',350,'g']],steps:['Cuoci le melanzane a cubetti.','Aggiungi la passata.','Condisci la pasta.']},
+ {name:'Riso con zucca e piselli',category:'vegetariano',tags:['riso','zucca','piselli','verdure'],allergens:[],time:'35 min',ingredients:[['Riso',320,'g'],['Zucca',400,'g'],['Piselli',250,'g']],steps:['Cuoci zucca e piselli.','Aggiungi il riso.','Porta a cottura con acqua o brodo.']},
+ {name:'Patate e verdure al forno con hummus',category:'legumi',tags:['patate','verdure','ceci','hummus','legumi'],allergens:['sesamo'],time:'45 min',ingredients:[['Patate',700,'g'],['Verdure miste',600,'g'],['Hummus',250,'g']],steps:['Taglia patate e verdure.','Cuoci in forno.','Servi con hummus a parte.']},
+ {name:'Zuppa di fagioli e verdure',category:'legumi',tags:['fagioli','verdure','legumi'],allergens:[],time:'40 min',ingredients:[['Fagioli cotti',350,'g'],['Verdure miste',600,'g'],['Patate',300,'g']],steps:['Cuoci le verdure e le patate.','Aggiungi i fagioli.','Continua la cottura e regola la consistenza.']},
+ {name:'Straccetti di pollo con zucchine',category:'carne',tags:['pollo','zucchine','carne'],allergens:[],time:'30 min',ingredients:[['Petto di pollo',550,'g'],['Zucchine',3,'pz'],['Pane',250,'g']],steps:['Taglia pollo e zucchine.','Cuoci prima le zucchine e poi il pollo fino a completa cottura.','Servi con pane.']},
+ {name:'Tacchino al pomodoro con patate',category:'carne',tags:['tacchino','pomodoro','patate','carne'],allergens:[],time:'40 min',ingredients:[['Tacchino',550,'g'],['Patate',600,'g'],['Passata di pomodoro',250,'g']],steps:['Cuoci le patate a pezzi.','Aggiungi il tacchino.','Unisci il pomodoro e completa la cottura.']}
+];
+const RECIPE_DETAILS=Object.fromEntries(COOKBOOK.map(r=>[r.name,r]));
+
+const SIMPLE_MEALS=[
+ {name:'Yogurt bianco e banana',group:'breakfast',tags:['yogurt','banana','frutta'],allergens:['latte'],ingredients:[['Yogurt bianco',1,''],['Banane',1,'']]},
+ {name:'Latte e pane con marmellata',group:'breakfast',tags:['latte','pane','marmellata'],allergens:['latte','glutine'],ingredients:[['Latte',1,''],['Pane',1,''],['Marmellata',1,'']]},
+ {name:'Yogurt, avena e frutta',group:'breakfast',tags:['yogurt','avena','frutta'],allergens:['latte','glutine'],ingredients:[['Yogurt bianco',1,''],['Fiocchi di avena',1,''],['Frutta',1,'']]},
+ {name:'Pane e ricotta con frutta',group:'breakfast',tags:['pane','ricotta','frutta'],allergens:['latte','glutine'],ingredients:[['Pane',1,''],['Ricotta',1,''],['Frutta',1,'']]},
+ {name:'Pancake semplici e frutta',group:'breakfast',tags:['pancake','uova','frutta'],allergens:['uova','glutine','latte'],ingredients:[['Farina',1,''],['Uova',1,''],['Latte',1,''],['Frutta',1,'']]},
+ {name:'Frutta fresca',group:'snack',tags:['frutta'],allergens:[],ingredients:[['Frutta',1,'']]},
+ {name:'Yogurt bianco',group:'snack',tags:['yogurt'],allergens:['latte'],ingredients:[['Yogurt bianco',1,'']]},
+ {name:'Pane e ricotta',group:'snack',tags:['pane','ricotta'],allergens:['glutine','latte'],ingredients:[['Pane',1,''],['Ricotta',1,'']]},
+ {name:'Pane e olio',group:'snack',tags:['pane'],allergens:['glutine'],ingredients:[['Pane',1,'']]},
+ {name:'Banana schiacciata',group:'snack',tags:['banana','frutta'],allergens:[],ingredients:[['Banane',1,'']]}
+];
+
+const BABY_MEALS={
+ breakfast:['Latte secondo la sua routine','Crema di cereali già introdotta','Pappa prevista dallo svezzamento'],
+ snack:['Frutta già introdotta','Latte secondo la sua routine','Merenda prevista dallo svezzamento'],
+ lunch:['Pappa prevista dallo svezzamento','Crema di cereali già introdotta','Pasto dello svezzamento'],
+ dinner:['Pappa prevista dallo svezzamento','Crema di riso già introdotta','Pasto dello svezzamento']
 };
+
 function isoFromLocal(date,time){return new Date(`${date}T${time||'12:00'}:00`).toISOString()}
 function localDateFromIso(iso){return dateKey(new Date(iso))}
 function localTimeFromIso(iso){return new Date(iso).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}
@@ -124,7 +191,48 @@ function latestHouse(id){return [...s.houseLogs].filter(x=>x.routineId===id).sor
 function houseName(id){return HOUSE_ROUTINES.find(x=>x.id===id)?.name||id}
 function houseIcon(id){return HOUSE_ROUTINES.find(x=>x.id===id)?.emoji||'🏠'}
 function nextSubDate(k,f){let d=dateObj(k);if(f==='monthly')d.setMonth(d.getMonth()+1);else if(f==='bimonthly')d.setMonth(d.getMonth()+2);else if(f==='quarterly')d.setMonth(d.getMonth()+3);else if(f==='semiannual')d.setMonth(d.getMonth()+6);else if(f==='annual')d.setFullYear(d.getFullYear()+1);return dateKey(d)}
-function openRecipe(name){let r=RECIPE_DETAILS[name]||{time:'30 min',ingredients:[name,'Olio EVO','Ingredienti a piacere'],steps:['Prepara gli ingredienti.','Cuoci completamente.','Servi.']};recipeDialog.dataset.recipe=name;recipeTitle.textContent=name;recipeBody.innerHTML=`<div class="recipeTime">⏱️ ${esc(r.time)}</div><h4>Ingredienti</h4><ul>${r.ingredients.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h4>Preparazione</h4><ol>${r.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="adaptation"><b>👧👶 Bambini</b><br>Adatta sale, consistenza e dimensione dei pezzi all’età di Caty e Kiko.</div>`;recipeDialog.showModal()}
+function recipeStatus(name){return s.recipeFeedback?.[name]||''}
+function setRecipeStatus(name,status){
+ s.recipeFeedback=s.recipeFeedback||{};
+ if(s.recipeFeedback[name]===status)delete s.recipeFeedback[name];
+ else s.recipeFeedback[name]=status;
+ save();
+ openRecipe(name);
+}
+function ingredientText(i){
+ if(!Array.isArray(i))return String(i);
+ let [name,qty,unit]=i;
+ return `${name}${qty?` — ${qty}${unit?` ${unit}`:''}`:''}`;
+}
+function openRecipe(name){
+ let r=RECIPE_DETAILS[name];
+ if(!r){
+  recipeDialog.dataset.recipe='';
+  recipeTitle.textContent=name||'Pasto manuale';
+  recipeBody.innerHTML=`<p class="muted">Questo pasto è stato scritto manualmente. Non serve una ricetta: potete modificarlo direttamente nel menu.</p>`;
+  recipeToShop.style.display='none';
+  recipeDialog.showModal();
+  return
+ }
+ recipeToShop.style.display='';
+ recipeDialog.dataset.recipe=name;
+ recipeTitle.textContent=name;
+ let st=recipeStatus(name);
+ recipeBody.innerHTML=`
+  <div class="recipeTime">⏱️ ${esc(r.time)} · ${categoryLabel(r.category)}</div>
+  <div class="recipeFeedback">
+   <button class="${st==='favorite'?'active':''}" data-rfeedback="favorite">❤️ Preferita</button>
+   <button class="${st==='liked'?'active':''}" data-rfeedback="liked">👍 Piaciuta</button>
+   <button class="${st==='avoid'?'avoid active':''}" data-rfeedback="avoid">👎 Non riproporre</button>
+  </div>
+  <h4>Ingredienti</h4>
+  <ul>${r.ingredients.map(x=>`<li>${esc(ingredientText(x))}</li>`).join('')}</ul>
+  <h4>Preparazione</h4>
+  <ol>${r.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+  <div class="adaptation"><b>👧👶 Bambini</b><br>La ricetta può essere sostituita direttamente nel menu con il pasto realmente previsto per Caty o Kiko.</div>`;
+ recipeBody.querySelectorAll('[data-rfeedback]').forEach(b=>b.onclick=()=>setRecipeStatus(name,b.dataset.rfeedback));
+ recipeDialog.showModal()
+}
 
 function maintenanceIcon(type){return ({Caldaia:'🔥',Climatizzatore:'❄️',Idraulico:'🚰',Elettricista:'⚡',Elettrodomestico:'🔌','Manutenzione generica':'🧰',Altro:'🏠'})[type]||'🧰'}
 function autoIcon(type){return ({Assicurazione:'🛡️',Bollo:'📄',Revisione:'🔍',Tagliando:'🔧',Gomme:'🛞',Manutenzione:'🧰',Benzina:'⛽',Parcheggio:'🅿️',Pedaggio:'🛣️',Lavaggio:'🧼',Riparazione:'🔧',Accessorio:'🛒',Altro:'🚗'})[type]||'🚗'}
@@ -133,6 +241,19 @@ function ensureExpenseOnce(source,sourceId,name,amount,category,date,person=null
  if(!Number(amount)||Number(amount)<=0)return;
  if(s.expenses.some(x=>x.source===source&&x.sourceId===sourceId))return;
  s.expenses.push({id:crypto.randomUUID(),name,amount:Number(amount),category,person,month:monthKey(dateObj(date)),date,recurring:false,source,sourceId});
+}
+
+function appleMapsUrl(location){
+ return 'https://maps.apple.com/?q='+encodeURIComponent(location||'');
+}
+function googleMapsUrl(location){
+ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(location||'');
+}
+function safeExternalUrl(url){
+ try{
+  let u=new URL(url);
+  return /^https?:$/.test(u.protocol)?u.href:'';
+ }catch{return ''}
 }
 function setCloudStatus(mode,text){
  if(!cloudStatus)return;
@@ -167,6 +288,7 @@ function normalizeRemoteState(data){
  out.menu=out.menu||{};
  out.profiles={...DEFAULT.profiles,...(out.profiles||{})};
  out.menuBackup=out.menuBackup||null;
+ out.recipeFeedback=out.recipeFeedback&&typeof out.recipeFeedback==='object'?out.recipeFeedback:{};
  out.houseLogs=Array.isArray(out.houseLogs)?out.houseLogs:[];
  out.subscriptions=Array.isArray(out.subscriptions)?out.subscriptions:[];
  out.maintenance=Array.isArray(out.maintenance)?out.maintenance:[];
@@ -532,50 +654,104 @@ function renderQuick(){
 function openQuick(){quickPerson='caty';renderQuick();quickDialog.showModal()}
 navQuick.onclick=openQuick;quickRecord.onclick=openQuick;
 
-const RECIPES=[
- {name:'Pasta al pomodoro',tags:['pasta','pomodoro'],min:12,allergens:['glutine']},
- {name:'Pasta e lenticchie',tags:['pasta','legumi','lenticchie'],min:10,allergens:['glutine']},
- {name:'Risotto con zucchine',tags:['riso','zucchine'],min:8,allergens:[]},
- {name:'Riso con verdure e pollo',tags:['riso','verdure','pollo'],min:10,allergens:[]},
- {name:'Polpette di tacchino e patate',tags:['tacchino','patate'],min:10,allergens:[]},
- {name:'Frittata con verdure',tags:['uova','verdure'],min:10,allergens:['uova']},
- {name:'Pesce al forno con patate',tags:['pesce','patate'],min:10,allergens:['pesce']},
- {name:'Minestra di verdure e cereali',tags:['verdure','cereali'],min:10,allergens:['glutine']},
- {name:'Gnocchi al pomodoro',tags:['patate','pomodoro'],min:12,allergens:['glutine']},
- {name:'Cous cous con verdure',tags:['cous cous','verdure'],min:12,allergens:['glutine']},
- {name:'Vellutata di zucca e patate',tags:['zucca','patate'],min:6,allergens:[]},
- {name:'Crema di mais e tapioca con verdure',tags:['mais','tapioca','verdure'],min:6,allergens:[]},
- {name:'Crema di riso con verdure',tags:['riso','verdure'],min:6,allergens:[]},
- {name:'Passato di verdure con patata',tags:['verdure','patate'],min:6,allergens:[]},
- {name:'Pasta con crema di zucchine',tags:['pasta','zucchine'],min:10,allergens:['glutine']},
- {name:'Riso con piselli',tags:['riso','piselli'],min:10,allergens:[]},
- {name:'Hamburger di legumi e patate',tags:['legumi','patate'],min:12,allergens:[]},
- {name:'Pasta con ricotta e verdure',tags:['pasta','ricotta','verdure'],min:12,allergens:['glutine','latte']}
-];
 function csv(v){return String(v||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean)}
-function profileAllowed(recipe,p){
+function profileAllowed(item,p){
+ if(!p)return true;
  let dislikes=csv(p.dislikes),allergens=csv(p.allergens);
- if(recipe.allergens.some(a=>allergens.some(x=>a.includes(x)||x.includes(a))))return false;
- if(dislikes.some(d=>recipe.tags.some(t=>t.includes(d)||d.includes(t))||recipe.name.toLowerCase().includes(d)))return false;
+ let itemAllergens=item.allergens||[],tags=item.tags||[],name=(item.name||'').toLowerCase();
+ if(itemAllergens.some(a=>allergens.some(x=>a.includes(x)||x.includes(a))))return false;
+ if(dislikes.some(d=>tags.some(t=>t.includes(d)||d.includes(t))||name.includes(d)))return false;
  return true
 }
-function familyRecipePool(){
- let profiles=[s.profiles.caty,s.profiles.kiko,s.profiles.jj,s.profiles.kiki].filter(Boolean);
- return RECIPES.filter(r=>profiles.every(p=>profileAllowed(r,p)))
+function cookbookAllowedFor(ids){
+ return COOKBOOK.filter(r=>
+  ids.every(id=>profileAllowed(r,s.profiles[id])) &&
+  recipeStatus(r.name)!=='avoid'
+ )
+}
+function simpleAllowedFor(id,group){
+ return SIMPLE_MEALS.filter(x=>x.group===group&&profileAllowed(x,s.profiles[id]))
 }
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-function adaptation(recipe,id){
- let p=s.profiles[id]||{},age=Number(p.ageMonths||0);
- if(age<8)return `Per ${personName(id)}: consistenza e ingredienti da adattare alla fase alimentare indicata dal pediatra.`;
- if(age<12)return `Per ${personName(id)}: porzione morbida/sminuzzata e senza aggiunte non adatte all’età.`;
- if(age<24)return `Per ${personName(id)}: stessa base familiare, taglio e consistenza adatti.`;
- return `Per ${personName(id)}: porzione familiare adeguata all’età.`
+function categoryLabel(c){return ({legumi:'🫘 Legumi',pesce:'🐟 Pesce',uova:'🥚 Uova',carne:'🍗 Carne',vegetariano:'🥦 Vegetariano',formaggio:'🧀 Formaggio'})[c]||c}
+function preferenceScore(recipe,ids){
+ let score=Math.random()*2;
+ ids.forEach(id=>{
+  let likes=csv(s.profiles[id]?.likes);
+  likes.forEach(l=>{if(recipe.tags.some(t=>t.includes(l)||l.includes(t))||recipe.name.toLowerCase().includes(l))score+=2})
+ });
+ let feedback=recipeStatus(recipe.name);
+ if(feedback==='favorite')score+=4;
+ if(feedback==='liked')score+=2;
+ return score
+}
+function pickRecipe(ids,category,current='',used=new Set()){
+ let pool=cookbookAllowedFor(ids).filter(r=>!category||r.category===category);
+ if(!pool.length)pool=cookbookAllowedFor(ids);
+ let unused=pool.filter(r=>!used.has(r.name)&&r.name!==current);
+ if(unused.length)pool=unused;
+ else{
+  let other=pool.filter(r=>r.name!==current);
+  if(other.length)pool=other
+ }
+ return [...pool].sort((a,b)=>preferenceScore(b,ids)-preferenceScore(a,ids))[0]||null
+}
+function pickSimple(id,group,current=''){
+ let pool=simpleAllowedFor(id,group).filter(x=>x.name!==current);
+ if(!pool.length)pool=SIMPLE_MEALS.filter(x=>x.group===group&&x.name!==current);
+ return shuffle(pool)[0]||null
+}
+function babyPick(group,current=''){
+ let pool=(BABY_MEALS[group]||BABY_MEALS.snack).filter(x=>x!==current);
+ return shuffle(pool.length?pool:BABY_MEALS[group])[0]||''
+}
+function childMealFromAdult(id,adultRecipe,meal){
+ let age=Number(s.profiles[id]?.ageMonths||0);
+ if(age<12)return babyPick(meal==='lunch'?'lunch':'dinner');
+ if(adultRecipe&&profileAllowed(adultRecipe,s.profiles[id])&&recipeStatus(adultRecipe.name)!=='avoid')return adultRecipe.name;
+ return pickRecipe([id],null)?.name||adultRecipe?.name||''
+}
+function balanceSchedule(){
+ return shuffle(['legumi','pesce','uova','vegetariano','carne','legumi','pesce','uova','carne','vegetariano','legumi','carne','formaggio','vegetariano'])
 }
 generateMenu.onclick=()=>{
  s.menuBackup=JSON.parse(JSON.stringify(s.menu));
- let pool=familyRecipePool();if(pool.length<5){alert('Con i filtri attuali rimangono poche ricette. Controlla allergeni e cibi non graditi nei profili.');return}
- let choices=shuffle(pool),idx=0;
- for(let i=0;i<7;i++){let d=offsetDate(i),k=dateKey(d);if(idx>=choices.length){choices=shuffle(pool);idx=0}let lunch=choices[idx++];if(idx>=choices.length){choices=shuffle(pool);idx=0}let dinner=choices[idx++];s.menu[k]={lunch:lunch.name,dinner:dinner.name,lunchAdapt:{caty:adaptation(lunch,'caty'),kiko:adaptation(lunch,'kiko')},dinnerAdapt:{caty:adaptation(dinner,'caty'),kiko:adaptation(dinner,'kiko')}}}
+ let cats=balanceSchedule(),used=new Set(),ci=0;
+ for(let i=0;i<7;i++){
+  let d=offsetDate(i),k=dateKey(d);
+  let breakfast=pickSimple('jj','breakfast')?.name||'Colazione a scelta';
+  let lunch=pickRecipe(['jj','kiki'],cats[ci++],null,used);if(lunch)used.add(lunch.name);
+  let dinner=pickRecipe(['jj','kiki'],cats[ci++],null,used);if(dinner)used.add(dinner.name);
+
+  let catyBreakfast=pickSimple('caty','breakfast')?.name||breakfast;
+  let catySnack1=pickSimple('caty','snack')?.name||'Frutta fresca';
+  let catySnack2=pickSimple('caty','snack',catySnack1)?.name||'Yogurt bianco';
+
+  let kikoAge=Number(s.profiles.kiko?.ageMonths||0);
+  let kikoBreakfast=kikoAge<12?babyPick('breakfast'):(pickSimple('kiko','breakfast')?.name||breakfast);
+  let kikoSnack1=kikoAge<12?babyPick('snack'):(pickSimple('kiko','snack')?.name||'Frutta fresca');
+  let kikoSnack2=kikoAge<12?babyPick('snack',kikoSnack1):(pickSimple('kiko','snack',kikoSnack1)?.name||'Yogurt bianco');
+
+  s.menu[k]={
+   breakfast,
+   lunch:lunch?.name||'',
+   dinner:dinner?.name||'',
+   caty:{
+    breakfast:catyBreakfast,
+    snackAM:catySnack1,
+    lunch:childMealFromAdult('caty',lunch,'lunch'),
+    snackPM:catySnack2,
+    dinner:childMealFromAdult('caty',dinner,'dinner')
+   },
+   kiko:{
+    breakfast:kikoBreakfast,
+    snackAM:kikoSnack1,
+    lunch:childMealFromAdult('kiko',lunch,'lunch'),
+    snackPM:kikoSnack2,
+    dinner:childMealFromAdult('kiko',dinner,'dinner')
+   }
+  }
+ }
  save();renderMenu()
 };
 undoMenu.onclick=()=>{
@@ -583,109 +759,279 @@ undoMenu.onclick=()=>{
  s.menu=JSON.parse(JSON.stringify(s.menuBackup));
  s.menuBackup=null;
  save();
- renderMenu();
+ renderMenu()
 };
+
+function mealValue(m,person,meal){
+ return person==='adult'?(m?.[meal]||''):(m?.[person]?.[meal]||'')
+}
+function setMealValue(k,person,meal,value){
+ s.menu[k]=s.menu[k]||{};
+ if(person==='adult')s.menu[k][meal]=value;
+ else{
+  s.menu[k][person]=s.menu[k][person]||{};
+  s.menu[k][person][meal]=value
+ }
+}
+function mealRow(k,person,meal,icon,label,value){
+ let known=!!RECIPE_DETAILS[value];
+ return `<div class="mealEdit recipeMeal">
+  <label>${icon} ${label}</label>
+  <input data-menu="${k}" data-person="${person}" data-meal="${meal}" value="${esc(value||'')}" placeholder="Scrivi qui...">
+  <button class="mealSwap" data-swap="${k}" data-swap-person="${person}" data-swap-meal="${meal}" title="Cambia solo questo pasto">🔄</button>
+  <button class="recipeBtn ${known?'':'mutedBtn'}" data-recipe="${esc(value||'')}" title="${known?'Apri ricetta':'Pasto manuale'}">👨‍🍳</button>
+ </div>`
+}
 function renderMenu(){
  menuWeek.innerHTML='';
- for(let i=0;i<7;i++){let d=offsetDate(i),k=dateKey(d),m=s.menu[k]||{};let el=document.createElement('div');el.className='menuDay'+(i===0?' today':'');el.innerHTML=`<h3>${i===0?'Oggi · ':''}${longDate(d)}</h3>
- <div class="mealEdit recipeMeal"><label>🍝 Pranzo</label><input data-menu="${k}" data-meal="lunch" value="${esc(m.lunch||'')}" placeholder="Cosa mangiamo?"><button data-recipe="${esc(m.lunch||'')}">👨‍🍳</button></div>
- ${m.lunchAdapt?.caty?`<div class="adaptation"><b>Adattamento generato</b><br>👧 ${esc(m.lunchAdapt.caty)}<br>👶 ${esc(m.lunchAdapt.kiko)}</div>`:''}
- <div class="mealEdit recipeMeal"><label>🌙 Cena</label><input data-menu="${k}" data-meal="dinner" value="${esc(m.dinner||'')}" placeholder="Cosa mangiamo?"><button data-recipe="${esc(m.dinner||'')}">👨‍🍳</button></div>
- ${m.dinnerAdapt?.caty?`<div class="adaptation"><b>Adattamento generato</b><br>👧 ${esc(m.dinnerAdapt.caty)}<br>👶 ${esc(m.dinnerAdapt.kiko)}</div>`:''}`;menuWeek.appendChild(el)}
- menuWeek.querySelectorAll('[data-menu]').forEach(inp=>inp.onchange=()=>{
- let k=inp.dataset.menu,meal=inp.dataset.meal;
- s.menu[k]=s.menu[k]||{};
- s.menu[k][meal]=inp.value.trim();
- if(meal==='lunch')delete s.menu[k].lunchAdapt;
- if(meal==='dinner')delete s.menu[k].dinnerAdapt;
- save();
- renderMenu();
-})
+ for(let i=0;i<7;i++){
+  let d=offsetDate(i),k=dateKey(d),m=s.menu[k]||{},caty=m.caty||{},kiko=m.kiko||{};
+  let el=document.createElement('div');
+  el.className='menuDay'+(i===0?' today':'');
+  el.innerHTML=`
+   <h3>${i===0?'Oggi · ':''}${longDate(d)}</h3>
+   <div class="menuPersonBlock adultsMenu">
+    <h4>👨👩 JJ + Kiki</h4>
+    ${mealRow(k,'adult','breakfast','☕','Colazione',m.breakfast||'')}
+    ${mealRow(k,'adult','lunch','🍝','Pranzo',m.lunch||'')}
+    ${mealRow(k,'adult','dinner','🌙','Cena',m.dinner||'')}
+   </div>
 
- menuWeek.querySelectorAll('[data-recipe]').forEach(b=>b.onclick=()=>{if(b.dataset.recipe)openRecipe(b.dataset.recipe)});
+   <details class="childMenu" ${i===0?'open':''}>
+    <summary>👧 Caty · 5 momenti della giornata</summary>
+    <div class="childMenuBody">
+     ${mealRow(k,'caty','breakfast','🥛','Colazione',caty.breakfast||'')}
+     ${mealRow(k,'caty','snackAM','🍎','Merenda mattina',caty.snackAM||'')}
+     ${mealRow(k,'caty','lunch','🍝','Pranzo',caty.lunch||m.lunch||'')}
+     ${mealRow(k,'caty','snackPM','🍌','Merenda pomeriggio',caty.snackPM||'')}
+     ${mealRow(k,'caty','dinner','🌙','Cena',caty.dinner||m.dinner||'')}
+    </div>
+   </details>
+
+   <details class="childMenu" ${i===0?'open':''}>
+    <summary>👶 Kiko · svezzamento / 5 momenti</summary>
+    <div class="childMenuBody">
+     ${mealRow(k,'kiko','breakfast','🥛','Colazione',kiko.breakfast||'')}
+     ${mealRow(k,'kiko','snackAM','🍎','Merenda mattina',kiko.snackAM||'')}
+     ${mealRow(k,'kiko','lunch','🥣','Pranzo',kiko.lunch||'')}
+     ${mealRow(k,'kiko','snackPM','🍌','Merenda pomeriggio',kiko.snackPM||'')}
+     ${mealRow(k,'kiko','dinner','🌙','Cena',kiko.dinner||'')}
+    </div>
+   </details>`;
+  menuWeek.appendChild(el)
+ }
+ menuWeek.querySelectorAll('[data-menu]').forEach(inp=>inp.onchange=()=>{
+  setMealValue(inp.dataset.menu,inp.dataset.person,inp.dataset.meal,inp.value.trim());
+  save();
+  renderMenu()
+ });
+ menuWeek.querySelectorAll('[data-recipe]').forEach(b=>b.onclick=()=>openRecipe(b.dataset.recipe));
+ menuWeek.querySelectorAll('[data-swap]').forEach(b=>b.onclick=()=>swapSingleMeal(b.dataset.swap,b.dataset.swapPerson,b.dataset.swapMeal));
+ renderMenuBalance()
 }
+function swapSingleMeal(k,person,meal){
+ let m=s.menu[k]||{},current=mealValue(m,person,meal),next='';
+ if(person==='adult'){
+  if(meal==='breakfast')next=pickSimple('jj','breakfast',current)?.name||current;
+  else next=pickRecipe(['jj','kiki'],null,current)?.name||current
+ }else{
+  let age=Number(s.profiles[person]?.ageMonths||0);
+  if(age<12){
+   let group=meal==='breakfast'?'breakfast':(meal==='snackAM'||meal==='snackPM'?'snack':meal);
+   next=babyPick(group,current)
+  }else if(meal==='breakfast'){
+   next=pickSimple(person,'breakfast',current)?.name||current
+  }else if(meal==='snackAM'||meal==='snackPM'){
+   next=pickSimple(person,'snack',current)?.name||current
+  }else{
+   next=pickRecipe([person],null,current)?.name||current
+  }
+ }
+ setMealValue(k,person,meal,next);
+ save();renderMenu()
+}
+function renderMenuBalance(){
+ let counts={legumi:0,pesce:0,uova:0,carne:0,vegetariano:0,formaggio:0},known=0;
+ for(let i=0;i<7;i++){
+  let m=s.menu[dateKey(offsetDate(i))]||{};
+  [m.lunch,m.dinner].forEach(name=>{
+   let r=RECIPE_DETAILS[name];
+   if(r){counts[r.category]=(counts[r.category]||0)+1;known++}
+  })
+ }
+ let entries=[
+  ['🫘','Legumi',counts.legumi],['🐟','Pesce',counts.pesce],['🥚','Uova',counts.uova],
+  ['🍗','Carne',counts.carne],['🥦','Vegetariano',counts.vegetariano],['🧀','Formaggio',counts.formaggio]
+ ];
+ menuBalance.innerHTML=known?entries.map(x=>`<div class="balanceChip"><span>${x[0]} ${x[1]}</span><b>${x[2]}</b></div>`).join(''):'<div class="muted">Genera la settimana per vedere la varietà dei pasti principali.</div>'
+}
+function mealIngredients(name){
+ let r=RECIPE_DETAILS[name];
+ if(r)return r.ingredients;
+ let simple=SIMPLE_MEALS.find(x=>x.name===name);
+ if(simple)return simple.ingredients;
+ if(!name)return [];
+ return [[name,'','']]
+}
+function addMenuWeekToShopping(){
+ let aggregated=new Map();
+ let add=(item)=>{
+  let [name,qty,unit]=Array.isArray(item)?item:[item,'',''];
+  let key=String(name).trim().toLowerCase();
+  if(!key)return;
+  if(!aggregated.has(key))aggregated.set(key,{name:String(name).trim(),qty:0,unit:unit||'',hasNumeric:false});
+  let a=aggregated.get(key);
+  if(typeof qty==='number'&&Number.isFinite(qty)){
+   if(!a.unit||a.unit===unit){a.qty+=qty;a.unit=unit||a.unit;a.hasNumeric=true}
+  }
+ };
+ for(let i=0;i<7;i++){
+  let m=s.menu[dateKey(offsetDate(i))]||{};
+  let names=[m.breakfast,m.lunch,m.dinner];
+  let c=m.caty||{},b=m.kiko||{};
+  names.push(c.breakfast,c.snackAM,c.lunch,c.snackPM,c.dinner,b.breakfast,b.snackAM,b.lunch,b.snackPM,b.dinner);
+  // Avoid counting the exact same shared meal twice on the same day.
+  [...new Set(names.filter(Boolean))].forEach(name=>mealIngredients(name).forEach(add))
+ }
+ aggregated.forEach(a=>{
+  let qty=a.hasNumeric?`${a.qty}${a.unit?` ${a.unit}`:''}`:'';
+  let existing=s.shopping.find(x=>x.text.toLowerCase()===a.name.toLowerCase()&&!x.done);
+  if(existing){
+   if(qty&&!existing.qty)existing.qty=qty
+  }else s.shopping.push({id:crypto.randomUUID(),text:a.name,qty,category:'Alimentari',url:'',expectedPrice:0,actualPrice:0,done:false,source:'menu'})
+ });
+ save();go('shop')
+}
+menuToShop.onclick=addMenuWeekToShopping;
 function renderProfiles(){
  let people=[['caty','👧 Caty'],['kiko','👶 Kiko'],['jj','👨 JJ'],['kiki','👩 Kiki']];
- profileForms.innerHTML=people.map(([id,label])=>{let p=s.profiles[id]||{};return `<form class="profileCard" data-profile="${id}"><h3>${label}</h3><div class="profileGrid"><label>Età in mesi<input name="age" type="number" min="0" value="${Number(p.ageMonths||0)}"></label><label>Piace<input name="likes" value="${esc(p.likes||'')}" placeholder="es. pasta, zucchine"></label><label>Non piace<input name="dislikes" value="${esc(p.dislikes||'')}" placeholder="es. piselli, pesce"></label><label>Allergeni / esclusioni<input name="allergens" value="${esc(p.allergens||'')}" placeholder="es. latte, uova"></label></div><button class="primary">Salva profilo</button></form>`}).join('');
- profileForms.querySelectorAll('[data-profile]').forEach(f=>f.onsubmit=e=>{e.preventDefault();let id=f.dataset.profile,d=new FormData(f);s.profiles[id]={ageMonths:Number(d.get('age')||0),likes:d.get('likes').trim(),dislikes:d.get('dislikes').trim(),allergens:d.get('allergens').trim()};save();alert('Profilo salvato')})
+ profileForms.innerHTML=`<div class="card profileIntro"><b>Come usarli</b><p class="muted">Scrivi parole separate da virgola. Le preferenze aiutano il generatore, ma non bloccano mai la modifica manuale del menu.</p></div>`+
+ people.map(([id,label])=>{
+  let p=s.profiles[id]||{};
+  return `<form class="profileCard" data-profile="${id}">
+   <h3>${label}</h3>
+   <div class="profileGrid">
+    <label>Età in mesi<input name="age" type="number" min="0" value="${Number(p.ageMonths||0)}" readonly></label>
+    <label>Piace<input name="likes" value="${esc(p.likes||'')}" placeholder="es. pasta, zucchine"></label>
+    <label>Non piace<input name="dislikes" value="${esc(p.dislikes||'')}" placeholder="es. piselli, pesce"></label>
+    <label>Allergeni / esclusioni<input name="allergens" value="${esc(p.allergens||'')}" placeholder="es. latte, uova"></label>
+   </div>
+   <button class="primary">Salva profilo</button>
+  </form>`
+ }).join('');
+ profileForms.querySelectorAll('[data-profile]').forEach(f=>f.onsubmit=e=>{
+  e.preventDefault();
+  let id=f.dataset.profile,d=new FormData(f),old=s.profiles[id]||{};
+  s.profiles[id]={...old,ageMonths:Number(old.ageMonths||0),likes:d.get('likes').trim(),dislikes:d.get('dislikes').trim(),allergens:d.get('allergens').trim()};
+  save();
+  alert('Profilo salvato')
+ })
 }
 
 function fillHealthPeople(){let opts=[['caty','👧 Caty'],['kiko','👶 Kiko'],['astro','🐶 Astro'],['jj','👨 JJ'],['kiki','👩 Kiki']].map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('');visitPerson.innerHTML=opts;medPerson.innerHTML=opts}
-visitForm.onsubmit=e=>{e.preventDefault();let payload={kind:'visit',person:visitPerson.value,title:visitTitle.value.trim(),date:visitDate.value,time:visitTime.value,note:visitNote.value.trim()};if(visitForm.dataset.edit){let x=s.health.find(v=>v.id===visitForm.dataset.edit);Object.assign(x,payload);delete visitForm.dataset.edit}else s.health.push({id:crypto.randomUUID(),...payload});visitForm.reset();save();renderHealth()};
+visitForm.onsubmit=e=>{
+ e.preventDefault();
+ let payload={
+  kind:'visit',
+  person:visitPerson.value,
+  title:visitTitle.value.trim(),
+  date:visitDate.value,
+  time:visitTime.value,
+  location:visitLocation.value.trim(),
+  mapUrl:safeExternalUrl(visitMapUrl.value.trim()),
+  note:visitNote.value.trim()
+ };
+ if(visitForm.dataset.edit){
+  let x=s.health.find(v=>v.id===visitForm.dataset.edit);
+  Object.assign(x,payload);
+  delete visitForm.dataset.edit;
+ }else{
+  s.health.push({id:crypto.randomUUID(),...payload});
+ }
+ visitForm.reset();
+ save();
+ renderHealth();
+};
 medicineForm.onsubmit=e=>{e.preventDefault();let payload={kind:'medicine',person:medPerson.value,name:medName.value.trim(),title:medName.value.trim(),dose:medDose.value.trim(),date:medDate.value,time:medTime.value,note:medNote.value.trim()};if(medicineForm.dataset.edit){let x=s.health.find(v=>v.id===medicineForm.dataset.edit);Object.assign(x,payload);delete medicineForm.dataset.edit}else s.health.push({id:crypto.randomUUID(),...payload});medicineForm.reset();save();renderHealth()};
 function renderHealth(){
- fillHealthPeople();let today=dateKey(),a=[...s.health].filter(h=>h.date>=today).sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));
- healthList.innerHTML=a.length?a.map(h=>`<div class="row"><span>${h.kind==='visit'?'🩺':'💊'}</span><div class="grow"><b>${esc(h.title)}</b><div class="meta">${personName(h.person)} · ${longDate(dateObj(h.date))}${h.time?' · '+h.time:''}${h.dose?' · '+esc(h.dose):''}${h.note?' · '+esc(h.note):''}</div></div><button class="editBtn" data-health-edit="${h.id}">✎</button><button class="del" data-health="${h.id}">✕</button></div>`).join(''):'<div class="muted">Nessun evento programmato.</div>';
- healthList.querySelectorAll('[data-health]').forEach(b=>b.onclick=()=>{s.health=s.health.filter(h=>h.id!==b.dataset.health);save();renderHealth()});
- healthList.querySelectorAll('[data-health-edit]').forEach(b=>b.onclick=()=>{let h=s.health.find(x=>x.id===b.dataset.healthEdit);if(!h)return;if(h.kind==='visit'){visitPerson.value=h.person;visitTitle.value=h.title;visitDate.value=h.date;visitTime.value=h.time||'';visitNote.value=h.note||'';visitForm.dataset.edit=h.id;visitTitle.focus();scrollTo(0,0)}else{medPerson.value=h.person;medName.value=h.title;medDose.value=h.dose||'';medDate.value=h.date;medTime.value=h.time||'';medNote.value=h.note||'';medicineForm.dataset.edit=h.id;medName.focus();scrollTo(0,0)}})
-}
+ let upcoming=[...s.health]
+  .filter(h=>h.date>=dateKey())
+  .sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
 
-
-function renderMaintenance(){
- let a=[...s.maintenance].sort((x,y)=>x.date.localeCompare(y.date));
- maintenanceList.innerHTML=a.length?a.map(x=>`<div class="row ${x.status==='done'?'done':''}"><span>${maintenanceIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${longDate(dateObj(x.date))}${x.time?' · '+x.time:''} · ${x.status==='done'?'✅ Completata':'⏳ Da fare'}${x.expectedCost?` · Prev. ${euro(x.expectedCost)}`:''}${x.actualCost?` · Eff. ${euro(x.actualCost)}`:''}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div><button class="editBtn" data-maint-edit="${x.id}">✎</button><button class="del" data-maint-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna manutenzione programmata.</div>';
- maintenanceList.querySelectorAll('[data-maint-edit]').forEach(b=>b.onclick=()=>openMaintenance(b.dataset.maintEdit));
- maintenanceList.querySelectorAll('[data-maint-del]').forEach(b=>b.onclick=()=>{s.maintenance=s.maintenance.filter(x=>x.id!==b.dataset.maintDel);save();renderMaintenance()})
-}
-function openMaintenance(id=null){
- editingMaintenanceId=id;let x=id?s.maintenance.find(v=>v.id===id):null;
- maintType.value=x?.type||'Caldaia';maintTitle.value=x?.title||'';maintDate.value=x?.date||dateKey();maintTime.value=x?.time||'';
- maintExpected.value=x?.expectedCost||'';maintActual.value=x?.actualCost||'';maintFrequency.value=x?.frequency||'once';maintStatus.value=x?.status||'planned';
- maintReminder.value=String(x?.reminderDays??7);maintNotify.value=x?.notify||'both';maintNote.value=x?.note||'';maintenanceDialog.showModal()
-}
-addMaintenanceBtn.onclick=()=>openMaintenance();
-maintenanceForm.onsubmit=e=>{
- e.preventDefault();
- let payload={type:maintType.value,title:maintTitle.value.trim(),date:maintDate.value,time:maintTime.value,expectedCost:Number(maintExpected.value||0),actualCost:Number(maintActual.value||0),frequency:maintFrequency.value,status:maintStatus.value,reminderDays:Number(maintReminder.value),notify:maintNotify.value,note:maintNote.value.trim()};
- let x;
- if(editingMaintenanceId){x=s.maintenance.find(v=>v.id===editingMaintenanceId);Object.assign(x,payload)}else{x={id:crypto.randomUUID(),...payload};s.maintenance.push(x)}
- if(x.status==='done'){
-  ensureExpenseOnce('maintenance',x.id,x.title,x.actualCost||x.expectedCost,'Casa',x.date);
-  if(x.frequency!=='once'&&!x.nextCreated){
-   s.maintenance.push({...x,id:crypto.randomUUID(),date:nextRecurringDate(x.date,x.frequency),status:'planned',actualCost:0,nextCreated:false});
-   x.nextCreated=true;
+ healthList.innerHTML=upcoming.length?upcoming.map(h=>{
+  let loc=h.kind==='visit'&&h.location?`<div class="meta">📍 ${esc(h.location)}</div>`:'';
+  let maps='';
+  if(h.kind==='visit'&&h.location){
+   let custom=safeExternalUrl(h.mapUrl||'');
+   maps=`<div class="mapButtons">
+    ${custom?`<a href="${esc(custom)}" target="_blank" rel="noopener">🔗 Link salvato</a>`:''}
+    <a href="${appleMapsUrl(h.location)}" target="_blank" rel="noopener">🍎 Apple Maps</a>
+    <a href="${googleMapsUrl(h.location)}" target="_blank" rel="noopener">📍 Google Maps</a>
+   </div>`;
   }
- }
- maintenanceDialog.close();save();renderMaintenance()
-};
+  return `<div class="row healthRow">
+    <span>${h.kind==='visit'?'🩺':'💊'}</span>
+    <div class="grow">
+      <b>${esc(h.title)}</b>
+      <div class="meta">${personName(h.person)} · ${birthLabel(h.date)}${h.time?' · '+h.time:''}</div>
+      ${loc}
+      ${h.kind==='medicine'&&h.dose?`<div class="meta">Dose: ${esc(h.dose)}</div>`:''}
+      ${h.note?`<div class="meta">${esc(h.note)}</div>`:''}
+      ${maps}
+    </div>
+    <button class="editBtn" data-health-edit="${h.id}">✎</button>
+    <button class="del" data-health="${h.id}">✕</button>
+  </div>`;
+ }).join(''):'<div class="muted">Nessun evento programmato.</div>';
 
-function renderAuto(){
- fuelDate.value=fuelDate.value||dateKey();fuelTime.value=fuelTime.value||new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
- let d=[...s.autoDeadlines].sort((x,y)=>x.date.localeCompare(y.date));
- autoDeadlineList.innerHTML=d.length?d.map(x=>`<div class="row ${x.status==='done'?'done':''}"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${x.type} · ${longDate(dateObj(x.date))}${x.time?' · '+x.time:''}${x.km?` · ${x.km} km`:''}${x.cost?` · ${euro(x.cost)}`:''} · ${x.status==='done'?'✅ Fatto':'⏳ Da fare'}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div><button class="editBtn" data-auto-edit="${x.id}">✎</button><button class="del" data-auto-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna scadenza auto.</div>';
- autoDeadlineList.querySelectorAll('[data-auto-edit]').forEach(b=>b.onclick=()=>openAutoDeadline(b.dataset.autoEdit));
- autoDeadlineList.querySelectorAll('[data-auto-del]').forEach(b=>b.onclick=()=>{s.autoDeadlines=s.autoDeadlines.filter(x=>x.id!==b.dataset.autoDel);save();renderAuto()});
- let e=[...s.autoExpenses].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,30);
- autoExpenseHistory.innerHTML=e.length?e.map(x=>`<div class="row"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.type)} · ${euro(x.amount)}</b><div class="meta">${longDate(new Date(x.at))} · ${localTimeFromIso(x.at)}${x.km?` · ${x.km} km`:''}${x.note?' · '+esc(x.note):''}</div></div><button class="editBtn" data-fuel-edit="${x.id}">✎</button><button class="del" data-fuel-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna spesa auto registrata.</div>';
- autoExpenseHistory.querySelectorAll('[data-fuel-del]').forEach(b=>b.onclick=()=>{let id=b.dataset.fuelDel;s.autoExpenses=s.autoExpenses.filter(x=>x.id!==id);s.expenses=s.expenses.filter(x=>!(x.source==='autoExpense'&&x.sourceId===id));save();renderAuto()});
- autoExpenseHistory.querySelectorAll('[data-fuel-edit]').forEach(b=>b.onclick=()=>{let x=s.autoExpenses.find(v=>v.id===b.dataset.fuelEdit);if(!x)return;fuelForm.dataset.edit=x.id;fuelType.value=x.type;fuelAmount.value=x.amount;fuelKm.value=x.km||'';fuelNote.value=x.note||'';fuelDate.value=localDateFromIso(x.at);fuelTime.value=localTimeFromIso(x.at);fuelAmount.focus();scrollTo(0,0)})
+ healthList.querySelectorAll('[data-health]').forEach(b=>b.onclick=()=>{
+  s.health=s.health.filter(h=>h.id!==b.dataset.health);
+  save();
+  renderHealth();
+ });
+
+ healthList.querySelectorAll('[data-health-edit]').forEach(b=>b.onclick=()=>{
+  let h=s.health.find(x=>x.id===b.dataset.healthEdit);
+  if(!h)return;
+
+  if(h.kind==='visit'){
+   visitPerson.value=h.person;
+   visitTitle.value=h.title;
+   visitDate.value=h.date;
+   visitTime.value=h.time||'';
+   visitLocation.value=h.location||'';
+   visitMapUrl.value=h.mapUrl||'';
+   visitNote.value=h.note||'';
+   visitForm.dataset.edit=h.id;
+   visitTitle.focus();
+   scrollTo(0,0);
+  }else{
+   medPerson.value=h.person;
+   medName.value=h.title;
+   medDose.value=h.dose||'';
+   medDate.value=h.date;
+   medTime.value=h.time||'';
+   medNote.value=h.note||'';
+   medicineForm.dataset.edit=h.id;
+   medName.focus();
+   scrollTo(0,0);
+  }
+ });
 }
-fuelForm.onsubmit=e=>{
- e.preventDefault();let id=fuelForm.dataset.edit||crypto.randomUUID();let payload={id,type:fuelType.value,amount:Number(fuelAmount.value),km:Number(fuelKm.value||0),note:fuelNote.value.trim(),at:isoFromLocal(fuelDate.value,fuelTime.value)};
- if(fuelForm.dataset.edit){let x=s.autoExpenses.find(v=>v.id===id);Object.assign(x,payload);let exp=s.expenses.find(v=>v.source==='autoExpense'&&v.sourceId===id);if(exp){exp.name=payload.type;exp.amount=payload.amount;exp.date=fuelDate.value;exp.month=monthKey(dateObj(fuelDate.value))}}else{s.autoExpenses.push(payload);ensureExpenseOnce('autoExpense',id,payload.type,payload.amount,'Auto',fuelDate.value)}
- delete fuelForm.dataset.edit;fuelForm.reset();save();renderAuto()
-};
-function openAutoDeadline(id=null){
- editingAutoDeadlineId=id;let x=id?s.autoDeadlines.find(v=>v.id===id):null;
- autoDeadlineType.value=x?.type||'Assicurazione';autoDeadlineTitle.value=x?.title||'';autoDeadlineDate.value=x?.date||dateKey();autoDeadlineTime.value=x?.time||'';autoDeadlineCost.value=x?.cost||'';autoDeadlineKm.value=x?.km||'';autoDeadlineFrequency.value=x?.frequency||'once';autoDeadlineStatus.value=x?.status||'planned';autoDeadlineReminder.value=String(x?.reminderDays??7);autoDeadlineNotify.value=x?.notify||'both';autoDeadlineNote.value=x?.note||'';autoDeadlineDialog.showModal()
-}
-addAutoDeadlineBtn.onclick=()=>openAutoDeadline();
-autoDeadlineForm.onsubmit=e=>{
- e.preventDefault();let payload={type:autoDeadlineType.value,title:autoDeadlineTitle.value.trim(),date:autoDeadlineDate.value,time:autoDeadlineTime.value,cost:Number(autoDeadlineCost.value||0),km:Number(autoDeadlineKm.value||0),frequency:autoDeadlineFrequency.value,status:autoDeadlineStatus.value,reminderDays:Number(autoDeadlineReminder.value),notify:autoDeadlineNotify.value,note:autoDeadlineNote.value.trim()};let x;
- if(editingAutoDeadlineId){x=s.autoDeadlines.find(v=>v.id===editingAutoDeadlineId);Object.assign(x,payload)}else{x={id:crypto.randomUUID(),...payload};s.autoDeadlines.push(x)}
- if(x.status==='done'){
-  ensureExpenseOnce('autoDeadline',x.id,x.title,x.cost,'Auto',x.date);
-  if(x.frequency!=='once'&&!x.nextCreated){s.autoDeadlines.push({...x,id:crypto.randomUUID(),date:nextRecurringDate(x.date,x.frequency),status:'planned',nextCreated:false});x.nextCreated=true}
- }
- autoDeadlineDialog.close();save();renderAuto()
-};
 function monthBase(offset=0){let d=new Date();d.setDate(1);d.setMonth(d.getMonth()+offset);d.setHours(12,0,0,0);return d}
 function dayData(k){
  let out=[];
- let menu=s.menu[k];if(menu?.lunch)out.push({icon:'🍝',text:'Pranzo: '+menu.lunch,source:'menu'});if(menu?.dinner)out.push({icon:'🌙',text:'Cena: '+menu.dinner,source:'menu'});
+ let menu=s.menu[k];if(menu?.breakfast)out.push({icon:'☕',text:'Colazione: '+menu.breakfast,source:'menu'});if(menu?.lunch)out.push({icon:'🍝',text:'Pranzo: '+menu.lunch,source:'menu'});if(menu?.dinner)out.push({icon:'🌙',text:'Cena: '+menu.dinner,source:'menu'});
 
  // SALUTE: visite e medicine sempre nel calendario
- s.health.filter(h=>h.date===k).forEach(h=>out.push({icon:h.kind==='visit'?'🩺':'💊',text:`${personName(h.person)}: ${h.title}${h.time?' · '+h.time:''}`,source:'health',id:h.id}));
+ s.health.filter(h=>h.date===k).forEach(h=>out.push({
+ icon:h.kind==='visit'?'🩺':'💊',
+ text:`${personName(h.person)}: ${h.title}${h.time?' · '+h.time:''}${h.kind==='visit'&&h.location?' · 📍 '+h.location:''}`,
+ source:'health',
+ id:h.id,
+ location:h.location||'',
+ mapUrl:h.mapUrl||''
+}));
 
  // Bambini / Astro
  s.events.filter(e=>dateKey(new Date(e.at))===k).forEach(e=>out.push({icon:META[e.type]?.[0]||'•',text:`${personName(e.childId)}: ${META[e.type]?.[1]||e.type} · ${timeLabel(e.at)}`,source:'event',id:e.id}));
@@ -710,7 +1056,14 @@ function renderCalendar(){
  for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length;cells.push(`<button class="calDay ${other?'other':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}">${d.getDate()}${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
  calendarGrid.innerHTML=cells.join('');calendarGrid.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{selectedDate=b.dataset.date;renderCalendarDetails();renderCalendar()});renderCalendarDetails()
 }
-function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedDate);selectedDateTitle.textContent=longDate(d);calendarDetails.innerHTML=a.length?a.map(x=>`<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}</div></div>`).join(''):'<div class="muted">Niente in programma o registrato.</div>'}
+function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedDate);selectedDateTitle.textContent=longDate(d);calendarDetails.innerHTML=a.length?a.map(x=>{
+ let maps=x.source==='health'&&x.location?`<div class="mapButtons">
+   ${safeExternalUrl(x.mapUrl||'')?`<a href="${esc(safeExternalUrl(x.mapUrl))}" target="_blank" rel="noopener">🔗 Link salvato</a>`:''}
+   <a href="${appleMapsUrl(x.location)}" target="_blank" rel="noopener">🍎 Apple Maps</a>
+   <a href="${googleMapsUrl(x.location)}" target="_blank" rel="noopener">📍 Google Maps</a>
+  </div>`:'';
+ return `<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}${maps}</div></div>`;
+}).join(''):'<div class="muted">Niente in programma o registrato.</div>'}
 calPrev.onclick=()=>{calOffset--;renderCalendar()};calNext.onclick=()=>{calOffset++;renderCalendar()};
 
 
@@ -810,7 +1163,22 @@ function renderSubscriptions(){
 }
 addSubscriptionBtn.onclick=()=>{subDue.value=dateKey();subscriptionDialog.showModal()};
 subscriptionForm.onsubmit=e=>{e.preventDefault();s.subscriptions.push({id:crypto.randomUUID(),name:subName.value.trim(),amount:Number(subAmount.value),owner:subOwner.value,category:subCategory.value,dueDate:subDue.value,frequency:subFreq.value,reminderDays:Number(subReminder.value),notify:subNotify.value});subscriptionForm.reset();subscriptionDialog.close();save();renderMoney();renderSubscriptions()};
-recipeToShop.onclick=()=>{let r=RECIPE_DETAILS[recipeDialog.dataset.recipe];if(r)r.ingredients.forEach(name=>{if(!s.shopping.some(x=>x.text.toLowerCase()===name.toLowerCase()&&!x.done))s.shopping.push({id:crypto.randomUUID(),text:name,qty:'',category:'Alimentari',url:'',expectedPrice:0,actualPrice:0,done:false})});recipeDialog.close();save();go('shop')};
+recipeToShop.onclick=()=>{
+ let r=RECIPE_DETAILS[recipeDialog.dataset.recipe];
+ if(r){
+  r.ingredients.forEach(item=>{
+   let [name,qty,unit]=item;
+   let qtyText=qty?`${qty}${unit?` ${unit}`:''}`:'';
+   let existing=s.shopping.find(x=>x.text.toLowerCase()===String(name).toLowerCase()&&!x.done);
+   if(existing){
+    if(qtyText&&!existing.qty)existing.qty=qtyText
+   }else{
+    s.shopping.push({id:crypto.randomUUID(),text:name,qty:qtyText,category:'Alimentari',url:'',expectedPrice:0,actualPrice:0,done:false,source:'recipe'})
+   }
+  })
+ }
+ recipeDialog.close();save();go('shop')
+};
 loginForm.onsubmit=e=>{
  e.preventDefault();
  cloudLogin(loginEmail.value.trim(),loginPassword.value)
