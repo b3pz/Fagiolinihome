@@ -133,7 +133,7 @@
     <div class="inlineBtns"><button id="generateMenu" class="primary">✨ Genera menu</button><button id="undoMenu">↩️ Annulla ultima generazione</button><button data-go="profiles">⚙️ Profili alimentari</button></div>
     <p class="tiny">Per bambini piccoli, allergie o esigenze cliniche, il menu va sempre verificato con pediatra/professionista sanitario.</p>
   </div>
-  <div id="menuWeek"></div>
+  <div id="menuWeek"></div><p class="tiny">Tocca 👨‍🍳 accanto a un piatto per vedere ingredienti e preparazione.</p>
 </section>
 
 <section id="profiles" class="view">
@@ -181,14 +181,17 @@
 </section>
 
 <section id="house" class="view">
-  <div class="sectionTitle"><h2>🧹 Casa</h2><button data-go="home">← Home</button></div>
-  <form id="houseForm" class="card form">
-    <input id="houseText" placeholder="Es. Pulire bagno" required>
-    <select id="houseOwner"><option>Famiglia</option><option>JJ</option><option>Kiki</option></select>
-    <select id="houseFreq"><option value="giornaliera">Giornaliera</option><option value="settimanale">Settimanale</option><option value="mensile">Mensile</option></select>
-    <button class="primary">Aggiungi</button>
-  </form>
-  <div id="houseList" class="card"></div>
+  <div class="sectionTitle"><div><small>CASA</small><h2>🏠 Routine casa</h2></div><button data-go="home">← Home</button></div>
+
+  <div class="card">
+    <p class="muted">Premi <b>Fatto adesso</b> oppure usa ✎ per inserire/correggere persona, data e ora.</p>
+    <div id="houseRoutineGrid" class="houseRoutineGrid"></div>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle compact"><h3>Storico</h3></div>
+    <div id="houseHistory"></div>
+  </div>
 </section>
 
 <section id="shop" class="view">
@@ -197,6 +200,8 @@
     <input id="shopText" placeholder="Es. Pannolini" required>
     <input id="shopQty" placeholder="Qtà">
     <select id="shopCat"><option>Alimentari</option><option>Bambini</option><option>Casa</option><option>Cane</option><option>Altro</option></select>
+    <input id="shopUrl" type="url" placeholder="Link prodotto (Amazon o altro)">
+    <input id="shopExpected" type="number" min="0" step="0.01" placeholder="Prezzo previsto €">
     <button class="primary">Aggiungi</button>
   </form>
   <div id="shopList" class="card"></div>
@@ -215,7 +220,11 @@
   </form>
   <div class="card"><h3>Voci del mese</h3><div id="moneyList"></div></div>
   <div class="card"><h3>Per categoria</h3><div id="moneyCategories"></div></div>
-</section>
+<div class="card">
+  <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3>⏰ Scadenze</h3></div><button id="addSubscriptionBtn">＋</button></div>
+  <div id="subscriptionStats" class="stats"></div>
+  <div id="subscriptionList"></div>
+</div></section>
 </main>
 
 <nav>
@@ -233,6 +242,63 @@
       <button id="syncNowBtn" class="primary fullBtn">🔄 Sincronizza adesso</button>
       <button id="logoutBtn" class="secondaryFull">Esci dall'account</button>
     </div></dialog>
+
+<dialog id="eventEditDialog"><form id="eventEditForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>✎ Modifica evento</h3><button type="button" data-close="eventEditDialog">✕</button></div>
+  <select id="eventEditPerson"></select>
+  <input id="eventEditDate" type="date" required>
+  <input id="eventEditTime" type="time" required>
+  <input id="eventEditNote" placeholder="Nota">
+  <button class="primary">Salva modifiche</button>
+</form></dialog>
+
+<dialog id="houseEditDialog"><form id="houseEditForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3 id="houseEditTitle">Routine casa</h3><button type="button" data-close="houseEditDialog">✕</button></div>
+  <select id="houseEditWho"><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
+  <input id="houseEditDate" type="date" required>
+  <input id="houseEditTime" type="time" required>
+  <input id="houseEditNote" placeholder="Nota facoltativa">
+  <button class="primary">Salva</button>
+</form></dialog>
+
+<dialog id="shopEditDialog"><form id="shopEditForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>✎ Modifica prodotto</h3><button type="button" data-close="shopEditDialog">✕</button></div>
+  <input id="shopEditText" required>
+  <input id="shopEditQty" placeholder="Qtà">
+  <select id="shopEditCat"><option>Alimentari</option><option>Bambini</option><option>Casa</option><option>Cane</option><option>Altro</option></select>
+  <input id="shopEditUrl" type="url" placeholder="Link prodotto">
+  <input id="shopEditExpected" type="number" min="0" step="0.01" placeholder="Prezzo previsto €">
+  <button class="primary">Salva</button>
+</form></dialog>
+
+<dialog id="boughtDialog"><form id="boughtForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>✅ Prodotto comprato</h3><button type="button" data-close="boughtDialog">✕</button></div>
+  <p id="boughtName"></p>
+  <input id="boughtPrice" type="number" min="0" step="0.01" placeholder="Prezzo realmente pagato €">
+  <select id="boughtWho"><option value="">Spesa famiglia</option><option value="jj">Pagato da JJ</option><option value="kiki">Pagato da Kiki</option></select>
+  <input id="boughtDate" type="date" required>
+  <button class="primary">Conferma acquisto</button>
+</form></dialog>
+
+<dialog id="subscriptionDialog"><form id="subscriptionForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>⏰ Bolletta / abbonamento</h3><button type="button" data-close="subscriptionDialog">✕</button></div>
+  <input id="subName" placeholder="Es. Abbonamento treno" required>
+  <input id="subAmount" type="number" min="0" step="0.01" placeholder="Costo €" required>
+  <select id="subOwner"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
+  <select id="subCategory"><option>Trasporti</option><option>Bollette</option><option>Casa</option><option>Telefono / Internet</option><option>Streaming</option><option>Assicurazione</option><option>Altro</option></select>
+  <label>Prossima scadenza<input id="subDue" type="date" required></label>
+  <select id="subFreq"><option value="monthly">Mensile</option><option value="bimonthly">Bimestrale</option><option value="quarterly">Trimestrale</option><option value="semiannual">Semestrale</option><option value="annual">Annuale</option><option value="once">Una volta</option></select>
+  <select id="subReminder"><option value="0">Promemoria il giorno stesso</option><option value="1">1 giorno prima</option><option value="3" selected>3 giorni prima</option><option value="7">7 giorni prima</option></select>
+  <select id="subNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
+  <button class="primary">Salva</button>
+</form></dialog>
+
+<dialog id="recipeDialog"><div class="dialogBox">
+  <div class="sectionTitle compact"><div><small>RICETTA</small><h3 id="recipeTitle"></h3></div><button data-close="recipeDialog">✕</button></div>
+  <div id="recipeBody"></div>
+  <button id="recipeToShop" class="primary fullBtn">🛒 Aggiungi ingredienti alla spesa</button>
+</div></dialog>
+
 <dialog id="quickDialog"><div class="dialogBox"><div class="sectionTitle compact"><h3>Segna qualcosa</h3><button data-close="quickDialog">✕</button></div><div id="quickPeople" class="peopleGrid dialogPeople"></div><div id="quickActions" class="actions"></div></div></dialog>
 <dialog id="poopDialog"><form id="poopForm" class="dialogBox"><h3>💩 Cacca</h3><select id="poopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select><input id="poopNote" placeholder="Nota facoltativa"><button class="primary">Salva</button><button type="button" data-close="poopDialog">Annulla</button></form></dialog>
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>

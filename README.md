@@ -75,3 +75,18 @@ Nota: lo stato familiare è salvato in un unico record JSON; se due telefoni mod
 - login chiuso immediatamente dopo autenticazione riuscita
 - errore family_state non può più rimandare alla login
 - service worker/cache disattivati durante lo sviluppo
+
+## Functional Upgrade
+BASE: STABLE DIRECT SUPABASE. Autenticazione, family_id e sincronizzazione non modificati.
+
+Aggiunto:
+- Routine Casa semplice: spazzare, mocio, lavatrice, asciugatrice, lenzuola, asciugamani
+- Fatto adesso + inserimento/modifica retroattiva di chi/data/ora/nota
+- modifica degli eventi Caty/Kiko/Astro
+- Astro: traversina al posto delle passeggiate
+- modifica visite/medicine esistenti
+- lista spesa con URL prodotto, prezzo previsto e modifica
+- acquisto con prezzo effettivo e registrazione automatica nelle spese
+- bollette/abbonamenti con costo, scadenza, frequenza, destinatario reminder
+- ricette apribili dal menu + ingredienti nella spesa
+- calendario arricchito con routine casa e scadenze
