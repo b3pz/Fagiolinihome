@@ -308,3 +308,77 @@ Novità principali:
 - Raccolta differenziata predisposta, turni da configurare successivamente.
 
 Nota: i controlli Telegram restano lato backend; questa build mostra lo stato del collegamento senza esporre token o secret.
+
+## V8.5 / V8.5.1 — Family First + Fagiolini Bank
+- Home e navigazione ripensate in macrosezioni con bottom bar fissa: Home, Oggi, Casa, Pasti, Organizza
+- riepiloghi immediati e testi più grandi
+- grafico andamento cacca 7/30 giorni nei profili
+- Telegram mostrato come collegato senza esporre secret nel client
+- raccolta differenziata predisposta, turni da configurare
+- sezione Risparmi evoluta in **Fagiolini Bank**
+  - un unico totale mensile dato da Entrate JJ + Entrate Kiki + Entrate Famiglia
+  - spese sottratte al totale per ottenere il risparmio reale
+  - obiettivo mensile di risparmio
+  - confronto con il mese precedente
+  - grafico spese per macro-categoria
+- obiettivi speciali permanenti ma attivabili solo quando servono:
+  - Vacanze
+  - Natale
+  - target, importo già messo da parte e nota libera
+- per JJ e Kiki è possibile segnare:
+  - Smart working
+  - Ferie
+  - Malattia
+  - intervallo di date e nota
+  - le giornate compaiono in Home, Oggi e Calendario
+
+La logica stabile di login, Supabase, family_id fisso, sessione 3 ore, Piano Casa e sincronizzazione non è stata sostituita.
+
+## V8.5.2 — UX più semplice + Calendario rapido
+
+Questa build corregge i punti emersi dai test reali su iPhone.
+
+### Navigazione
+- bottom bar più grande e leggibile
+- ordine: Oggi · Casa · HOME · Pasti · Organizza
+- Home centrale, rialzata e graficamente diversa dagli altri tasti
+- barra sempre fissa durante scroll e zoom
+- maggiore distanza dalla status bar di iPhone / Safari
+
+### Home e profili
+- rimossi dalla Home i badge fisiologici tipo “Caty 💩 / Kiko 🍼 / Astro 💩”
+- la Home mostra solo informazioni utili del giorno: lavoro, visite, compleanni vicini
+- profili Caty/Kiko/Astro e JJ/Kiki usano la foto vera nell’intestazione, non l’emoji come identità principale
+- per Astro il mini andamento usa le traversine; per i bambini rimane il grafico cacche 7/30 giorni
+
+### Calendario
+- tocco diretto su un giorno → apre subito la giornata selezionata
+- grande pulsante “+ Aggiungi qualcosa” con la data già precompilata
+- scelte rapide:
+  - Appuntamento
+  - Calcetto JJ
+  - Compleanno
+  - Promemoria
+  - Lavoro / ferie / smart working / malattia
+  - Salute
+  - Faccenda di casa
+  - Altro
+- eventi/appuntamenti creati dal calendario usano il sistema Promemoria esistente e restano quindi compatibili con Telegram
+
+### Compleanni
+- archivio semplice per amici e parenti
+- ricorrenza automatica ogni anno nel Calendario
+- anteprima dei prossimi compleanni in Organizza
+- segnalazione nell’app da 7 giorni prima
+
+### Casa
+- pagina accorciata: prima ciò che c’è da fare oggi, mentre settimana/regole/storico si aprono solo quando servono
+- vincolo Lavatrice → Asciugatrice mantenuto
+- nuovo vincolo Spazzare → Lavare pavimenti: il mocio resta bloccato finché non è stato completato Spazzare nello stesso giorno
+- eliminato definitivamente il testo “asciugaculo”: resta solo “Cambio asciugamani”
+
+### Eventi personali
+- Calcetto aggiunto come evento rapido per JJ
+- Smart working, ferie e malattia restano disponibili e finiscono in Oggi + Calendario
+
+Login, Supabase, family_id, sincronizzazione, timeout 3 ore e backend Telegram non sono stati riscritti.

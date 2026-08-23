@@ -97,6 +97,7 @@
     <div id="homeSavingsBrief" class="dashboardBigText"></div>
     <div class="progressTrack"><i id="homeSavingsProgress"></i></div>
     <p id="homeSavingsText" class="dashboardNote"></p>
+    <div id="homeSavingsProjects" class="homeSavingsProjects"></div>
   </button>
 
   <button class="dashboardCard wasteHomeCard" data-go="organize">
@@ -121,7 +122,13 @@
 </section>
 
 <section id="person" class="view">
-  <div class="sectionTitle"><div><small>FAGIOLINI</small><h2 id="personTitle"></h2></div><button data-go="home">← Home</button></div>
+  <div class="personPageHead">
+    <div class="personIdentity">
+      <img id="personAvatar" class="personAvatar" src="caty-avatar.jpg" alt="">
+      <div><small>FAGIOLINI</small><h2 id="personTitle"></h2><p id="personSubtitle" class="muted">Oggi</p></div>
+    </div>
+    <button class="backHomeBtn" data-go="home">← Home</button>
+  </div>
   <div id="personStats" class="stats"></div>
   <div class="card personInsightCard">
     <div class="sectionTitle compact"><div><small>IN BREVE</small><h3>Andamento</h3></div><div class="insightSwitch"><button id="insight7" class="active">7 giorni</button><button id="insight30">30 giorni</button></div></div>
@@ -139,7 +146,13 @@
 </section>
 
 <section id="adult" class="view">
-  <div class="sectionTitle"><div><small>NOI</small><h2 id="adultTitle"></h2></div><button data-go="home">← Home</button></div>
+  <div class="personPageHead">
+    <div class="personIdentity">
+      <img id="adultAvatar" class="personAvatar" src="jj-avatar.jpg" alt="">
+      <div><small>NOI</small><h2 id="adultTitle"></h2><p class="muted">La mia giornata</p></div>
+    </div>
+    <button class="backHomeBtn" data-go="home">← Home</button>
+  </div>
   <div id="adultSummary" class="stats"></div>
 
   <div class="card">
@@ -149,7 +162,18 @@
       <button id="adultMedicine">💊<b>Medicina</b></button>
       <button data-go="calendar">📅<b>Calendario</b></button>
       <button data-go="profiles">🍝<b>Alimentazione</b></button>
+      <button id="adultWorkStatus">💼<b>Lavoro</b></button>
+      <button id="adultCalcetto">⚽<b>Calcetto</b></button>
     </div>
+  </div>
+
+  <div class="card workStatusCard">
+    <div class="sectionTitle compact">
+      <div><small>LAVORO & ASSENZE</small><h3>💼 Come lavoro</h3></div>
+      <button id="adultWorkAdd">＋ Segna</button>
+    </div>
+    <p class="muted">Ferie, smart working e malattia finiscono automaticamente in Oggi e nel Calendario.</p>
+    <div id="adultWorkStatusSummary"></div>
   </div>
 
   <div class="card">
@@ -286,6 +310,11 @@
     <button class="organizeCard" data-go="calendar"><span>📆</span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
   </div>
 
+  <div class="card birthdayCard">
+    <div class="sectionTitle compact"><div><small>DA NON DIMENTICARE</small><h3>🎂 Compleanni</h3></div><button id="addBirthdayQuick">＋ Aggiungi</button></div>
+    <div id="birthdayPreview" class="birthdayPreview"></div>
+  </div>
+
   <div class="card telegramCard">
     <div class="sectionTitle compact"><div><small>NOTIFICHE</small><h3>✈️ Telegram</h3></div><span class="connectedPill">● Collegato</span></div>
     <p>I promemoria della famiglia vengono controllati automaticamente ogni 5 minuti e inviati nel gruppo.</p>
@@ -359,7 +388,10 @@
     <div class="weekdays"><span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span></div>
     <div id="calendarGrid" class="calGrid"></div>
   </div>
-  <div class="card"><h3 id="selectedDateTitle">Dettagli</h3><div id="calendarDetails"></div></div>
+  <div class="card calendarDayCard">
+    <div class="sectionTitle compact"><div><small>GIORNO SELEZIONATO</small><h3 id="selectedDateTitle">Dettagli</h3></div><button id="calendarAddBtn" class="primary calendarAddBtn">＋ Aggiungi</button></div>
+    <div id="calendarDetails"></div>
+  </div>
 </section>
 
 
@@ -395,39 +427,39 @@
 </section>
 
 <section id="house" class="view">
-  <div class="sectionTitle pageIntro"><div><small>CASA</small><h2>🧹 Faccende di casa</h2><p class="muted">Quello che c’è da fare, senza complicazioni.</p></div></div>
-  <div id="houseWeekSummary" class="card sectionSummaryCard"></div>
+  <div class="sectionTitle pageIntro"><div><small>CASA</small><h2>🧹 Casa</h2><p class="muted">Prima quello che serve oggi. Il resto solo quando vuoi aprirlo.</p></div></div>
 
-  <div class="card housePlanIntro">
-    <h3>Organizza la settimana</h3>
-    <p class="muted">Prepara automaticamente le faccende e poi cambia, rimanda o completa quello che vuoi.</p>
-    <div class="inlineBtns">
-      <button id="generateHouseWeek" class="primary">✨ Organizza la settimana</button>
-      <button id="fillHouseWeek">Aggiungi quello che manca</button>
-      <button id="addHouseTaskBtn">＋ Aggiungi una faccenda</button>
+  <div class="card houseTodayCard">
+    <div class="sectionTitle compact"><div><small>OGGI</small><h3>Da fare oggi</h3></div><div id="housePendingCount" class="pendingBadge">0</div></div>
+    <div id="houseTodayTasks"></div>
+    <div class="housePrimaryActions">
+      <button id="addHouseTaskBtn" class="primary">＋ Aggiungi faccenda</button>
+      <button id="generateHouseWeek">✨ Organizza settimana</button>
     </div>
   </div>
 
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>OGGI</small><h3>Da fare oggi</h3></div><div id="housePendingCount" class="pendingBadge">0</div></div>
-    <div id="houseTodayTasks"></div>
-  </div>
+  <div id="houseWeekSummary" class="card sectionSummaryCard"></div>
 
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>QUESTA SETTIMANA</small><h3>Il piano</h3></div></div>
-    <div id="houseWeekPlan"></div>
-  </div>
+  <details class="card disclosureCard">
+    <summary><span><small>QUESTA SETTIMANA</small><b>Vedi il piano</b></span><em>＋</em></summary>
+    <div class="disclosureBody">
+      <div class="inlineBtns"><button id="fillHouseWeek">Aggiungi quello che manca</button></div>
+      <div id="houseWeekPlan"></div>
+    </div>
+  </details>
 
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>ORGANIZZAZIONE</small><h3>Ogni quanto farlo</h3></div></div>
-    <p class="muted">L'asciugatrice è sempre collegata a una lavatrice e si sblocca solo dopo che la lavatrice è stata completata.</p>
-    <div id="houseRulesGrid" class="houseRulesGrid"></div>
-  </div>
+  <details class="card disclosureCard">
+    <summary><span><small>ORGANIZZAZIONE</small><b>Ogni quanto farlo</b></span><em>＋</em></summary>
+    <div class="disclosureBody">
+      <p class="muted">Prima si spazza, poi si lava il pavimento. Lavatrice e asciugatrice restano collegate.</p>
+      <div id="houseRulesGrid" class="houseRulesGrid"></div>
+    </div>
+  </details>
 
-  <div class="card">
-    <div class="sectionTitle compact"><h3>Fatte di recente</h3></div>
-    <div id="houseHistory"></div>
-  </div>
+  <details class="card disclosureCard">
+    <summary><span><small>STORICO</small><b>Fatte di recente</b></span><em>＋</em></summary>
+    <div class="disclosureBody"><div id="houseHistory"></div></div>
+  </details>
 </section>
 
 <section id="shop" class="view">
@@ -445,8 +477,14 @@
 </section>
 
 <section id="money" class="view">
-  <div class="sectionTitle pageIntro"><div><small>RISPARMI</small><h2>💶 Come stiamo andando</h2><p class="muted">Entrate, spese e obiettivo del mese in un colpo d’occhio.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>FAGIOLINI BANK</small><h2>💶 Risparmi</h2><p class="muted">Un unico conto famiglia: JJ + Kiki + entrate comuni, meno tutte le spese.</p></div></div>
   <div class="monthSwitch card"><button id="moneyPrev">←</button><h3 id="moneyMonth"></h3><button id="moneyNext">→</button></div>
+
+<div class="card bankCard">
+    <div class="sectionTitle compact"><div><small>CONTO UNICO</small><h3>🏦 Fagiolini Bank</h3></div><strong id="bankIncomeTotal">€0</strong></div>
+    <p class="reportText">Qui confluiscono tutte le entrate del mese. Il totale è sempre la somma di JJ, Kiki e Famiglia.</p>
+    <div id="bankSourceBreakdown" class="bankSourceBreakdown"></div>
+  </div>
 
   <div class="card savingsReportCard">
     <div class="sectionTitle compact"><div><small>IN BREVE</small><h3>Risparmio del mese</h3></div><strong id="savingsResult">€0</strong></div>
@@ -459,11 +497,13 @@
 
   <div class="financeFormsGrid">
     <form id="incomeForm" class="card form compactFinanceForm">
-      <h3>＋ Entrata</h3>
-      <input id="incomeName" placeholder="Es. Stipendio" required>
+      <h3>＋ Entrata Fagiolini Bank</h3>
+      <input id="incomeName" placeholder="Es. Stipendio, rimborso, regalo..." required>
       <input id="incomeAmount" type="number" min="0" step="0.01" placeholder="Importo €" required>
-      <select id="incomePerson"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
-      <button class="primary">Aggiungi entrata</button>
+      <label class="fieldLabel">Da chi arriva?
+        <select id="incomePerson"><option value="jj">JJ</option><option value="kiki">Kiki</option><option value="family">Famiglia</option></select>
+      </label>
+      <button class="primary">Aggiungi al conto</button>
     </form>
     <form id="savingsGoalForm" class="card form compactFinanceForm">
       <h3>🎯 Obiettivo</h3>
@@ -472,8 +512,27 @@
     </form>
   </div>
 
+  <div class="card savingsProjectsCard">
+    <div class="sectionTitle compact"><div><small>OBIETTIVI SPECIALI</small><h3>🏖️ Vacanze & 🎄 Natale</h3></div></div>
+    <p class="muted">Sono salvadanai-promemoria: puoi attivarli solo quando servono, segnare quanto vuoi mettere da parte e lasciare una nota.</p>
+    <div id="savingsProjectsPreview" class="savingsProjectsPreview"></div>
+    <form id="savingsProjectsForm" class="savingsProjectsForm">
+      <div class="savingProjectEditor">
+        <div class="savingProjectTitle"><span>🏖️</span><div><b>Vacanze</b><small>Viaggi, ferie, weekend</small></div><label class="switchLabel"><input id="vacationActive" type="checkbox"> Attivo</label></div>
+        <div class="twoCols"><label class="fieldLabel">Obiettivo €<input id="vacationTarget" type="number" min="0" step="10" placeholder="Es. 1200"></label><label class="fieldLabel">Già messo da parte €<input id="vacationSaved" type="number" min="0" step="10" placeholder="Es. 300"></label></div>
+        <label class="fieldLabel">Nota<input id="vacationNote" placeholder="Es. Calabria agosto, hotel da prenotare..."></label>
+      </div>
+      <div class="savingProjectEditor">
+        <div class="savingProjectTitle"><span>🎄</span><div><b>Natale</b><small>Regali, pranzi e feste</small></div><label class="switchLabel"><input id="christmasActive" type="checkbox"> Attivo</label></div>
+        <div class="twoCols"><label class="fieldLabel">Obiettivo €<input id="christmasTarget" type="number" min="0" step="10" placeholder="Es. 500"></label><label class="fieldLabel">Già messo da parte €<input id="christmasSaved" type="number" min="0" step="10" placeholder="Es. 100"></label></div>
+        <label class="fieldLabel">Nota<input id="christmasNote" placeholder="Es. Budget regali e pranzo..."></label>
+      </div>
+      <button class="primary fullBtn">Salva Vacanze e Natale</button>
+    </form>
+  </div>
+
   <div class="card">
-    <div class="sectionTitle compact"><div><small>ENTRATE</small><h3>Entrate del mese</h3></div></div>
+    <div class="sectionTitle compact"><div><small>ENTRATE</small><h3>Movimenti in entrata</h3></div></div>
     <div id="incomeList"></div>
   </div>
 
@@ -511,9 +570,9 @@
 </main>
 
 <nav aria-label="Navigazione principale">
-  <button class="navHome" data-go="home"><span>🏠</span><small>Home</small></button>
   <button data-go="today"><span>📅</span><small>Oggi</small></button>
   <button data-go="house"><span>🧹</span><small>Casa</small></button>
+  <button class="navHome navHomeCenter" data-go="home"><span>🏡</span><small>Home</small></button>
   <button data-go="menu"><span>🍽️</span><small>Pasti</small></button>
   <button data-go="organize"><span>☰</span><small>Organizza</small></button>
 </nav>
@@ -521,8 +580,16 @@
 
 
 <dialog id="reminderDialog"><form id="reminderForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>🔔 Promemoria manuale</h3><button type="button" data-close="reminderDialog">✕</button></div>
-  <label class="fieldLabel">Titolo<input id="reminderTitle" placeholder="Es. Telefonare al pediatra" required></label>
+  <div class="sectionTitle compact"><h3>📅 Evento / promemoria</h3><button type="button" data-close="reminderDialog">✕</button></div>
+  <div class="twoCols">
+    <label class="fieldLabel">Tipo
+      <select id="reminderKind"><option value="reminder">🔔 Promemoria</option><option value="appointment">📅 Appuntamento</option><option value="calcetto">⚽ Calcetto</option><option value="event">✨ Evento</option></select>
+    </label>
+    <label class="fieldLabel">Per chi
+      <select id="reminderPerson"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option><option value="caty">Caty</option><option value="kiko">Kiko</option><option value="astro">Astro</option></select>
+    </label>
+  </div>
+  <label class="fieldLabel">Titolo<input id="reminderTitle" placeholder="Es. Dentista, calcetto, telefonare..." required></label>
   <div class="twoCols">
     <label class="fieldLabel">📅 Data<input id="reminderDate" type="date" required></label>
     <label class="fieldLabel">🕒 Ora<input id="reminderTime" type="time"></label>
@@ -534,7 +601,36 @@
     <select id="reminderNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
   </label>
   <label class="fieldLabel">📝 Nota<input id="reminderNote" placeholder="Nota facoltativa"></label>
-  <button class="primary">Salva promemoria</button>
+  <button class="primary">Salva</button>
+</form></dialog>
+
+<dialog id="calendarDayDialog"><div class="dialogBox calendarDaySheet">
+  <div class="sectionTitle compact"><div><small>CALENDARIO</small><h3 id="calendarDayDialogTitle">Giorno</h3></div><button type="button" data-close="calendarDayDialog">✕</button></div>
+  <div id="calendarDayDialogList"></div>
+  <button id="calendarDayAddBtn" class="primary fullBtn">＋ Aggiungi qualcosa</button>
+</div></dialog>
+
+<dialog id="calendarAddDialog"><div class="dialogBox calendarAddSheet">
+  <div class="sectionTitle compact"><div><small id="calendarAddDateLabel">GIORNO</small><h3>Cosa vuoi aggiungere?</h3></div><button type="button" data-close="calendarAddDialog">✕</button></div>
+  <div class="calendarAddGrid">
+    <button data-calendar-add="appointment"><span>📅</span><b>Appuntamento</b></button>
+    <button data-calendar-add="calcetto"><span>⚽</span><b>Calcetto JJ</b></button>
+    <button data-calendar-add="birthday"><span>🎂</span><b>Compleanno</b></button>
+    <button data-calendar-add="reminder"><span>🔔</span><b>Promemoria</b></button>
+    <button data-calendar-add="work"><span>💼</span><b>Lavoro / ferie</b></button>
+    <button data-calendar-add="health"><span>❤️</span><b>Salute</b></button>
+    <button data-calendar-add="house"><span>🧹</span><b>Faccenda</b></button>
+    <button data-calendar-add="event"><span>✨</span><b>Altro</b></button>
+  </div>
+</div></dialog>
+
+<dialog id="birthdayDialog"><form id="birthdayForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>🎂 Compleanno</h3><button type="button" data-close="birthdayDialog">✕</button></div>
+  <label class="fieldLabel">Nome<input id="birthdayName" placeholder="Es. Mario" required></label>
+  <label class="fieldLabel">Data del compleanno <small class="fieldHint">Conta giorno e mese; l’anno non è importante.</small><input id="birthdayDate" type="date" required></label>
+  <label class="fieldLabel">Chi è?<select id="birthdayRelation"><option>Famiglia</option><option>Parente</option><option>Amico/a</option><option>Altro</option></select></label>
+  <label class="fieldLabel">Nota<input id="birthdayNote" placeholder="Regalo, idea, nota facoltativa"></label>
+  <button class="primary">Salva compleanno</button>
 </form></dialog>
 
 <dialog id="accountDialog"><div class="dialogBox">
@@ -665,6 +761,19 @@
   </div>
   <label class="fieldLabel">📝 Nota<input id="houseTaskNote" placeholder="Facoltativa"></label>
   <button class="primary">Salva task</button>
+</form></dialog>
+
+<dialog id="workStatusDialog"><form id="workStatusForm" class="dialogBox">
+  <div class="sectionTitle compact"><h3>💼 Lavoro & assenze</h3><button type="button" data-close="workStatusDialog">✕</button></div>
+  <label class="fieldLabel">Chi
+    <select id="workPerson"><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
+  </label>
+  <label class="fieldLabel">Cosa segniamo?
+    <select id="workType"><option value="smart">🏠 Smart working</option><option value="vacation">🌴 Ferie</option><option value="sick">🤒 Malattia</option></select>
+  </label>
+  <div class="twoCols"><label class="fieldLabel">Dal<input id="workStartDate" type="date" required></label><label class="fieldLabel">Al<input id="workEndDate" type="date" required></label></div>
+  <label class="fieldLabel">Nota<input id="workNote" placeholder="Facoltativa"></label>
+  <button class="primary">Salva</button>
 </form></dialog>
 
 <dialog id="quickDialog"><div class="dialogBox"><div class="sectionTitle compact"><h3>Segna qualcosa</h3><button data-close="quickDialog">✕</button></div><div id="quickPeople" class="peopleGrid dialogPeople"></div><div id="quickActions" class="actions"></div></div></dialog>

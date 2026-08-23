@@ -290,3 +290,158 @@ nav{z-index:999;left:0;right:0;transform:none;width:100%;max-width:760px;margin:
 @media(max-width:600px){.homeDashboardGrid{grid-template-columns:1fr}.homeDashboardGrid .dashboardCard{min-height:0}.financeFormsGrid{grid-template-columns:1fr}.pageIntro h2{font-size:30px}.homeWelcome h2{font-size:31px}.dashboardBigText b{font-size:23px}.familyStripHome{gap:5px}.familyStripHome .familyMemberCard b{font-size:11px}.todayHeroNumbers b{font-size:25px}}
 @media(max-width:380px){nav small{font-size:8px}.app{padding-left:10px;padding-right:10px}.dashboardCard{padding:14px}.homeWelcome h2{font-size:28px}.familyStripHome .familyMemberCard{padding:4px 3px}.organizeCard{grid-template-columns:48px 1fr auto}.organizeCard>span{width:48px;height:48px}.todayQuickGrid{grid-template-columns:1fr 1fr}}
 .familyHeaderLink{border:0;background:transparent!important;font-size:28px!important;color:#b99c81!important;padding:0!important;min-height:auto!important}.sectionSummaryCard{background:linear-gradient(145deg,#fffdf9,#f4eee5)}.sectionSummaryCard p{margin:13px 0 0;line-height:1.45;font-size:15px}.summaryNumbers{display:grid;grid-template-columns:1fr 1fr;gap:9px}.summaryNumbers>div{background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:18px;padding:13px}.summaryNumbers b{display:block;font-size:24px;color:var(--accent-dark)}.summaryNumbers span{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.25}
+
+/* V8.5.1 — Fagiolini Bank, obiettivi speciali e lavoro */
+.homeSavingsProjects{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.homeSavingsProjects span{font-size:12px;line-height:1.25;padding:7px 9px;border-radius:999px;background:rgba(255,255,255,.68);color:var(--muted)}
+.bankCard{background:linear-gradient(145deg,#fff,#f5fbf6)}.bankCard #bankIncomeTotal{font-size:30px}.bankSourceBreakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.bankSourceBreakdown span{display:flex;flex-direction:column;gap:3px;padding:12px;border-radius:16px;background:var(--soft);font-size:14px}.bankSourceBreakdown b{font-size:13px;color:var(--muted)}
+.savingsProjectsPreview{display:grid;gap:10px;margin:14px 0}.savingProjectSummary{padding:12px;border:1px solid var(--line);border-radius:18px;opacity:.68}.savingProjectSummary.active{opacity:1;background:var(--soft)}.savingProjectSummary>div:first-child{display:flex;align-items:center;gap:10px}.savingProjectSummary>div:first-child>span{font-size:25px}.savingProjectSummary>div:first-child>div{display:flex;flex-direction:column;flex:1}.savingProjectSummary small{color:var(--muted);margin-top:3px}.savingProjectSummary strong{font-size:15px;text-align:right}.savingProjectSummary .progressTrack{margin-top:10px}
+.savingsProjectsForm{display:grid;gap:12px}.savingProjectEditor{padding:14px;border-radius:20px;background:var(--soft);display:grid;gap:11px}.savingProjectTitle{display:flex;align-items:center;gap:10px}.savingProjectTitle>span{font-size:30px}.savingProjectTitle>div{display:flex;flex-direction:column;flex:1}.savingProjectTitle small{color:var(--muted)}.switchLabel{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px}.switchLabel input{width:20px;height:20px}
+.workStatusCard .row{margin-top:8px}
+@media(max-width:520px){.bankSourceBreakdown{grid-template-columns:1fr 1fr 1fr}.bankSourceBreakdown span{padding:10px 8px}.bankSourceBreakdown b{font-size:11px}.savingProjectTitle{align-items:flex-start;flex-wrap:wrap}.savingProjectTitle .switchLabel{margin-left:auto}}
+
+/* V8.5.2 — UX familiare: barra centrale, profili con foto, calendario rapido */
+:root{--nav-h:106px}
+.app{padding-bottom:calc(var(--nav-h) + 34px + env(safe-area-inset-bottom))}
+
+/* Barra inferiore: Home centrale e inequivocabile */
+nav{
+  z-index:1200;
+  min-height:var(--nav-h);
+  padding:14px 8px calc(11px + env(safe-area-inset-bottom));
+  background:rgba(255,251,245,.985);
+  box-shadow:0 -10px 34px rgba(72,54,38,.10);
+  overflow:visible;
+}
+nav button{
+  min-height:72px;
+  padding:8px 2px 5px;
+  border-radius:20px;
+  gap:4px;
+  opacity:.88;
+}
+nav button:not(.navHomeCenter) span{font-size:29px}
+nav button:not(.navHomeCenter) small{font-size:12px;font-weight:850}
+nav button.active:not(.navHomeCenter){background:#eef4ea;box-shadow:inset 0 0 0 1px #dae6d6}
+nav .navHomeCenter{
+  opacity:1;
+  position:relative;
+  overflow:visible;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+nav .navHomeCenter span{
+  width:68px;
+  height:68px;
+  margin:-31px auto 2px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#3f7654,#24573d);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:32px;
+  box-shadow:0 10px 25px rgba(38,87,61,.28),0 0 0 6px rgba(255,251,245,.98);
+}
+nav .navHomeCenter small{
+  font-size:14px;
+  font-weight:950;
+  color:var(--accent-dark);
+  margin-top:2px;
+}
+nav .navHomeCenter.active span{transform:scale(1.06);background:linear-gradient(145deg,#2f6c49,#1e4d35)}
+
+/* Profili: la foto vera è sempre l'identità principale */
+.personPageHead{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:6px 2px 18px}
+.personIdentity{display:flex;align-items:center;gap:14px;min-width:0}
+.personIdentity h2{font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1;margin:3px 0 5px;color:var(--accent-dark)}
+.personIdentity small{font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.personIdentity p{margin:0;font-size:14px}
+.personAvatar{width:82px;height:82px;border-radius:25px;object-fit:cover;display:block;border:3px solid rgba(255,255,255,.9);box-shadow:0 7px 20px rgba(69,49,33,.12);background:#f2e8dd}
+.backHomeBtn{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:12px 14px;font-weight:900;white-space:nowrap}
+
+/* Home famiglia: solo informazioni utili, niente badge fisiologici */
+.familyMiniSummary{display:block;margin-top:8px}
+.familyMiniSummary span{display:block;background:transparent;border-top:1px solid var(--line);border-radius:0;padding:10px 2px;font-size:14px;font-weight:700;line-height:1.3}
+.familyMiniSummary span:first-child{border-top:0}
+
+/* Casa: oggi davanti, dettagli solo quando richiesti */
+.houseTodayCard{background:linear-gradient(145deg,#fffdf9,#f5f1e9)}
+.housePrimaryActions{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-top:16px}
+.housePrimaryActions button{min-height:52px;border:1px solid var(--line);border-radius:16px;background:var(--cream);font-weight:850;padding:12px}
+.housePrimaryActions .primary{border:0;background:linear-gradient(145deg,#679d70,#578861);color:#fff}
+.disclosureCard{padding:0;overflow:hidden}
+.disclosureCard summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:19px 20px;min-height:72px}
+.disclosureCard summary::-webkit-details-marker{display:none}
+.disclosureCard summary span{display:grid;gap:3px}
+.disclosureCard summary small{font-size:10px;letter-spacing:.13em;color:var(--muted)}
+.disclosureCard summary b{font-size:19px;color:var(--accent-dark)}
+.disclosureCard summary em{font-size:26px;font-style:normal;color:var(--accent-dark);transition:transform .2s ease}
+.disclosureCard[open] summary em{transform:rotate(45deg)}
+.disclosureBody{padding:0 18px 18px;border-top:1px solid var(--line)}
+.disclosureBody>.inlineBtns{margin:14px 0}
+
+/* Calendario: tocco sul giorno = azione immediata */
+.calDay{min-height:70px;font-size:16px;font-weight:700;cursor:pointer}
+.calDay.selected{outline:3px solid var(--accent);background:#f0f6ed}
+.calendarDayCard .sectionTitle{align-items:center}
+.calendarAddBtn{min-width:126px}
+.calendarSheetItem{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:11px;padding:13px 2px;border-bottom:1px solid var(--line)}
+.calendarSheetItem:last-child{border-bottom:0}
+.calendarSheetItem>span{font-size:27px}
+.calendarSheetItem b{font-size:16px;line-height:1.25}
+.calendarSheetItem small{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+.calendarSheetItem button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 11px;font-weight:850}
+.calendarAddGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.calendarAddGrid button{min-height:108px;border:1px solid var(--line);background:var(--soft);border-radius:22px;padding:15px;text-align:left;font-weight:850}
+.calendarAddGrid button span{display:block;font-size:31px;margin-bottom:9px}
+.calendarAddGrid button b{font-size:16px}
+#calendarDayDialog,#calendarAddDialog{width:min(600px,calc(100% - 18px))}
+
+/* Compleanni */
+.birthdayPreview{display:grid;gap:2px}
+.birthdayRow{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.birthdayRow:last-child{border-bottom:0}
+.birthdayRow>span{font-size:26px}
+.birthdayRow b{display:block;font-size:16px}
+.birthdayRow small{display:block;margin-top:3px;color:var(--muted);font-size:12px;line-height:1.3}
+.birthdayRow button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:8px 10px}
+.compactEmpty{padding:15px 5px}
+
+/* Un po' meno “gestionale” */
+.dashboardCard{box-shadow:0 7px 22px rgba(77,55,34,.045)}
+.sectionSummaryCard{box-shadow:none}
+.stats{gap:10px}
+.stat{box-shadow:none;padding:16px}
+
+@media(max-width:600px){
+  :root{--nav-h:108px}
+  .app{padding-left:14px;padding-right:14px;padding-bottom:calc(var(--nav-h) + 36px + env(safe-area-inset-bottom))}
+  nav{padding-left:5px;padding-right:5px}
+  nav button{min-height:72px}
+  nav button:not(.navHomeCenter) span{font-size:27px}
+  nav button:not(.navHomeCenter) small{font-size:11px}
+  nav .navHomeCenter span{width:66px;height:66px;font-size:31px;margin-top:-30px}
+  nav .navHomeCenter small{font-size:13px}
+  .personAvatar{width:72px;height:72px;border-radius:22px}
+  .personIdentity h2{font-size:31px}
+  .backHomeBtn{padding:11px 12px;font-size:13px}
+  .housePrimaryActions{grid-template-columns:1fr}
+  .calendarAddGrid button{min-height:96px}
+  #calendarDayDialog,#calendarAddDialog{width:calc(100% - 10px);max-height:86dvh}
+  .dialogBox{padding:19px}
+}
+
+@media(max-width:390px){
+  nav button:not(.navHomeCenter) small{font-size:10px}
+  nav .navHomeCenter small{font-size:12px}
+  .personPageHead{align-items:flex-start}
+  .personAvatar{width:66px;height:66px}
+  .personIdentity{gap:10px}
+  .personIdentity h2{font-size:28px}
+  .calendarAddGrid{grid-template-columns:1fr 1fr}
+}
+
+/* iPhone/Safari: il contenuto non deve finire sotto orologio, Dynamic Island o status bar */
+@media(max-width:600px){
+  .app{padding-top:max(64px,calc(env(safe-area-inset-top) + 18px))}
+}
+.fieldHint{display:block;font-size:11px;color:var(--muted);font-weight:500;margin:3px 0 7px}
