@@ -202,3 +202,32 @@ L'invio automatico fuori dall'app è previsto nella V8.4 con Telegram.
 - V10: release stabile
 
 Autenticazione, Supabase, family_id e sincronizzazione non modificati.
+
+
+## V8.4 — Restyle Home + Login
+
+Restyling grafico basato sui mockup approvati:
+- Login fotografico a tutto schermo con card sovrapposta
+- Home "La nostra giornata" in palette verde / crema / arancio
+- foto famiglia integrata localmente
+- ritratti di Caty, Kiko, Astro, JJ e Kiki integrati localmente
+- famiglia in una sola striscia compatta
+- menu principale a card 2 colonne
+- Routine Casa riportata tra le funzioni principali
+- Manutenzioni e Auto compatti nello stesso blocco
+- riepilogo rapido: impegni, menu di oggi, casa, spese mese
+- campanella promemoria in header con indicatore
+- bottom navigation ridisegnata
+- stile generale delle sezioni riallineato alla nuova palette
+
+Asset tutti nel root:
+family-hero.jpg
+caty-avatar.jpg
+kiko-avatar.jpg
+astro-avatar.jpg
+jj-avatar.jpg
+kiki-avatar.jpg
+
+Nessun link immagine esterno.
+
+Autenticazione, Supabase, family_id, sincronizzazione e service worker non modificati.

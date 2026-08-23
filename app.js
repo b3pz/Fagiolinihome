@@ -599,8 +599,10 @@ async function bootCloud(){
 }
 
 function go(id){
+ document.body.dataset.page=id;
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
  document.getElementById(id).classList.add('on');
+ document.querySelectorAll('nav [data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
  const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi',maintenance:'Manutenzioni casa',auto:'Auto',reminders:'Promemoria'};
  pageTitle.textContent=titles[id]||'Fagiolini';
  if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
@@ -611,15 +613,22 @@ document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getE
 
 function renderHome(){
  todayLabel.textContent=longDate();
- peopleCards.innerHTML=s.children.map(c=>{
-  if(c.type==='dog'){
-   let ev=events(c.id),walk=ev.find(e=>e.type==='traversina');
-   return `<button class="personCard pet" data-person="${c.id}"><i>${c.emoji}</i><b>${c.name}</b><span class="muted">🎂 ${birthLabel(c.birthDate)} · ${ageFromBirth(c.birthDate)}<br>🐾 ${walk?timeLabel(walk.at):'—'} · 💩 ${count(c.id,'cacca')}</span></button>`
-  }
-  return `<button class="personCard" data-person="${c.id}"><i>${c.emoji}</i><b>${c.name}</b><span class="muted">🎂 ${birthLabel(c.birthDate)} · ${ageFromBirth(c.birthDate)}<br>💩 ${count(c.id,'cacca')} · 🚼 ${count(c.id,'pannolino')} · 🍼 ${count(c.id,'pappa')}</span></button>`
- }).join('');
+
+ const avatars={caty:'caty-avatar.jpg',kiko:'kiko-avatar.jpg',astro:'astro-avatar.jpg',jj:'jj-avatar.jpg',kiki:'kiki-avatar.jpg'};
+ const childCards=s.children.map(c=>`
+  <button class="familyMemberCard ${c.type==='dog'?'pet':''}" data-person="${c.id}">
+   <img src="${avatars[c.id]||''}" alt="${esc(c.name)}">
+   <b>${esc(c.name)}</b>
+   <span>${c.id==='caty'?'♥':'♥'}</span>
+  </button>`).join('');
+
+ const adultCards=`
+  <button class="familyMemberCard" data-adult="jj"><img src="${avatars.jj}" alt="JJ"><b>JJ</b><span>♥</span></button>
+  <button class="familyMemberCard" data-adult="kiki"><img src="${avatars.kiki}" alt="Kiki"><b>Kiki</b><span class="orangeHeart">♥</span></button>`;
+
+ peopleCards.innerHTML=childCards+adultCards;
  peopleCards.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>openPerson(b.dataset.person));
- document.querySelectorAll('[data-adult]').forEach(b=>b.onclick=()=>{currentAdult=b.dataset.adult;go('adult')});
+ peopleCards.querySelectorAll('[data-adult]').forEach(b=>b.onclick=()=>{currentAdult=b.dataset.adult;go('adult')});
 
  const healthToday=s.health.filter(h=>h.date===dateKey());
  const dueHouse=HOUSE_ROUTINES.filter(r=>{
@@ -628,24 +637,36 @@ function renderHome(){
   const days=(Date.now()-new Date(last.at).getTime())/86400000;
   const limits={sweep:1,mop:2,washer:3,dryer:3,sheets:7,towels:3};
   return days>=(limits[r.id]||7);
-}).map(r=>({emoji:r.emoji,title:r.name,freq:'Routine casa',owner:'Famiglia'}));
- todayOverview.innerHTML=[
-  (()=>{let n=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x))).length;return n?`<div class="row">🔔<div class="grow"><b>${n} promemoria da vedere</b><div class="meta">Apri Promemoria dalla Home</div></div></div>`:''})(),
-  healthToday.length?`<div class="row">❤️<div class="grow"><b>${healthToday.length} evento salute</b><div class="meta">${healthToday.map(h=>esc(h.title||h.name)).join(' · ')}</div></div></div>`:'',
-  `<div class="row">🧹<div class="grow"><b>${dueHouse.length} attività di casa</b><div class="meta">Ancora da completare</div></div></div>`,
-  `<div class="row">🛒<div class="grow"><b>${s.shopping.filter(x=>!x.done).length} cose da comprare</b><div class="meta">Lista della spesa</div></div></div>`
- ].join('');
+ }).map(r=>({emoji:r.emoji,title:r.name,freq:'Routine casa',owner:'Famiglia'}));
+
+ const reminderCount=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x))).length;
+ const todayCommitments=reminderCount+healthToday.length;
+ todayOverview.innerHTML=`
+  <b class="summaryBig">${todayCommitments}</b>
+  <span>${todayCommitments===1?'impegno':'impegni'}</span>
+  <em>${reminderCount} ${reminderCount===1?'promemoria':'promemoria'}</em>`;
 
  let md=s.menu[dateKey()]||{};
- menuToday.innerHTML=`<div class="mealBox"><span>🍝 PRANZO</span><b>${esc(md.lunch||'Non impostato')}</b></div><div class="mealBox"><span>🌙 CENA</span><b>${esc(md.dinner||'Non impostata')}</b></div>`;
+ let firstMeal=md.lunch||md.dinner||'Da impostare';
+ let secondMeal=md.caty?.snackPM||md.breakfast||'';
+ menuToday.innerHTML=`
+  <b>${esc(firstMeal)}</b>
+  <em>${secondMeal?esc(secondMeal):'Apri il menu'}</em>`;
 
- let due=dueHouse.slice(0,3);
- houseToday.innerHTML=due.length?due.map(h=>`<div class="row"><span>🧹</span><div class="grow"><b>${esc(h.text)}</b><div class="meta">${h.frequency} · ${h.owner}</div></div></div>`).join(''):'<div class="muted">Tutto fatto per ora.</div>';
+ houseToday.innerHTML=`
+  <b class="summaryBig">${dueHouse.length}</b>
+  <span>${dueHouse.length===1?'attività':'attività'}</span>
+  <em>da completare</em>`;
 
  let mk=monthKey(new Date()),ex=s.expenses.filter(x=>x.month===mk),tot=ex.reduce((a,x)=>a+Number(x.amount||0),0);
- moneyToday.innerHTML=`<div class="row"><span>💶</span><div class="grow"><b>${euro(tot)}</b><div class="meta">${ex.length} voci registrate questo mese</div></div></div>`
-}
+ moneyToday.innerHTML=`
+  <b class="summaryMoney">${euro(tot)}</b>
+  <span>${ex.length} ${ex.length===1?'voce':'voci'}</span>
+  <em>registrate</em>`;
 
+ const bell=document.querySelector('.reminderBell .bellDot');
+ if(bell)bell.classList.toggle('show',reminderCount>0);
+}
 function openPerson(id){current=id;dayOffset=0;go('person');renderPerson()}
 function personActionKeys(c){return c.type==='dog'?['pappa','traversina','cacca','pipi','farmaco','toeletta']:['pappa','pannolino','cacca','nanna','bagnetto']}
 function actionIcon(type,person){if(type==='pappa'&&person==='astro')return '🍽️';return META[type]?.[0]||'•'}

@@ -8,72 +8,112 @@
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page="home">
 
 <div id="loginScreen" class="loginScreen">
+  <div class="loginBackdrop" aria-hidden="true"></div>
   <div class="loginCard">
-    <div class="loginLogo">🌱</div>
-    <b class="brand">FAGIOLINI</b>
+    <div class="loginLeaf">♧</div>
+    <b class="brand loginBrand">FAGIOLINI</b>
     <h1>Entra in famiglia</h1>
-    <p class="muted">Accedi con l'account JJ o Kiki per sincronizzare tutti i dati.</p>
-    <form id="loginForm" class="form">
-      <input id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
-      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
-      <button id="loginButton" class="primary">Accedi</button>
+    <div class="loginHeart">♥</div>
+    <p class="loginLead">Accedi con l’account JJ o Kiki<br>per sincronizzare tutti i dati.</p>
+    <form id="loginForm" class="form loginForm">
+      <label class="loginInput">
+        <span>✉</span>
+        <input id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
+      </label>
+      <label class="loginInput">
+        <span>🔒</span>
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+      </label>
+      <button id="loginButton" class="primary loginButton">Accedi</button>
     </form>
     <div id="loginMessage" class="loginMessage"></div>
-    <p class="tiny">I dati restano anche in cache sul dispositivo e vengono sincronizzati con Supabase quando c'è connessione.</p>
+    <div class="loginPrivacy"><span>✓</span><p>I dati restano sul dispositivo<br>e si sincronizzano quando sei online.</p></div>
+    <div class="loginSprout">♧</div>
   </div>
 </div>
 
 <div class="app">
 <header>
-  <div><b class="brand">FAGIOLINI</b><h1 id="pageTitle">La nostra giornata</h1><span id="todayLabel" class="muted"></span></div>
+  <div class="headerIdentity">
+    <b class="brand">FAGIOLINI</b>
+    <h1 id="pageTitle">La nostra giornata</h1>
+    <span id="todayLabel" class="muted"></span>
+  </div>
   <div class="headerTools">
-      <div id="cloudStatus" class="cloudStatus offline"><span>●</span><small>Locale</small></div>
-      <button id="accountBtn" class="round accountBtn" title="Account">👤</button>
-      <button id="resetBtn" class="round" title="Reset dati">↻</button>
-    </div>
+    <div id="cloudStatus" class="cloudStatus offline"><span>●</span><small>Locale</small></div>
+    <button class="round reminderBell" data-go="reminders" title="Promemoria">♢<span class="bellDot"></span></button>
+    <button id="accountBtn" class="round accountBtn" title="Account">👤</button>
+    <button id="resetBtn" class="round resetBtn" title="Reset dati">↻</button>
+  </div>
 </header>
 
 <main>
 <section id="home" class="view on">
-  <div class="familyHero card">
-    <div><small>LA FAMIGLIA</small><h2>JJ, Kiki, Caty, Kiko & Astro</h2><p class="muted">Tutto quello che serve oggi, in un posto solo.</p></div>
-    <div class="heroEmoji">🌱</div>
+  <div class="homeHero">
+    <img src="family-hero.jpg" alt="La famiglia Fagiolini">
+    <div class="homeHeroShade"></div>
+    <div class="homeHeroText">Tutto quello che serve oggi,<br>in un posto solo.</div>
+    <div class="heroHeart">♥</div>
   </div>
 
-  <div class="sectionTitle"><h2>I nostri piccoli</h2></div>
-  <div id="peopleCards" class="peopleGrid"></div>
+  <div class="sectionTitle familyTitle">
+    <h2>La nostra famiglia <span>♥</span></h2>
+  </div>
+  <div id="peopleCards" class="familyStrip"></div>
 
-  <div class="sectionTitle"><h2>Noi</h2></div>
-<div class="adultGrid">
-  <button class="adultCard" data-adult="jj"><span>👨</span><div><b>JJ</b><small>31/05/1991 · età automatica</small></div></button>
-  <button class="adultCard" data-adult="kiki"><span>👩</span><div><b>Kiki</b><small>24/08/1990 · età automatica</small></div></button>
-</div>
-<div class="quickHome">
-    <button id="quickRecord"><span>➕</span><b>Segna</b><small>Pappa, nanna, cacca...</small></button>
-    <button data-go="menu"><span>🍝</span><b>Menu</b><small>Organizza la settimana</small></button>
-    <button data-go="calendar"><span>📅</span><b>Calendario</b><small>Vedi tutto insieme</small></button>
-    <button data-go="reminders"><span>🔔</span><b>Promemoria</b><small>Scadenze e appuntamenti</small></button>
-    <button data-go="health"><span>❤️</span><b>Salute</b><small>Visite e medicine</small></button>
-    <button data-go="shop"><span>🛒</span><b>Spesa</b><small>Cosa manca</small></button>
-    <button data-go="money"><span>💶</span><b>Soldi</b><small>Spese del mese</small></button>
-    <button data-go="maintenance"><span>🧰</span><b>Manutenzioni</b><small>Casa e tecnici</small></button>
-    <button data-go="auto"><span>🚗</span><b>Auto</b><small>Carburante e scadenze</small></button>
+  <div class="quickHome">
+    <button id="quickRecord" class="homeAction actionGreen">
+      <span class="homeActionIcon">✓</span><div><b>Segna</b><small>Appunti, note e promemoria</small></div><em>›</em>
+    </button>
+    <button data-go="menu" class="homeAction actionOrange">
+      <span class="homeActionIcon">♨</span><div><b>Menu</b><small>Pianifica i pasti della famiglia</small></div><em>›</em>
+    </button>
+    <button data-go="calendar" class="homeAction actionGreen">
+      <span class="homeActionIcon">▦</span><div><b>Calendario</b><small>Eventi e impegni di tutti</small></div><em>›</em>
+    </button>
+    <button data-go="health" class="homeAction actionGreen">
+      <span class="homeActionIcon">♡</span><div><b>Salute</b><small>Visite, farmaci e benessere</small></div><em>›</em>
+    </button>
+    <button data-go="house" class="homeAction actionGold">
+      <span class="homeActionIcon">⌂</span><div><b>Routine Casa</b><small>Compiti e routine settimanali</small></div><em>›</em>
+    </button>
+    <button data-go="shop" class="homeAction actionGreen">
+      <span class="homeActionIcon">🛒</span><div><b>Spesa</b><small>Lista della spesa e prodotti</small></div><em>›</em>
+    </button>
+    <button data-go="money" class="homeAction actionOrange">
+      <span class="homeActionIcon">◔</span><div><b>Soldi</b><small>Gestisci il budget della famiglia</small></div><em>›</em>
+    </button>
+    <div class="homeMiniPair">
+      <button data-go="maintenance"><span>🔧</span><b>Manutenzioni</b><small>Casa e impianti</small></button>
+      <button data-go="auto"><span>🚗</span><b>Auto</b><small>Scadenze e manutenzione</small></button>
+    </div>
   </div>
 
-  <div class="sectionTitle"><h2>Oggi</h2></div>
-  <div id="todayOverview" class="card"></div>
-
-  <div class="sectionTitle"><h2>Menu di oggi</h2><button data-go="menu">Apri</button></div>
-  <div id="menuToday" class="card mealGrid"></div>
-
-  <div class="sectionTitle"><h2>Casa</h2><button data-go="house">Apri</button></div>
-  <div id="houseToday" class="card"></div>
-
-  <div class="sectionTitle"><h2>Spese questo mese</h2><button data-go="money">Apri</button></div>
-  <div id="moneyToday" class="card"></div>
+  <div class="homeSummaryGrid">
+    <button class="homeSummaryCard" data-go="reminders">
+      <div class="summaryBadge green">✓</div>
+      <small>Oggi</small>
+      <div id="todayOverview"></div>
+    </button>
+    <button class="homeSummaryCard" data-go="menu">
+      <div class="summaryBadge orange">♨</div>
+      <small>Menu di oggi</small>
+      <div id="menuToday"></div>
+    </button>
+    <button class="homeSummaryCard" data-go="house">
+      <div class="summaryBadge gold">⌂</div>
+      <small>Casa</small>
+      <div id="houseToday"></div>
+    </button>
+    <button class="homeSummaryCard" data-go="money">
+      <div class="summaryBadge orange">▰</div>
+      <small>Spese del mese</small>
+      <div id="moneyToday"></div>
+    </button>
+  </div>
 </section>
 
 <section id="person" class="view">
