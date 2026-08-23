@@ -25,7 +25,12 @@
   <div class="sectionTitle"><h2>I nostri piccoli</h2></div>
   <div id="peopleCards" class="peopleGrid"></div>
 
-  <div class="quickHome">
+  <div class="sectionTitle"><h2>Noi</h2></div>
+<div class="adultGrid">
+  <button class="adultCard" data-adult="jj"><span>👨</span><div><b>JJ</b><small>31/05/1991 · età automatica</small></div></button>
+  <button class="adultCard" data-adult="kiki"><span>👩</span><div><b>Kiki</b><small>24/08/1990 · età automatica</small></div></button>
+</div>
+<div class="quickHome">
     <button id="quickRecord"><span>➕</span><b>Segna</b><small>Pappa, nanna, cacca...</small></button>
     <button data-go="menu"><span>🍝</span><b>Menu</b><small>Organizza la settimana</small></button>
     <button data-go="calendar"><span>📅</span><b>Calendario</b><small>Vedi tutto insieme</small></button>
@@ -60,13 +65,51 @@
   </div>
 </section>
 
+<section id="adult" class="view">
+  <div class="sectionTitle"><div><small>NOI</small><h2 id="adultTitle"></h2></div><button data-go="home">← Home</button></div>
+  <div id="adultSummary" class="stats"></div>
+
+  <div class="card">
+    <h3>Azioni rapide</h3>
+    <div class="adultActions">
+      <button id="adultVisit">🩺<b>Visita</b></button>
+      <button id="adultMedicine">💊<b>Medicina</b></button>
+      <button data-go="calendar">📅<b>Calendario</b></button>
+      <button data-go="profiles">🍝<b>Alimentazione</b></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle compact">
+      <div><small>SPESE PERSONALI</small><h3>💳 Questo mese</h3></div>
+      <strong id="adultExpenseTotal">0,00 €</strong>
+    </div>
+    <form id="adultExpenseForm" class="form personalExpenseForm">
+      <input id="adultExpenseName" placeholder="Es. Pranzo lavoro" required>
+      <input id="adultExpenseAmount" type="number" min="0" step="0.01" placeholder="€" required>
+      <select id="adultExpenseCat">
+        <option value="Pranzo lavoro">Pranzo lavoro</option>
+        <option value="Caffè / Bar">Caffè / Bar</option>
+        <option value="Trasporti">Trasporti</option>
+        <option value="Acquisti personali">Acquisti personali</option>
+        <option value="Svago">Svago</option>
+        <option value="Altro">Altro</option>
+      </select>
+      <button class="primary">Aggiungi spesa</button>
+    </form>
+    <div id="adultExpenseBreakdown" class="expenseBreakdown"></div>
+    <div id="adultExpenseList"></div>
+  </div>
+
+  <div class="card"><h3>Prossimi impegni</h3><div id="adultHealth"></div></div>
+</section>
 <section id="menu" class="view">
   <div class="sectionTitle"><div><small>ASSISTENTE MENU</small><h2>🍝 Menu famiglia</h2></div><button data-go="home">← Home</button></div>
 
   <div class="card introCard">
     <h3>Genera una settimana</h3>
     <p class="muted">Il generatore usa età, preferenze e allergeni salvati nei profili. Tutto avviene sul telefono.</p>
-    <div class="inlineBtns"><button id="generateMenu" class="primary">✨ Genera menu</button><button data-go="profiles">⚙️ Profili alimentari</button></div>
+    <div class="inlineBtns"><button id="generateMenu" class="primary">✨ Genera menu</button><button id="undoMenu">↩️ Annulla ultima generazione</button><button data-go="profiles">⚙️ Profili alimentari</button></div>
     <p class="tiny">Per bambini piccoli, allergie o esigenze cliniche, il menu va sempre verificato con pediatra/professionista sanitario.</p>
   </div>
   <div id="menuWeek"></div>

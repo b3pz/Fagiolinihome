@@ -1,15 +1,16 @@
 const KEY='familyHubV2';
 const DEFAULT={
  children:[
-  {id:'caty',name:'Caty',emoji:'👧',type:'child'},
-  {id:'kiko',name:'Kiko',emoji:'👶',type:'child'},
-  {id:'astro',name:'Astro',emoji:'🐶',type:'dog'}
+  {id:'caty',name:'Caty',emoji:'👧',type:'child',birthDate:'2024-12-10'},
+  {id:'kiko',name:'Kiko',emoji:'👶',type:'child',birthDate:'2026-02-11'},
+  {id:'astro',name:'Astro',emoji:'🐶',type:'dog',birthDate:'2025-10-19'}
  ],
  events:[],tasks:[],house:[
   {id:crypto.randomUUID(),text:'Riordinare cucina',owner:'Famiglia',frequency:'giornaliera',done:[]},
   {id:crypto.randomUUID(),text:'Pulire bagno',owner:'Famiglia',frequency:'settimanale',done:[]}
  ],
  shopping:[],menu:{},expenses:[],health:[],
+ menuBackup:null,
  profiles:{
   caty:{ageMonths:20,likes:'',dislikes:'',allergens:''},
   kiko:{ageMonths:6,likes:'',dislikes:'',allergens:''},
@@ -17,23 +18,27 @@ const DEFAULT={
   kiki:{ageMonths:420,likes:'',dislikes:'',allergens:''}
  }
 };
+const ADULTS={
+ jj:{name:'JJ',emoji:'👨',birthDate:'1991-05-31'},
+ kiki:{name:'Kiki',emoji:'👩',birthDate:'1990-08-24'}
+};
 const META={
  pappa:['🍼','Pappa'],pannolino:['🚼','Pannolino'],cacca:['💩','Cacca'],nanna:['😴','Nanna'],bagnetto:['🛁','Bagnetto'],
  passeggiata:['🦮','Passeggiata'],pipi:['💧','Pipì'],farmaco:['💊','Farmaco'],toeletta:['🛁','Toeletta']
 };
-let s=load(),current='caty',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey();
+let s=load(),current='caty',currentAdult='jj',dayOffset=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey();
 
 function load(){
  let out=structuredClone(DEFAULT);
  try{const raw=localStorage.getItem(KEY);if(raw)out={...out,...JSON.parse(raw)}}catch{}
  out.children=(out.children||[]).map(c=>{
   if(c.id==='domenico'||c.name==='Domenico')return {...c,id:'kiko',name:'Kiko',emoji:'👶',type:'child'};
-  if(c.id==='astro')return {...c,name:'Astro',emoji:'🐶',type:'dog'};
-  if(c.id==='caty')return {...c,name:'Caty',emoji:'👧',type:'child'};
-  if(c.id==='kiko')return {...c,name:'Kiko',emoji:'👶',type:'child'};
+  if(c.id==='astro')return {...c,name:'Astro',emoji:'🐶',type:'dog',birthDate:'2025-10-19'};
+  if(c.id==='caty')return {...c,name:'Caty',emoji:'👧',type:'child',birthDate:'2024-12-10'};
+  if(c.id==='kiko')return {...c,name:'Kiko',emoji:'👶',type:'child',birthDate:'2026-02-11'};
   return c
  });
- if(!out.children.some(c=>c.id==='astro'))out.children.push({id:'astro',name:'Astro',emoji:'🐶',type:'dog'});
+ if(!out.children.some(c=>c.id==='astro'))out.children.push({id:'astro',name:'Astro',emoji:'🐶',type:'dog',birthDate:'2025-10-19'});
  out.events=(out.events||[]).map(e=>e.childId==='domenico'?{...e,childId:'kiko'}:e);
  out.health=Array.isArray(out.health)?out.health:[];
  out.expenses=Array.isArray(out.expenses)?out.expenses:[];
@@ -42,6 +47,11 @@ function load(){
  out.shopping=Array.isArray(out.shopping)?out.shopping:[];
  out.tasks=Array.isArray(out.tasks)?out.tasks:[];
  out.menu=out.menu||{};
+ out.menuBackup=out.menuBackup||null;
+ out.profiles.caty.ageMonths=monthsFromBirth('2024-12-10');
+ out.profiles.kiko.ageMonths=monthsFromBirth('2026-02-11');
+ out.profiles.jj.ageMonths=monthsFromBirth('1991-05-31');
+ out.profiles.kiki.ageMonths=monthsFromBirth('1990-08-24');
  return out
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(s));renderAll()}
@@ -56,14 +66,17 @@ function count(person,type,d=new Date()){return events(person,d).filter(e=>e.typ
 function sleepActive(person){return [...s.events].reverse().find(e=>e.childId===person&&e.type==='nanna'&&!e.endAt)}
 function sleepMinutes(person,d=new Date()){let k=dateKey(d),t=0;s.events.filter(e=>e.childId===person&&e.type==='nanna'&&dateKey(new Date(e.at))===k).forEach(e=>t+=Math.max(0,((e.endAt?new Date(e.endAt):new Date())-new Date(e.at))/60000));return Math.round(t)}
 function duration(m){let h=Math.floor(m/60),r=m%60;return h?`${h}h${r?' '+r+'m':''}`:`${r}m`}
+function monthsFromBirth(k){let b=dateObj(k),n=new Date(),months=(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth();if(n.getDate()<b.getDate())months--;return Math.max(0,months)}
+function ageFromBirth(k){let b=dateObj(k),n=new Date(),months=(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth();if(n.getDate()<b.getDate())months--;months=Math.max(0,months);return months<24?`${months} mesi`:`${Math.floor(months/12)} anni${months%12?` e ${months%12} mesi`:''}`}
+function birthLabel(k){return new Intl.DateTimeFormat('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'}).format(dateObj(k))}
 function personName(id){return ({caty:'Caty',kiko:'Kiko',astro:'Astro',jj:'JJ',kiki:'Kiki',family:'Famiglia'})[id]||id}
 
 function go(id){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
  document.getElementById(id).classList.add('on');
- const titles={home:'La nostra giornata',person:'Registro',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi'};
+ const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi'};
  pageTitle.textContent=titles[id]||'Fagiolini';
- if(id==='home')renderHome();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money')renderMoney();
+ if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money')renderMoney();
  scrollTo(0,0)
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -74,11 +87,12 @@ function renderHome(){
  peopleCards.innerHTML=s.children.map(c=>{
   if(c.type==='dog'){
    let ev=events(c.id),walk=ev.find(e=>e.type==='passeggiata');
-   return `<button class="personCard pet" data-person="${c.id}"><i>${c.emoji}</i><b>${c.name}</b><span class="muted">🦮 ${walk?timeLabel(walk.at):'—'}<br>💩 ${count(c.id,'cacca')} oggi</span></button>`
+   return `<button class="personCard pet" data-person="${c.id}"><i>${c.emoji}</i><b>${c.name}</b><span class="muted">🎂 ${birthLabel(c.birthDate)} · ${ageFromBirth(c.birthDate)}<br>🦮 ${walk?timeLabel(walk.at):'—'} · 💩 ${count(c.id,'cacca')}</span></button>`
   }
-  return `<button class="personCard" data-person="${c.id}"><i>${c.emoji}</i><b>${c.name}</b><span class="muted">💩 ${count(c.id,'cacca')} · 🚼 ${count(c.id,'pannolino')}<br>🍼 ${count(c.id,'pappa')} · 😴 ${duration(sleepMinutes(c.id))}</span></button>`
+  return `<button class="personCard" data-person="${c.id}"><i>${c.emoji}</i><b>${c.name}</b><span class="muted">🎂 ${birthLabel(c.birthDate)} · ${ageFromBirth(c.birthDate)}<br>💩 ${count(c.id,'cacca')} · 🚼 ${count(c.id,'pannolino')} · 🍼 ${count(c.id,'pappa')}</span></button>`
  }).join('');
  peopleCards.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>openPerson(b.dataset.person));
+ document.querySelectorAll('[data-adult]').forEach(b=>b.onclick=()=>{currentAdult=b.dataset.adult;go('adult')});
 
  const healthToday=s.health.filter(h=>h.date===dateKey());
  const dueHouse=s.house.filter(h=>!houseDone(h));
@@ -120,6 +134,88 @@ function handleAction(person,type){
 }
 poopForm.onsubmit=e=>{e.preventDefault();s.events.push({id:crypto.randomUUID(),childId:pendingPerson,type:'cacca',at:new Date().toISOString(),note:[poopType.value,poopNote.value.trim()].filter(Boolean).join(' · ')});poopDialog.close();save()};
 sleepForm.onsubmit=e=>{e.preventDefault();let a=sleepActive(pendingPerson);if(a)a.endAt=new Date().toISOString();else s.events.push({id:crypto.randomUUID(),childId:pendingPerson,type:'nanna',at:new Date().toISOString(),endAt:null,note:''});sleepDialog.close();save()};
+
+
+
+function adultMonthExpenses(id=currentAdult){
+ let k=monthKey(new Date());
+ return s.expenses.filter(x=>x.month===k && x.person===id);
+}
+function adultExpenseIcon(cat){
+ return ({'Pranzo lavoro':'🍝','Caffè / Bar':'☕️','Trasporti':'🚆','Acquisti personali':'🛍️','Svago':'🎬','Altro':'💳'})[cat]||'💳'
+}
+function renderAdult(){
+ let a=ADULTS[currentAdult];
+ adultTitle.textContent=`${a.emoji} ${a.name}`;
+ let upcoming=s.health.filter(h=>h.person===currentAdult&&h.date>=dateKey()).sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));
+ let meds=upcoming.filter(h=>h.kind==='medicine').length;
+ let visits=upcoming.filter(h=>h.kind==='visit').length;
+ let personal=adultMonthExpenses(currentAdult);
+ let totalPersonal=personal.reduce((q,x)=>q+Number(x.amount||0),0);
+
+ adultSummary.innerHTML=`
+  <div class="stat"><span>ETÀ</span><b>${ageFromBirth(a.birthDate)}</b><div class="meta">🎂 ${birthLabel(a.birthDate)}</div></div>
+  <div class="stat"><span>SPESO QUESTO MESE</span><b>${euro(totalPersonal)}</b></div>
+  <div class="stat"><span>PROSSIME VISITE</span><b>${visits}</b></div>
+  <div class="stat"><span>MEDICINE / PROMEMORIA</span><b>${meds}</b></div>`;
+
+ adultExpenseTotal.textContent=euro(totalPersonal);
+
+ let cats={};
+ personal.forEach(x=>{
+  let c=x.personalCategory||x.category||'Altro';
+  cats[c]=(cats[c]||0)+Number(x.amount||0)
+ });
+
+ adultExpenseBreakdown.innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,val])=>
+  `<div class="moneyCategory"><span>${adultExpenseIcon(cat)} ${esc(cat)}</span><b>${euro(val)}</b></div>`
+ ).join('')||'<div class="muted">Ancora nessuna spesa personale questo mese.</div>';
+
+ adultExpenseList.innerHTML=personal.length?personal.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(x=>
+  `<div class="row">
+    <span>${adultExpenseIcon(x.personalCategory||x.category)}</span>
+    <div class="grow"><b>${esc(x.name)}</b><div class="meta">${esc(x.personalCategory||x.category||'Altro')}${x.date?' · '+longDate(dateObj(x.date)):''}</div></div>
+    <b>${euro(x.amount)}</b>
+    <button class="del" data-pdel="${x.id}">✕</button>
+  </div>`
+ ).join(''):'';
+
+ adultExpenseList.querySelectorAll('[data-pdel]').forEach(b=>b.onclick=()=>{
+  s.expenses=s.expenses.filter(x=>x.id!==b.dataset.pdel);
+  save();
+  renderAdult()
+ });
+
+ adultHealth.innerHTML=upcoming.length?upcoming.slice(0,8).map(h=>
+  `<div class="row"><span>${h.kind==='visit'?'🩺':'💊'}</span><div class="grow"><b>${esc(h.title)}</b><div class="meta">${longDate(dateObj(h.date))}${h.time?' · '+h.time:''}${h.dose?' · '+esc(h.dose):''}</div></div></div>`
+ ).join(''):'<div class="muted">Nessun impegno programmato.</div>';
+}
+adultVisit.onclick=()=>{go('health');visitPerson.value=currentAdult;visitTitle.focus()};
+adultMedicine.onclick=()=>{go('health');medPerson.value=currentAdult;medName.focus()};
+
+adultExpenseForm.onsubmit=e=>{
+ e.preventDefault();
+ let name=adultExpenseName.value.trim();
+ let amount=Number(adultExpenseAmount.value);
+ if(!name||!Number.isFinite(amount)||amount<0)return;
+ let now=new Date();
+ s.expenses.push({
+  id:crypto.randomUUID(),
+  name,
+  amount,
+  category:'Personale',
+  personalCategory:adultExpenseCat.value,
+  person:currentAdult,
+  month:monthKey(now),
+  date:dateKey(now),
+  recurring:false
+ });
+ adultExpenseName.value='';
+ adultExpenseAmount.value='';
+ save();
+ renderAdult()
+};
+
 
 function renderQuick(){
  quickPeople.innerHTML=s.children.map(c=>`<button class="personCard ${c.type==='dog'?'pet':''}" data-qp="${c.id}"><i>${c.emoji}</i><b>${c.name}</b></button>`).join('');
@@ -171,19 +267,35 @@ function adaptation(recipe,id){
  return `Per ${personName(id)}: porzione familiare adeguata all’età.`
 }
 generateMenu.onclick=()=>{
+ s.menuBackup=JSON.parse(JSON.stringify(s.menu));
  let pool=familyRecipePool();if(pool.length<5){alert('Con i filtri attuali rimangono poche ricette. Controlla allergeni e cibi non graditi nei profili.');return}
  let choices=shuffle(pool),idx=0;
  for(let i=0;i<7;i++){let d=offsetDate(i),k=dateKey(d);if(idx>=choices.length){choices=shuffle(pool);idx=0}let lunch=choices[idx++];if(idx>=choices.length){choices=shuffle(pool);idx=0}let dinner=choices[idx++];s.menu[k]={lunch:lunch.name,dinner:dinner.name,lunchAdapt:{caty:adaptation(lunch,'caty'),kiko:adaptation(lunch,'kiko')},dinnerAdapt:{caty:adaptation(dinner,'caty'),kiko:adaptation(dinner,'kiko')}}}
  save();renderMenu()
 };
+undoMenu.onclick=()=>{
+ if(!s.menuBackup){alert('Non c’è ancora un menu precedente da ripristinare.');return}
+ s.menu=JSON.parse(JSON.stringify(s.menuBackup));
+ s.menuBackup=null;
+ save();
+ renderMenu();
+};
 function renderMenu(){
  menuWeek.innerHTML='';
  for(let i=0;i<7;i++){let d=offsetDate(i),k=dateKey(d),m=s.menu[k]||{};let el=document.createElement('div');el.className='menuDay'+(i===0?' today':'');el.innerHTML=`<h3>${i===0?'Oggi · ':''}${longDate(d)}</h3>
  <div class="mealEdit"><label>🍝 Pranzo</label><input data-menu="${k}" data-meal="lunch" value="${esc(m.lunch||'')}" placeholder="Cosa mangiamo?"></div>
- ${m.lunchAdapt?.caty?`<div class="adaptation">👧 ${esc(m.lunchAdapt.caty)}<br>👶 ${esc(m.lunchAdapt.kiko)}</div>`:''}
+ ${m.lunchAdapt?.caty?`<div class="adaptation"><b>Adattamento generato</b><br>👧 ${esc(m.lunchAdapt.caty)}<br>👶 ${esc(m.lunchAdapt.kiko)}</div>`:''}
  <div class="mealEdit"><label>🌙 Cena</label><input data-menu="${k}" data-meal="dinner" value="${esc(m.dinner||'')}" placeholder="Cosa mangiamo?"></div>
- ${m.dinnerAdapt?.caty?`<div class="adaptation">👧 ${esc(m.dinnerAdapt.caty)}<br>👶 ${esc(m.dinnerAdapt.kiko)}</div>`:''}`;menuWeek.appendChild(el)}
- menuWeek.querySelectorAll('[data-menu]').forEach(inp=>inp.onchange=()=>{let k=inp.dataset.menu;s.menu[k]=s.menu[k]||{};s.menu[k][inp.dataset.meal]=inp.value.trim();save()})
+ ${m.dinnerAdapt?.caty?`<div class="adaptation"><b>Adattamento generato</b><br>👧 ${esc(m.dinnerAdapt.caty)}<br>👶 ${esc(m.dinnerAdapt.kiko)}</div>`:''}`;menuWeek.appendChild(el)}
+ menuWeek.querySelectorAll('[data-menu]').forEach(inp=>inp.onchange=()=>{
+ let k=inp.dataset.menu,meal=inp.dataset.meal;
+ s.menu[k]=s.menu[k]||{};
+ s.menu[k][meal]=inp.value.trim();
+ if(meal==='lunch')delete s.menu[k].lunchAdapt;
+ if(meal==='dinner')delete s.menu[k].dinnerAdapt;
+ save();
+ renderMenu();
+})
 }
 function renderProfiles(){
  let people=[['caty','👧 Caty'],['kiko','👶 Kiko'],['jj','👨 JJ'],['kiki','👩 Kiki']];
@@ -230,10 +342,55 @@ function moneyDate(){return monthBase(moneyOffset)}
 function euro(v){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(v)||0)}
 function ensureRecurring(){let k=monthKey(moneyDate()),sources=s.expenses.filter(x=>x.recurring&&!x.sourceId),existing=new Set(s.expenses.filter(x=>x.month===k&&x.sourceId).map(x=>x.sourceId));sources.forEach(x=>{if(x.month!==k&&!existing.has(x.id))s.expenses.push({...x,id:crypto.randomUUID(),month:k,sourceId:x.id,date:k+'-01'})})}
 moneyForm.onsubmit=e=>{e.preventDefault();let d=moneyDate(),k=monthKey(d);s.expenses.push({id:crypto.randomUUID(),name:moneyName.value.trim(),amount:Number(moneyAmount.value),category:moneyCat.value,recurring:moneyRecurring.checked,month:k,date:moneyOffset===0?dateKey():k+'-01'});moneyName.value='';moneyAmount.value='';moneyRecurring.checked=false;save();renderMoney()};
-function renderMoney(){ensureRecurring();let d=moneyDate(),k=monthKey(d),a=s.expenses.filter(x=>x.month===k),tot=a.reduce((q,x)=>q+Number(x.amount||0),0),fixed=a.filter(x=>x.recurring).reduce((q,x)=>q+Number(x.amount||0),0);moneyMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(d);moneyNext.disabled=moneyOffset>=0;moneyStats.innerHTML=[['Totale',euro(tot)],['Ricorrenti',euro(fixed)],['Variabili',euro(tot-fixed)]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');moneyList.innerHTML=a.length?a.map(x=>`<div class="row"><span>💶</span><div class="grow"><b>${esc(x.name)}</b><div class="meta">${x.category}${x.recurring?' · mensile':''}</div></div><b>${euro(x.amount)}</b><button class="del" data-exp="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna spesa.</div>';moneyList.querySelectorAll('[data-exp]').forEach(b=>b.onclick=()=>{s.expenses=s.expenses.filter(x=>x.id!==b.dataset.exp);save();renderMoney()});let cats={};a.forEach(x=>cats[x.category]=(cats[x.category]||0)+Number(x.amount||0));moneyCategories.innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div class="moneyCategory"><span>${esc(c)}</span><b>${euro(v)}</b></div>`).join('')||'<div class="muted">Nessun dato.</div>'}
+function renderMoney(){
+ ensureRecurring();
+ let d=moneyDate(),k=monthKey(d),a=s.expenses.filter(x=>x.month===k);
+ let tot=a.reduce((q,x)=>q+Number(x.amount||0),0);
+ let fixed=a.filter(x=>x.recurring).reduce((q,x)=>q+Number(x.amount||0),0);
+ let jj=a.filter(x=>x.person==='jj').reduce((q,x)=>q+Number(x.amount||0),0);
+ let kiki=a.filter(x=>x.person==='kiki').reduce((q,x)=>q+Number(x.amount||0),0);
+ let personal=jj+kiki;
+
+ moneyMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(d);
+ moneyNext.disabled=moneyOffset>=0;
+
+ moneyStats.innerHTML=[
+  ['Totale famiglia',euro(tot)],
+  ['Ricorrenti',euro(fixed)],
+  ['JJ personale',euro(jj)],
+  ['Kiki personale',euro(kiki)]
+ ].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+
+ moneyList.innerHTML=a.length?a.map(x=>{
+  let who=x.person?` · ${personName(x.person)}`:'';
+  let cat=x.personalCategory||x.category||'Altro';
+  let icon=x.person?adultExpenseIcon(cat):'💶';
+  return `<div class="row">
+   <span>${icon}</span>
+   <div class="grow"><b>${esc(x.name)}</b><div class="meta">${esc(cat)}${who}${x.recurring?' · mensile':''}</div></div>
+   <b>${euro(x.amount)}</b>
+   <button class="del" data-exp="${x.id}">✕</button>
+  </div>`
+ }).join(''):'<div class="muted">Nessuna spesa.</div>';
+
+ moneyList.querySelectorAll('[data-exp]').forEach(b=>b.onclick=()=>{
+  s.expenses=s.expenses.filter(x=>x.id!==b.dataset.exp);
+  save();
+  renderMoney()
+ });
+
+ let cats={};
+ a.forEach(x=>{
+  let c=x.person?`Personale ${personName(x.person)}`:(x.category||'Altro');
+  cats[c]=(cats[c]||0)+Number(x.amount||0)
+ });
+ moneyCategories.innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>
+  `<div class="moneyCategory"><span>${esc(c)}</span><b>${euro(v)}</b></div>`
+ ).join('')||'<div class="muted">Nessun dato.</div>';
+}
 moneyPrev.onclick=()=>{moneyOffset--;renderMoney()};moneyNext.onclick=()=>{if(moneyOffset<0){moneyOffset++;renderMoney()}};
 
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero cancellare tutti i dati salvati su questo dispositivo?')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
-function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on'))renderMoney()}
+function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on'))renderMoney()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();
