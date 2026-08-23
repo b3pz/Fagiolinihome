@@ -1,16 +1,32 @@
-# Fagiolini V5.1 FIX
+# Fagiolini V6
 
-Versione ricostruita sulla base stabile.
+Versione più completa e più leggibile.
 
-- Caty, Kiko e Astro insieme nella Home
-- Astro ha azioni dedicate da cane
-- aggiunta rapida
+## Novità
+- layout e pulsanti più grandi
+- Caty, Kiko e Astro nella Home
+- Assistente Menu locale e gratuito
+- profili alimentari con età, gusti, cibi non graditi e allergeni/esclusioni
+- menu settimanale variabile
+- adattamenti indicativi per Caty e Kiko
+- visite mediche / appuntamenti
+- medicine
+- calendario mensile che raccoglie menu, salute e registrazioni dei piccoli
 - Casa
-- Task
 - Spesa
-- Menu
-- Soldi con totale mensile, categorie e spese ricorrenti
-- storico mese per mese
-- migrazione dei dati già presenti
+- Soldi con storico mensile e categorie
 
-Tutti i file vanno direttamente nella root di GitHub Pages.
+## Importante
+L'Assistente Menu è locale e basato su regole: non usa API esterne e non invia dati fuori dal telefono.
+Per bambini piccoli, allergie o esigenze sanitarie, le proposte alimentari vanno verificate con pediatra/professionista sanitario.
+
+## GitHub Pages
+Metti direttamente nella root:
+- index.html
+- style.css
+- app.js
+- manifest.json
+- sw.js
+- README.md
+
+Nessuna sottocartella.
