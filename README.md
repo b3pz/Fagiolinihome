@@ -68,3 +68,10 @@ Project URL e Publishable Key sono valori pubblici client-side.
 NON inserire mai una Secret key o service_role nel repository GitHub.
 
 Nota: lo stato familiare è salvato in un unico record JSON; se due telefoni modificano esattamente nello stesso istante, prevale l'ultimo salvataggio.
+
+## STABLE DIRECT SUPABASE
+- family_id fisso verificato: 8e7df5f2-7339-48dd-96db-dec7a04b070e
+- eliminato il passaggio family_members dal login
+- login chiuso immediatamente dopo autenticazione riuscita
+- errore family_state non può più rimandare alla login
+- service worker/cache disattivati durante lo sviluppo

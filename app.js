@@ -132,12 +132,24 @@ async function cloudLogin(email,password){
  loginMessage.textContent='';
  loginButton.disabled=true;
  loginButton.textContent='Accesso...';
+
  try{
   const {data,error}=await sb.auth.signInWithPassword({email,password});
   if(error)throw error;
+  if(!data?.session)throw new Error('Sessione Supabase non ricevuta');
+
   cloudSession=data.session;
+
+  // Da qui il login è riuscito: entra subito.
+  loginScreen.classList.add('hidden');
+  renderAll();
+
+  // La sincronizzazione è separata.
   await initializeCloud();
+
  }catch(err){
+  console.error('Auth error:',err);
+  loginScreen.classList.remove('hidden');
   loginMessage.textContent='Accesso non riuscito: '+(err.message||'controlla email e password.');
  }finally{
   loginButton.disabled=false;
@@ -153,60 +165,52 @@ async function initializeCloud(){
  if(!cloudSession){
   loginScreen.classList.remove('hidden');
   setCloudStatus('offline','Locale');
-  return
+  return;
  }
 
- setCloudStatus('syncing','Connessione…');
-
- const uid=cloudSession.user.id;
- const {data:member,error:memberError}=await sb
-  .from('family_members')
-  .select('family_id,display_name')
-  .eq('user_id',uid)
-  .single();
-
- if(memberError||!member){
-  cloudReady=false;
-  loginScreen.classList.remove('hidden');
-  loginMessage.textContent='Questo account non risulta associato alla famiglia Fagiolini.';
-  setCloudStatus('error','Non associato');
-  return
- }
-
- cloudFamilyId=member.family_id;
- cloudMemberName=member.display_name||cloudSession.user.user_metadata?.display_name||'Fagiolini';
-
- const {data:row,error}=await sb
-  .from('family_state')
-  .select('data,updated_at')
-  .eq('family_id',cloudFamilyId)
-  .single();
-
- if(error){
-  loginMessage.textContent='Errore nel caricamento del database: '+error.message;
-  setCloudStatus('error','Errore');
-  return
- }
-
- const remote=row?.data||{};
- lastCloudUpdatedAt=row?.updated_at||null;
-
- if(isMeaningfulState(remote)){
-  applyingRemote=true;
-  s=normalizeRemoteState(remote);
-  localStorage.setItem(KEY,JSON.stringify(s));
-  renderAll();
-  applyingRemote=false;
- }else{
-  await uploadCloudState(true);
- }
-
- cloudReady=true;
+ // Login riuscito: la schermata login viene chiusa SUBITO.
  loginScreen.classList.add('hidden');
  loginMessage.textContent='';
- updateAccountInfo();
- setCloudStatus('online','Sincronizzato');
- startCloudWatch();
+ setCloudStatus('syncing','Connessione…');
+
+ cloudFamilyId='8e7df5f2-7339-48dd-96db-dec7a04b070e';
+ cloudMemberName=cloudSession.user.user_metadata?.display_name ||
+   (cloudSession.user.email?.toLowerCase().includes('federica')?'Kiki':'JJ');
+
+ try{
+  const {data:row,error}=await sb
+   .from('family_state')
+   .select('data,updated_at')
+   .eq('family_id',cloudFamilyId)
+   .maybeSingle();
+
+  if(error)throw error;
+
+  const remote=row?.data||{};
+  lastCloudUpdatedAt=row?.updated_at||null;
+
+  if(isMeaningfulState(remote)){
+   applyingRemote=true;
+   s=normalizeRemoteState(remote);
+   localStorage.setItem(KEY,JSON.stringify(s));
+   renderAll();
+   applyingRemote=false;
+  }else{
+   await uploadCloudState(true);
+  }
+
+  cloudReady=true;
+  updateAccountInfo();
+  setCloudStatus('online','Sincronizzato');
+  startCloudWatch();
+
+ }catch(err){
+  console.error('Supabase family_state error:',err);
+  // Non tornare MAI alla login: l'utente è già autenticato.
+  cloudReady=false;
+  setCloudStatus('error','Solo locale');
+  renderAll();
+ }
 }
 
 function scheduleCloudUpload(){
