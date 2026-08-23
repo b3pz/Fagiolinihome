@@ -33,3 +33,26 @@ nav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width
 .expenseBreakdown{margin:14px 0 6px}
 #adultExpenseTotal{font-size:25px}
 @media(max-width:520px){.personalExpenseForm{grid-template-columns:1fr 95px}}
+
+/* V7 Supabase */
+.loginScreen{position:fixed;inset:0;z-index:1000;background:linear-gradient(145deg,#f4f6fa,#eef2f7);display:grid;place-items:center;padding:22px}
+.loginScreen.hidden{display:none}
+.loginCard{width:min(430px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 30px 80px rgba(30,45,75,.16)}
+.loginCard h1{margin:10px 0 8px;font-size:31px}
+.loginLogo{font-size:52px;margin-bottom:4px}
+.loginMessage{min-height:22px;margin-top:12px;font-size:14px;color:#b42318;line-height:1.4}
+.headerTools{display:flex;gap:8px;align-items:center}
+.cloudStatus{display:flex;align-items:center;gap:6px;background:var(--soft);border-radius:999px;padding:8px 10px}
+.cloudStatus span{font-size:10px}.cloudStatus small{letter-spacing:0;font-size:10px;font-weight:800}
+.cloudStatus.online span{color:#17a673}.cloudStatus.syncing span{color:#d99300}.cloudStatus.error span,.cloudStatus.offline span{color:#a0a7b3}
+.accountBtn{font-size:18px}
+.accountInfo{display:flex;gap:14px;align-items:center;background:var(--soft);padding:15px;border-radius:18px;margin-bottom:14px}
+.accountAvatar{font-size:36px}
+.fullBtn{width:100%;margin-bottom:9px}
+.secondaryFull{width:100%;border:1px solid var(--line);background:#fff;border-radius:15px;padding:14px;font-weight:800}
+@media(max-width:520px){
+ .cloudStatus small{display:none}
+ .cloudStatus{padding:8px}
+ .headerTools{gap:5px}
+ .headerTools .round{width:43px;height:43px}
+}

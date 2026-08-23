@@ -1,3 +1,19 @@
+
+const SUPABASE_URL='https://xkiruygivdkqgbmldtow.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_p9dN7dsr55WqxH0kS-QX0g_hQY_uxqc';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+ auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+});
+let cloudSession=null;
+let cloudFamilyId=null;
+let cloudMemberName='';
+let cloudReady=false;
+let applyingRemote=false;
+let uploadTimer=null;
+let cloudPollTimer=null;
+let realtimeChannel=null;
+let lastCloudUpdatedAt=null;
+
 const KEY='familyHubV2';
 const DEFAULT={
  children:[
@@ -54,7 +70,11 @@ function load(){
  out.profiles.kiki.ageMonths=monthsFromBirth('1990-08-24');
  return out
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(s));renderAll()}
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(s));
+ renderAll();
+ if(cloudReady&&!applyingRemote)scheduleCloudUpload()
+}
 function dateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function dateObj(k){let [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d,12)}
 function offsetDate(n){let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);return d}
@@ -70,6 +90,233 @@ function monthsFromBirth(k){let b=dateObj(k),n=new Date(),months=(n.getFullYear(
 function ageFromBirth(k){let b=dateObj(k),n=new Date(),months=(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth();if(n.getDate()<b.getDate())months--;months=Math.max(0,months);return months<24?`${months} mesi`:`${Math.floor(months/12)} anni${months%12?` e ${months%12} mesi`:''}`}
 function birthLabel(k){return new Intl.DateTimeFormat('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'}).format(dateObj(k))}
 function personName(id){return ({caty:'Caty',kiko:'Kiko',astro:'Astro',jj:'JJ',kiki:'Kiki',family:'Famiglia'})[id]||id}
+
+
+function setCloudStatus(mode,text){
+ if(!cloudStatus)return;
+ cloudStatus.className='cloudStatus '+mode;
+ cloudStatus.querySelector('small').textContent=text;
+}
+
+function isMeaningfulState(data){
+ if(!data||typeof data!=='object')return false;
+ return ['events','shopping','expenses','health'].some(k=>Array.isArray(data[k])&&data[k].length)
+   || (data.menu&&Object.keys(data.menu).length)
+   || (Array.isArray(data.house)&&data.house.length)
+   || (Array.isArray(data.tasks)&&data.tasks.length);
+}
+
+function normalizeRemoteState(data){
+ let out={...structuredClone(DEFAULT),...(data||{})};
+ out.children=(out.children||[]).map(c=>{
+  if(c.id==='domenico'||c.name==='Domenico')return {...c,id:'kiko',name:'Kiko',emoji:'👶',type:'child',birthDate:'2026-02-11'};
+  if(c.id==='caty')return {...c,name:'Caty',emoji:'👧',type:'child',birthDate:'2024-12-10'};
+  if(c.id==='kiko')return {...c,name:'Kiko',emoji:'👶',type:'child',birthDate:'2026-02-11'};
+  if(c.id==='astro')return {...c,name:'Astro',emoji:'🐶',type:'dog',birthDate:'2025-10-19'};
+  return c
+ });
+ if(!out.children.some(c=>c.id==='astro'))out.children.push({id:'astro',name:'Astro',emoji:'🐶',type:'dog',birthDate:'2025-10-19'});
+ out.events=Array.isArray(out.events)?out.events:[];
+ out.tasks=Array.isArray(out.tasks)?out.tasks:[];
+ out.house=Array.isArray(out.house)?out.house:[];
+ out.shopping=Array.isArray(out.shopping)?out.shopping:[];
+ out.expenses=Array.isArray(out.expenses)?out.expenses:[];
+ out.health=Array.isArray(out.health)?out.health:[];
+ out.menu=out.menu||{};
+ out.profiles={...DEFAULT.profiles,...(out.profiles||{})};
+ out.menuBackup=out.menuBackup||null;
+ return out
+}
+
+async function cloudLogin(email,password){
+ loginMessage.textContent='';
+ loginButton.disabled=true;
+ loginButton.textContent='Accesso...';
+ try{
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  cloudSession=data.session;
+  await initializeCloud();
+ }catch(err){
+  loginMessage.textContent='Accesso non riuscito: '+(err.message||'controlla email e password.');
+ }finally{
+  loginButton.disabled=false;
+  loginButton.textContent='Accedi';
+ }
+}
+
+async function initializeCloud(){
+ if(!cloudSession){
+  const {data}=await sb.auth.getSession();
+  cloudSession=data.session;
+ }
+ if(!cloudSession){
+  loginScreen.classList.remove('hidden');
+  setCloudStatus('offline','Locale');
+  return
+ }
+
+ setCloudStatus('syncing','Connessione…');
+
+ const uid=cloudSession.user.id;
+ const {data:member,error:memberError}=await sb
+  .from('family_members')
+  .select('family_id,display_name')
+  .eq('user_id',uid)
+  .single();
+
+ if(memberError||!member){
+  cloudReady=false;
+  loginScreen.classList.remove('hidden');
+  loginMessage.textContent='Questo account non risulta associato alla famiglia Fagiolini.';
+  setCloudStatus('error','Non associato');
+  return
+ }
+
+ cloudFamilyId=member.family_id;
+ cloudMemberName=member.display_name||cloudSession.user.user_metadata?.display_name||'Fagiolini';
+
+ const {data:row,error}=await sb
+  .from('family_state')
+  .select('data,updated_at')
+  .eq('family_id',cloudFamilyId)
+  .single();
+
+ if(error){
+  loginMessage.textContent='Errore nel caricamento del database: '+error.message;
+  setCloudStatus('error','Errore');
+  return
+ }
+
+ const remote=row?.data||{};
+ lastCloudUpdatedAt=row?.updated_at||null;
+
+ if(isMeaningfulState(remote)){
+  applyingRemote=true;
+  s=normalizeRemoteState(remote);
+  localStorage.setItem(KEY,JSON.stringify(s));
+  renderAll();
+  applyingRemote=false;
+ }else{
+  await uploadCloudState(true);
+ }
+
+ cloudReady=true;
+ loginScreen.classList.add('hidden');
+ loginMessage.textContent='';
+ updateAccountInfo();
+ setCloudStatus('online','Sincronizzato');
+ startCloudWatch();
+}
+
+function scheduleCloudUpload(){
+ clearTimeout(uploadTimer);
+ setCloudStatus('syncing','Salvataggio…');
+ uploadTimer=setTimeout(()=>uploadCloudState(false),450);
+}
+
+async function uploadCloudState(force=false){
+ if(!cloudFamilyId||!cloudSession)return;
+ try{
+  const payload=JSON.parse(JSON.stringify(s));
+  const now=new Date().toISOString();
+  const {data,error}=await sb
+   .from('family_state')
+   .update({data:payload,updated_at:now})
+   .eq('family_id',cloudFamilyId)
+   .select('updated_at')
+   .single();
+  if(error)throw error;
+  lastCloudUpdatedAt=data?.updated_at||now;
+  setCloudStatus('online','Sincronizzato');
+ }catch(err){
+  console.error('Cloud upload error',err);
+  setCloudStatus('error','Da sincronizzare');
+ }
+}
+
+async function pullCloudState(silent=true){
+ if(!cloudReady||!cloudFamilyId)return;
+ try{
+  const {data:row,error}=await sb
+   .from('family_state')
+   .select('data,updated_at')
+   .eq('family_id',cloudFamilyId)
+   .single();
+  if(error)throw error;
+  if(row?.updated_at&&row.updated_at!==lastCloudUpdatedAt){
+   applyingRemote=true;
+   s=normalizeRemoteState(row.data);
+   localStorage.setItem(KEY,JSON.stringify(s));
+   lastCloudUpdatedAt=row.updated_at;
+   renderAll();
+   applyingRemote=false;
+  }
+  setCloudStatus('online','Sincronizzato');
+ }catch(err){
+  if(!silent)console.error('Cloud pull error',err);
+  setCloudStatus('error','Offline');
+ }
+}
+
+function startCloudWatch(){
+ if(cloudPollTimer)clearInterval(cloudPollTimer);
+ cloudPollTimer=setInterval(()=>pullCloudState(true),8000);
+
+ if(realtimeChannel)sb.removeChannel(realtimeChannel);
+ realtimeChannel=sb.channel('fagiolini-family-state')
+  .on('postgres_changes',{
+   event:'UPDATE',schema:'public',table:'family_state',
+   filter:`family_id=eq.${cloudFamilyId}`
+  },payload=>{
+   const row=payload.new;
+   if(row?.updated_at===lastCloudUpdatedAt)return;
+   applyingRemote=true;
+   s=normalizeRemoteState(row.data);
+   localStorage.setItem(KEY,JSON.stringify(s));
+   lastCloudUpdatedAt=row.updated_at||null;
+   renderAll();
+   applyingRemote=false;
+   setCloudStatus('online','Aggiornato');
+  })
+  .subscribe();
+}
+
+function updateAccountInfo(){
+ if(!accountInfo)return;
+ const email=cloudSession?.user?.email||'';
+ accountInfo.innerHTML=`<div class="accountAvatar">${cloudMemberName==='Kiki'?'👩':'👨'}</div>
+ <div><b>${esc(cloudMemberName||'Fagiolini')}</b><div class="meta">${esc(email)}</div><div class="meta">Famiglia: Fagiolini</div></div>`;
+}
+
+async function cloudLogout(){
+ cloudReady=false;
+ cloudFamilyId=null;
+ cloudMemberName='';
+ if(cloudPollTimer)clearInterval(cloudPollTimer);
+ if(realtimeChannel){sb.removeChannel(realtimeChannel);realtimeChannel=null}
+ await sb.auth.signOut();
+ cloudSession=null;
+ accountDialog.close();
+ loginScreen.classList.remove('hidden');
+ setCloudStatus('offline','Locale');
+}
+
+async function bootCloud(){
+ if(!navigator.onLine)setCloudStatus('error','Offline');
+ const {data}=await sb.auth.getSession();
+ cloudSession=data.session;
+ if(cloudSession)await initializeCloud();
+ else loginScreen.classList.remove('hidden');
+
+ sb.auth.onAuthStateChange(async(event,session)=>{
+  cloudSession=session;
+  if(event==='SIGNED_OUT'){
+   cloudReady=false;
+   loginScreen.classList.remove('hidden');
+  }
+ });
+}
 
 function go(id){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
@@ -390,7 +637,26 @@ function renderMoney(){
 }
 moneyPrev.onclick=()=>{moneyOffset--;renderMoney()};moneyNext.onclick=()=>{if(moneyOffset<0){moneyOffset++;renderMoney()}};
 
-resetBtn.onclick=()=>{if(confirm('Vuoi davvero cancellare tutti i dati salvati su questo dispositivo?')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
+
+loginForm.onsubmit=e=>{
+ e.preventDefault();
+ cloudLogin(loginEmail.value.trim(),loginPassword.value)
+};
+accountBtn.onclick=()=>{updateAccountInfo();accountDialog.showModal()};
+logoutBtn.onclick=cloudLogout;
+syncNowBtn.onclick=async()=>{
+ syncNowBtn.disabled=true;
+ syncNowBtn.textContent='Sincronizzo...';
+ await pullCloudState(false);
+ await uploadCloudState(true);
+ syncNowBtn.disabled=false;
+ syncNowBtn.textContent='🔄 Sincronizza adesso';
+};
+window.addEventListener('online',()=>{setCloudStatus('syncing','Online…');if(cloudSession)initializeCloud()});
+window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)pullCloudState(true)});
+
+resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
 function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on'))renderMoney()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-renderHome();fillHealthPeople();
+renderHome();fillHealthPeople();bootCloud();

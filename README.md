@@ -51,3 +51,20 @@ Nessuna sottocartella.
 - riepilogo per categoria
 - tutte le spese personali confluiscono nel totale famiglia
 - bilancio generale mostra separatamente JJ e Kiki
+
+
+## V7 - Supabase
+- Login JJ / Kiki con Supabase Authentication
+- Database condiviso `family_state`
+- sincronizzazione automatica tra telefoni
+- aggiornamento realtime quando disponibile
+- controllo periodico ogni 8 secondi come fallback
+- sincronizzazione quando l'app torna in primo piano
+- localStorage mantenuto come cache/offline
+- migrazione automatica: se Supabase è vuoto, il primo telefono autenticato carica i dati locali
+- se Supabase contiene già dati, il database condiviso ha priorità sul localStorage
+
+Project URL e Publishable Key sono valori pubblici client-side.
+NON inserire mai una Secret key o service_role nel repository GitHub.
+
+Nota: lo stato familiare è salvato in un unico record JSON; se due telefoni modificano esattamente nello stesso istante, prevale l'ultimo salvataggio.
