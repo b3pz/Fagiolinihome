@@ -379,7 +379,13 @@ function renderHome(){
  document.querySelectorAll('[data-adult]').forEach(b=>b.onclick=()=>{currentAdult=b.dataset.adult;go('adult')});
 
  const healthToday=s.health.filter(h=>h.date===dateKey());
- const dueHouse=s.house.filter(h=>!houseDone(h));
+ const dueHouse=HOUSE_ROUTINES.filter(r=>{
+  const last=latestHouse(r.id);
+  if(!last)return true;
+  const days=(Date.now()-new Date(last.at).getTime())/86400000;
+  const limits={sweep:1,mop:2,washer:3,dryer:3,sheets:7,towels:3};
+  return days>=(limits[r.id]||7);
+}).map(r=>({emoji:r.emoji,title:r.name,freq:'Routine casa',owner:'Famiglia'}));
  todayOverview.innerHTML=[
   healthToday.length?`<div class="row">❤️<div class="grow"><b>${healthToday.length} evento salute</b><div class="meta">${healthToday.map(h=>esc(h.title||h.name)).join(' · ')}</div></div></div>`:'',
   `<div class="row">🧹<div class="grow"><b>${dueHouse.length} attività di casa</b><div class="meta">Ancora da completare</div></div></div>`,

@@ -90,3 +90,7 @@ Aggiunto:
 - bollette/abbonamenti con costo, scadenza, frequenza, destinatario reminder
 - ricette apribili dal menu + ingredienti nella spesa
 - calendario arricchito con routine casa e scadenze
+
+## HOTFIX KIKI LOGIN
+Corretto riferimento legacy `houseDone` rimasto nella Home dopo il passaggio alla nuova Routine Casa.
+Autenticazione, family_id e sincronizzazione Supabase NON modificati.
