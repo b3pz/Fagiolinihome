@@ -1,9 +1,8 @@
 {
-  "name": "Family Hub",
-  "short_name": "Family Hub",
+  "name": "Fagiolini",
+  "short_name": "Fagiolini",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
-  "theme_color": "#f5f7fb",
-  "description": "Routine familiare semplice e privata, salvata sul dispositivo."
+  "theme_color": "#f5f7fb"
 }
