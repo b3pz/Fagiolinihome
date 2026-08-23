@@ -68,7 +68,7 @@ function load(){
  out.profiles.kiko.ageMonths=monthsFromBirth('2026-02-11');
  out.profiles.jj.ageMonths=monthsFromBirth('1991-05-31');
  out.profiles.kiki.ageMonths=monthsFromBirth('1990-08-24');
- return out
+ out.routines=Array.isArray(out.routines)?out.routines:[{id:'sweep',name:'Spazzare',emoji:'🧹',everyDays:2,owner:'family',lastDone:null},{id:'mop',name:'Lavare pavimenti',emoji:'🧽',everyDays:7,owner:'family',lastDone:null},{id:'sheets',name:'Cambio lenzuola',emoji:'🛏️',everyDays:7,owner:'family',lastDone:null},{id:'astro-pad',name:'Cambiare traversina Astro',emoji:'🐶',everyDays:1,owner:'family',lastDone:null}];out.laundry=out.laundry||{step:0};out.subscriptions=Array.isArray(out.subscriptions)?out.subscriptions:[];out.recipes=out.recipes||{};return out
 }
 function save(){
  localStorage.setItem(KEY,JSON.stringify(s));
@@ -323,12 +323,22 @@ function go(id){
  document.getElementById(id).classList.add('on');
  const titles={home:'La nostra giornata',person:'Registro',adult:'Noi',menu:'Menu famiglia',profiles:'Profili alimentari',health:'Visite e medicine',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Soldi'};
  pageTitle.textContent=titles[id]||'Fagiolini';
- if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money')renderMoney();
+ if(id==='home')renderHome();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouseV8();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}
  scrollTo(0,0)
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
 
+
+const V8_RECIPES={'Pasta al pomodoro':{time:'20 min',ingredients:['Pasta','Passata di pomodoro','Olio EVO','Parmigiano'],steps:['Cuoci la pasta','Scalda la passata','Condisci e servi']},'Pollo e patate':{time:'45 min',ingredients:['Pollo','Patate','Olio EVO','Rosmarino'],steps:['Taglia le patate','Metti tutto in teglia','Cuoci completamente in forno']},'Pasta e lenticchie':{time:'35 min',ingredients:['Pasta piccola','Lenticchie','Passata di pomodoro','Olio EVO'],steps:['Cuoci le lenticchie','Aggiungi pomodoro','Unisci la pasta']}};
+function routineDue(r){if(!r.lastDone)return true;return Math.floor((dateObj(dateKey())-dateObj(r.lastDone))/86400000)>=Number(r.everyDays||1)}
+function dueSoon(x,n=7){let d=Math.ceil((dateObj(x.dueDate)-dateObj(dateKey()))/86400000);return d>=0&&d<=n}
+function ownerLabel(x){return x==='jj'?'JJ':x==='kiki'?'Kiki':'Famiglia'}
+function nextDue(k,f){let d=dateObj(k);if(f==='monthly')d.setMonth(d.getMonth()+1);else if(f==='bimonthly')d.setMonth(d.getMonth()+2);else if(f==='quarterly')d.setMonth(d.getMonth()+3);else if(f==='annual')d.setFullYear(d.getFullYear()+1);return dateKey(d)}
+function renderV8Home(){if(!window.v8TodayCount)return;let hh=s.health.filter(x=>x.date===dateKey()),rr=s.routines.filter(routineDue),dd=s.subscriptions.filter(x=>dueSoon(x));v8TodayCount.textContent=hh.length+' impegni';v8RoutineCount.textContent=rr.length+' da fare';v8DueCount.textContent=dd.length+' vicine';let a=[];hh.forEach(x=>a.push(`<div class="v8Feed">🩺 <b>${esc(x.title)}</b> · ${personName(x.person)}</div>`));rr.slice(0,2).forEach(x=>a.push(`<div class="v8Feed">${x.emoji} <b>${esc(x.name)}</b> · da fare</div>`));dd.slice(0,2).forEach(x=>a.push(`<div class="v8Feed">⏰ <b>${esc(x.name)}</b> · ${euro(x.amount)}</div>`));v8TodayFeed.innerHTML=a.join('')||'<div class="muted">Niente di urgente oggi.</div>'}
+function renderHouseV8(){let steps=['Lavatrice da avviare','Lavatrice in corso','Da trasferire','Asciugatrice in corso','Da ritirare / piegare','Completato'],labels=['Avvia lavatrice','Lavatrice finita','Avvia asciugatrice','Asciugatrice finita','Bucato ritirato','Nuovo ciclo'],st=Number(s.laundry.step||0);laundryStatus.textContent=steps[st];laundryNext.textContent=labels[st];laundrySteps.innerHTML=steps.map((x,i)=>`<div class="laundryStep ${i===st?'current':''} ${i<st?'done':''}"><span>${i<st?'✓':i+1}</span><small>${x}</small></div>`).join('');routineList.innerHTML=s.routines.map(r=>`<div class="routineRow ${routineDue(r)?'due':''}"><span>${r.emoji}</span><div class="grow"><b>${esc(r.name)}</b><div class="meta">${r.lastDone?'Ultima: '+birthLabel(r.lastDone):'Mai fatta'} · ${ownerLabel(r.owner)}</div></div><button data-rdone="${r.id}" class="${routineDue(r)?'primary':''}">✓</button><button data-rdel="${r.id}" class="del">✕</button></div>`).join('');routineList.querySelectorAll('[data-rdone]').forEach(b=>b.onclick=()=>{s.routines.find(x=>x.id===b.dataset.rdone).lastDone=dateKey();save();renderHouseV8()});routineList.querySelectorAll('[data-rdel]').forEach(b=>b.onclick=()=>{s.routines=s.routines.filter(x=>x.id!==b.dataset.rdel);save();renderHouseV8()})}
+function renderSubscriptions(){let a=[...s.subscriptions].sort((x,y)=>x.dueDate.localeCompare(y.dueDate));subscriptionSummary.innerHTML=`<div class="stat"><span>ENTRO 7 GIORNI</span><b>${a.filter(x=>dueSoon(x)).length}</b></div><div class="stat"><span>TOTALE ATTIVO</span><b>${euro(a.reduce((q,x)=>q+Number(x.amount),0))}</b></div>`;subscriptionList.innerHTML=a.length?a.map(x=>`<div class="subRow ${x.dueDate<dateKey()?'overdue':''}"><span>${x.category==='Trasporti'?'🚆':'💳'}</span><div class="grow"><b>${esc(x.name)}</b><div class="meta">${ownerLabel(x.owner)} · scade ${birthLabel(x.dueDate)} · 🔔 ${x.reminderDays}g prima</div></div><b>${euro(x.amount)}</b><button data-pay="${x.id}" class="primary">Pagata</button><button data-sdel="${x.id}" class="del">✕</button></div>`).join(''):'<div class="muted">Nessuna scadenza.</div>';subscriptionList.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{let x=s.subscriptions.find(v=>v.id===b.dataset.pay);s.expenses.push({id:crypto.randomUUID(),name:x.name,amount:x.amount,category:x.category,person:x.owner==='family'?null:x.owner,month:monthKey(new Date()),date:dateKey(),recurring:false});if(x.frequency==='once')s.subscriptions=s.subscriptions.filter(v=>v.id!==x.id);else x.dueDate=nextDue(x.dueDate,x.frequency);save();renderSubscriptions();renderMoney()});subscriptionList.querySelectorAll('[data-sdel]').forEach(b=>b.onclick=()=>{s.subscriptions=s.subscriptions.filter(x=>x.id!==b.dataset.sdel);save();renderSubscriptions()})}
+function openRecipe(t){let r=s.recipes[t]||V8_RECIPES[t]||{time:'30 min',ingredients:[t,'Olio EVO','Ingredienti a piacere'],steps:['Prepara gli ingredienti','Cuoci completamente','Servi']};recipeDialog.dataset.title=t;recipeTitle.textContent=t;recipeBody.innerHTML=`<b>⏱️ ${r.time}</b><h4>Ingredienti</h4><ul>${r.ingredients.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h4>Come si fa</h4><ol>${r.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="adaptation">👧👶 Adatta sale, consistenza e dimensione dei pezzi all'età dei bambini.</div>`;recipeDialog.showModal()}
 function renderHome(){
  todayLabel.textContent=longDate();
  peopleCards.innerHTML=s.children.map(c=>{
@@ -357,6 +367,8 @@ function renderHome(){
 
  let mk=monthKey(new Date()),ex=s.expenses.filter(x=>x.month===mk),tot=ex.reduce((a,x)=>a+Number(x.amount||0),0);
  moneyToday.innerHTML=`<div class="row"><span>💶</span><div class="grow"><b>${euro(tot)}</b><div class="meta">${ex.length} voci registrate questo mese</div></div></div>`
+
+renderV8Home();
 }
 
 function openPerson(id){current=id;dayOffset=0;go('person');renderPerson()}
@@ -656,7 +668,15 @@ window.addEventListener('online',()=>{setCloudStatus('syncing','Online…');if(c
 window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)pullCloudState(true)});
 
+
+laundryNext.onclick=()=>{s.laundry.step=Number(s.laundry.step||0)>=5?0:Number(s.laundry.step||0)+1;s.laundry.updatedAt=new Date().toISOString();save();renderHouseV8()};
+laundryReset.onclick=()=>{s.laundry={step:0};save();renderHouseV8()};
+addRoutineBtn.onclick=()=>routineDialog.showModal();
+routineForm.addEventListener('submit',e=>{if(e.submitter?.value==='cancel')return;e.preventDefault();s.routines.push({id:crypto.randomUUID(),name:routineName.value.trim(),emoji:'🏡',everyDays:Number(routineFreq.value),owner:routineOwner.value,lastDone:null});save();routineForm.reset();routineDialog.close();renderHouseV8()});
+addSubscriptionBtn.onclick=()=>{subDue.value=dateKey();subscriptionDialog.showModal()};
+subscriptionForm.addEventListener('submit',e=>{if(e.submitter?.value==='cancel')return;e.preventDefault();s.subscriptions.push({id:crypto.randomUUID(),name:subName.value.trim(),amount:Number(subAmount.value),owner:subOwner.value,category:subCategory.value,dueDate:subDue.value,frequency:subFrequency.value,reminderDays:Number(subReminder.value),notify:subNotify.value});save();subscriptionForm.reset();subscriptionDialog.close();renderSubscriptions()});
+recipeToShopping.onclick=()=>{let t=recipeDialog.dataset.title,r=s.recipes[t]||V8_RECIPES[t];if(r)r.ingredients.forEach(name=>{if(!s.shopping.some(x=>x.name.toLowerCase()===name.toLowerCase()&&!x.done))s.shopping.push({id:crypto.randomUUID(),name,done:false})});save();recipeDialog.close();go('shop')};
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
-function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on'))renderMoney()}
+function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouseV8();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on'))renderMoney()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();bootCloud();

@@ -51,6 +51,11 @@
   <button class="adultCard" data-adult="jj"><span>👨</span><div><b>JJ</b><small>31/05/1991 · età automatica</small></div></button>
   <button class="adultCard" data-adult="kiki"><span>👩</span><div><b>Kiki</b><small>24/08/1990 · età automatica</small></div></button>
 </div>
+<div class="v8HeroGrid">
+<button class="v8HeroCard" data-go="calendar">📅<small>OGGI</small><b id="v8TodayCount">0 impegni</b></button>
+<button class="v8HeroCard" data-go="house">🏡<small>ROUTINE</small><b id="v8RoutineCount">0 da fare</b></button>
+<button class="v8HeroCard" data-go="money">💳<small>SCADENZE</small><b id="v8DueCount">0 vicine</b></button>
+</div><div class="card"><small>FAGIOLINI OGGI</small><h3>In evidenza</h3><div id="v8TodayFeed"></div></div>
 <div class="quickHome">
     <button id="quickRecord"><span>➕</span><b>Segna</b><small>Pappa, nanna, cacca...</small></button>
     <button data-go="menu"><span>🍝</span><b>Menu</b><small>Organizza la settimana</small></button>
@@ -181,14 +186,10 @@
 </section>
 
 <section id="house" class="view">
-  <div class="sectionTitle"><h2>🧹 Casa</h2><button data-go="home">← Home</button></div>
-  <form id="houseForm" class="card form">
-    <input id="houseText" placeholder="Es. Pulire bagno" required>
-    <select id="houseOwner"><option>Famiglia</option><option>JJ</option><option>Kiki</option></select>
-    <select id="houseFreq"><option value="giornaliera">Giornaliera</option><option value="settimanale">Settimanale</option><option value="mensile">Mensile</option></select>
-    <button class="primary">Aggiungi</button>
-  </form>
-  <div id="houseList" class="card"></div>
+<div class="sectionTitle"><div><small>CASA</small><h2>🏡 Routine casa</h2></div><button data-go="home">← Home</button></div>
+<div class="card"><div class="sectionTitle compact"><div><small>CICLO COLLEGATO</small><h3>🧺 Bucato</h3></div><span id="laundryStatus" class="statusPill"></span></div><div id="laundrySteps" class="laundrySteps"></div><button id="laundryNext" class="primary fullBtn">Avvia lavatrice</button><button id="laundryReset" class="secondaryFull">Azzera ciclo</button></div>
+<div class="card"><div class="sectionTitle compact"><div><small>ATTIVITÀ</small><h3>Routine</h3></div><button id="addRoutineBtn">＋</button></div><div id="routineList"></div></div>
+<dialog id="routineDialog"><form method="dialog" class="dialogBox" id="routineForm"><div class="sectionTitle compact"><h3>Nuova routine</h3><button value="cancel">✕</button></div><input id="routineName" placeholder="Es. Pulizia bagno" required><select id="routineFreq"><option value="1">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="7" selected>Ogni settimana</option><option value="14">Ogni 2 settimane</option><option value="30">Ogni mese</option></select><select id="routineOwner"><option value="family">JJ o Kiki</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select><button class="primary" value="default">Salva</button></form></dialog>
 </section>
 
 <section id="shop" class="view">
@@ -215,7 +216,8 @@
   </form>
   <div class="card"><h3>Voci del mese</h3><div id="moneyList"></div></div>
   <div class="card"><h3>Per categoria</h3><div id="moneyCategories"></div></div>
-</section>
+<div class="card"><div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3>⏰ Scadenze</h3></div><button id="addSubscriptionBtn">＋</button></div><div id="subscriptionSummary" class="stats"></div><div id="subscriptionList"></div></div>
+<dialog id="subscriptionDialog"><form method="dialog" class="dialogBox" id="subscriptionForm"><div class="sectionTitle compact"><h3>Nuova scadenza</h3><button value="cancel">✕</button></div><input id="subName" placeholder="Es. Abbonamento treno" required><input id="subAmount" type="number" min="0" step="0.01" placeholder="Importo €" required><select id="subOwner"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select><select id="subCategory"><option>Trasporti</option><option>Utenze</option><option>Casa</option><option>Telefono / Internet</option><option>Streaming</option><option>Assicurazione</option><option>Altro</option></select><label>Scadenza<input id="subDue" type="date" required></label><select id="subFrequency"><option value="monthly">Mensile</option><option value="bimonthly">Bimestrale</option><option value="quarterly">Trimestrale</option><option value="annual">Annuale</option><option value="once">Una volta</option></select><select id="subReminder"><option value="0">🔔 Giorno stesso</option><option value="1">🔔 1 giorno prima</option><option value="3" selected>🔔 3 giorni prima</option><option value="7">🔔 7 giorni prima</option></select><select id="subNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select><button class="primary" value="default">Salva</button></form></dialog></section>
 </main>
 
 <nav>
@@ -227,7 +229,7 @@
 </nav>
 </div>
 
-<dialog id="accountDialog"><div class="dialogBox">
+<dialog id="recipeDialog"><div class="dialogBox"><div class="sectionTitle compact"><div><small>RICETTA</small><h3 id="recipeTitle"></h3></div><button data-close="recipeDialog">✕</button></div><div id="recipeBody"></div><button id="recipeToShopping" class="primary fullBtn">🛒 Ingredienti nella spesa</button></div></dialog><dialog id="accountDialog"><div class="dialogBox">
       <div class="sectionTitle compact"><h3>Account Fagiolini</h3><button data-close="accountDialog">✕</button></div>
       <div id="accountInfo" class="accountInfo"></div>
       <button id="syncNowBtn" class="primary fullBtn">🔄 Sincronizza adesso</button>

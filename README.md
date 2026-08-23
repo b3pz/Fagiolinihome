@@ -68,3 +68,8 @@ Project URL e Publishable Key sono valori pubblici client-side.
 NON inserire mai una Secret key o service_role nel repository GitHub.
 
 Nota: lo stato familiare è salvato in un unico record JSON; se due telefoni modificano esattamente nello stesso istante, prevale l'ultimo salvataggio.
+
+## V8
+Dashboard rinnovata; routine casa; ciclo bucato collegato; traversina Astro; bollette e abbonamenti con scadenza/frequenza/reminder; pagamento che confluisce nelle spese; base ricettario e lista spesa; Supabase invariato.
+
+Telegram: i reminder sono predisposti nei dati, ma l'invio richiede BotFather + token salvato come Secret Supabase + chat ID JJ/Kiki. Non mettere il token in GitHub.
