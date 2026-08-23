@@ -83,57 +83,85 @@ function renderReminders(){let a=[];s.health.forEach(x=>a.push({date:x.date,titl
 function openQuick(){quickPerson='caty';renderQuick();quickDialog.showModal()}function renderQuick(){quickPeople.innerHTML=s.children.map(c=>`<button class="personCard ${c.type==='dog'?'pet':''}" data-qp="${c.id}"><i>${c.emoji}</i><b>${c.name}</b></button>`).join('');quickPeople.querySelectorAll('[data-qp]').forEach(b=>b.onclick=()=>{quickPerson=b.dataset.qp;renderQuick()});let c=s.children.find(x=>x.id===quickPerson);quickActions.innerHTML=actionKeys(c).map(k=>`<button data-qa="${k}">${icon(k,quickPerson)}<small>${META[k][1]}</small></button>`).join('');quickActions.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{quickDialog.close();handleAction(quickPerson,b.dataset.qa)})}quickRecord.onclick=openQuick;navQuick.onclick=openQuick;
 
 let upTimer=null;
+let authBooting=false;
+let appEntered=false;
 
 function setSync(cls,t){
  syncStatus.className='syncStatus '+cls;
  syncStatus.querySelector('small').textContent=t
 }
 
+function enterApp(){
+ appEntered=true;
+ loginScreen.classList.add('hidden');
+ renderAll();
+}
+
+function showLogin(msg=''){
+ appEntered=false;
+ loginScreen.classList.remove('hidden');
+ loginMessage.textContent=msg;
+}
+
 async function boot(){
+ if(authBooting)return;
+ authBooting=true;
  try{
-  let {data,error}=await sb.auth.getSession();
+  const {data,error}=await sb.auth.getSession();
   if(error)throw error;
-  session=data.session;
+
+  session=data.session||null;
+
   if(session){
-   loginScreen.classList.add('hidden');
+   enterApp();
    setSync('','Connessione…');
    await initCloud();
   }else{
-   loginScreen.classList.remove('hidden')
+   showLogin();
   }
  }catch(err){
-  console.error(err);
-  loginMessage.textContent='Errore di connessione a Supabase. Ricarica la pagina.';
-  loginScreen.classList.remove('hidden')
+  console.error('Boot auth error:',err);
+  showLogin('Errore durante il controllo della sessione. Ricarica la pagina.')
+ }finally{
+  authBooting=false
  }
 }
 
 loginForm.onsubmit=async e=>{
  e.preventDefault();
+
+ if(authBooting)return;
+ authBooting=true;
+
  loginMessage.textContent='';
  loginBtn.disabled=true;
  loginBtn.textContent='Accesso...';
+
  try{
-  let {data,error}=await sb.auth.signInWithPassword({
-   email:loginEmail.value.trim(),
-   password:loginPassword.value
-  });
+  const email=loginEmail.value.trim();
+  const password=loginPassword.value;
+
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
   if(error)throw error;
+
+  if(!data?.session){
+   throw new Error('Supabase non ha restituito una sessione valida.')
+  }
 
   session=data.session;
 
-  // Il login è riuscito: entra subito nell'app.
-  loginScreen.classList.add('hidden');
-  setSync('','Caricamento…');
-  renderAll();
+  // Punto fondamentale: da qui la login NON viene più mostrata.
+  enterApp();
+  setSync('','Connessione…');
 
-  // Poi inizializza il cloud. Un problema Supabase non deve più bloccare l'accesso.
+  // Il cloud non determina più se entrare o meno nell'app.
   await initCloud();
+
  }catch(err){
-  console.error('Login/init error:',err);
-  loginScreen.classList.remove('hidden');
-  loginMessage.textContent='Accesso non riuscito: '+(err?.message||'errore sconosciuto');
+  console.error('Login error:',err);
+  showLogin('Accesso non riuscito: '+(err?.message||'controlla email e password'))
  }finally{
+  authBooting=false;
   loginBtn.disabled=false;
   loginBtn.textContent='Accedi'
  }
@@ -145,47 +173,43 @@ async function initCloud(){
  try{
   const uid=session.user.id;
 
-  let memberRes=await sb
+  const {data:member,error:memberError}=await sb
    .from('family_members')
    .select('family_id,display_name')
    .eq('user_id',uid)
    .maybeSingle();
 
-  if(memberRes.error)throw memberRes.error;
+  if(memberError)throw memberError;
 
-  if(!memberRes.data){
+  if(!member){
    cloudReady=false;
+   familyId=null;
    memberName=session.user.user_metadata?.display_name||'';
    setSync('error','Non associato');
-   // L'app rimane comunque aperta con la cache locale.
-   alert('Login riuscito, ma questo account non risulta associato alla famiglia Fagiolini su Supabase.');
    return
   }
 
-  familyId=memberRes.data.family_id;
-  memberName=memberRes.data.display_name||session.user.user_metadata?.display_name||'';
+  familyId=member.family_id;
+  memberName=member.display_name||session.user.user_metadata?.display_name||'';
 
-  let stateRes=await sb
+  const {data:row,error:stateError}=await sb
    .from('family_state')
    .select('data,updated_at')
    .eq('family_id',familyId)
    .maybeSingle();
 
-  if(stateRes.error)throw stateRes.error;
-
-  const row=stateRes.data;
+  if(stateError)throw stateError;
 
   if(row?.data && Object.keys(row.data).length){
    s=normalize(row.data);
    localStorage.setItem(LS,JSON.stringify(s));
+   lastUpdated=row.updated_at||null;
   }else{
-   // Database vuoto: carica lo stato locale corrente.
+   // Database vuoto: usa lo stato locale e prova a caricarlo.
    await upload();
   }
 
-  lastUpdated=row?.updated_at||lastUpdated||null;
   cloudReady=true;
-  loginScreen.classList.add('hidden');
   setSync('online','Sincronizzato');
   renderAll();
 
@@ -193,31 +217,29 @@ async function initCloud(){
   poll=setInterval(pull,8000);
 
  }catch(err){
-  console.error('Supabase init error:',err);
+  console.error('Cloud init error:',err);
+
+  // IMPORTANTE: mai tornare alla schermata login qui.
   cloudReady=false;
-
-  // Non bloccare l'app: usa la cache locale.
-  loginScreen.classList.add('hidden');
   setSync('error','Cloud non disponibile');
-  renderAll();
-
-  setTimeout(()=>{
-   alert('Login riuscito, ma la sincronizzazione Supabase ha dato un errore: '+(err?.message||'errore sconosciuto')+'. L’app resta utilizzabile con i dati locali.');
-  },100);
+  renderAll()
  }
 }
 
 function uploadSoon(){
  clearTimeout(upTimer);
+ if(!cloudReady||!familyId)return;
  setSync('','Salvataggio…');
  upTimer=setTimeout(upload,400)
 }
 
 async function upload(){
  if(!familyId||!session)return;
+
  try{
-  let now=new Date().toISOString();
-  let {data,error}=await sb
+  const now=new Date().toISOString();
+
+  const {data,error}=await sb
    .from('family_state')
    .update({data:s,updated_at:now})
    .eq('family_id',familyId)
@@ -227,17 +249,21 @@ async function upload(){
   if(error)throw error;
 
   lastUpdated=data?.updated_at||now;
+  cloudReady=true;
   setSync('online','Sincronizzato')
+
  }catch(err){
   console.error('Upload error:',err);
+  cloudReady=false;
   setSync('error','Da sincronizzare')
  }
 }
 
 async function pull(){
  if(!familyId||!session)return;
+
  try{
-  let {data:r,error}=await sb
+  const {data:row,error}=await sb
    .from('family_state')
    .select('data,updated_at')
    .eq('family_id',familyId)
@@ -245,29 +271,39 @@ async function pull(){
 
   if(error)throw error;
 
-  if(r?.updated_at&&r.updated_at!==lastUpdated){
-   s=normalize(r.data);
-   lastUpdated=r.updated_at;
+  if(row?.updated_at && row.updated_at!==lastUpdated){
+   s=normalize(row.data);
+   lastUpdated=row.updated_at;
    localStorage.setItem(LS,JSON.stringify(s));
    renderAll()
   }
+
+  cloudReady=true;
   setSync('online','Sincronizzato')
+
  }catch(err){
   console.error('Pull error:',err);
+  cloudReady=false;
   setSync('error','Offline')
  }
 }
 
 accountBtn.onclick=()=>{
- accountInfo.innerHTML=`<div class="row"><span>👤</span><div><b>${esc(memberName||'Fagiolini')}</b><div class="meta">${esc(session?.user?.email||'')}</div></div></div>`;
+ accountInfo.innerHTML=`<div class="row"><span>👤</span><div><b>${esc(memberName||session?.user?.user_metadata?.display_name||'Fagiolini')}</b><div class="meta">${esc(session?.user?.email||'')}</div><div class="meta">${cloudReady?'Cloud sincronizzato':'Modalità locale/cache'}</div></div></div>`;
  accountDialog.showModal()
 };
 
 syncNow.onclick=async()=>{
  syncNow.disabled=true;
  syncNow.textContent='Sincronizzo...';
- await pull();
- await upload();
+
+ if(!familyId){
+  await initCloud()
+ }else{
+  await pull();
+  await upload()
+ }
+
  syncNow.disabled=false;
  syncNow.textContent='🔄 Sincronizza'
 };
@@ -278,13 +314,34 @@ logoutBtn.onclick=async()=>{
  cloudReady=false;
  familyId=null;
  memberName='';
+ appEntered=false;
+
  await sb.auth.signOut();
+
  session=null;
  accountDialog.close();
  loginPassword.value='';
- loginScreen.classList.remove('hidden');
+ showLogin();
  setSync('','Locale')
 };
+
+// Auth listener: gestisce SOLO logout.
+// Non riapre mai la login durante SIGNED_IN / TOKEN_REFRESHED.
+sb.auth.onAuthStateChange((event,newSession)=>{
+ session=newSession||session;
+
+ if(event==='SIGNED_OUT'){
+  if(poll)clearInterval(poll);
+  poll=null;
+  cloudReady=false;
+  familyId=null;
+  memberName='';
+  session=null;
+  showLogin();
+ }else if(newSession && appEntered){
+  session=newSession
+ }
+});
 
 function renderAll(){renderHome();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on'))renderMoney();if(reminders.classList.contains('on'))renderReminders()}
 fillPeople();renderHome();boot();

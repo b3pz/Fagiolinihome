@@ -37,3 +37,10 @@ Non inserire il token del bot nel repository GitHub.
 - un errore cloud non lascia più l'utente bloccato sulla schermata di login
 - messaggi espliciti per account non associato / errore RLS / errore database
 - uso della cache locale come fallback
+
+## AUTH FIX definitivo
+- la schermata login viene mostrata solo se non esiste una sessione valida
+- dopo `signInWithPassword` riuscito si entra immediatamente nell'app
+- errori su family_members / family_state / RLS non rimandano più alla login
+- `onAuthStateChange` riapre la login esclusivamente su SIGNED_OUT
+- Supabase può fallire senza bloccare l'interfaccia
