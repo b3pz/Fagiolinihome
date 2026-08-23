@@ -49,3 +49,8 @@ Non inserire il token del bot nel repository GitHub.
 La UI di login non dipende più dagli eventi Auth di Supabase.
 Dopo una sessione valida l'app resta aperta anche in caso di refresh token,
 errore RLS, errore family_state o perdita temporanea di rete.
+
+## AUTH/UI SEPARATION FIX
+- autenticazione e rendering UI hanno catch separati
+- un errore in renderAll non viene più interpretato come login fallito
+- dopo una sessione valida la schermata login non può essere riaperta da errori UI/cloud

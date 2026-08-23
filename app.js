@@ -100,24 +100,40 @@ function showLogin(msg=''){
 }
 
 async function boot(){
+ let data=null;
+
  try{
-  const {data,error}=await sb.auth.getSession();
-  if(error)throw error;
-
-  session=data?.session||null;
-
-  if(session){
-   enterApp();
-   renderAll();
-   setSync('','Connessione…');
-   initCloud(); // volutamente non blocca l'ingresso
-  }else{
-   showLogin()
-  }
+  const res=await sb.auth.getSession();
+  if(res.error)throw res.error;
+  data=res.data;
  }catch(err){
-  console.error('BOOT:',err);
-  showLogin('Errore iniziale: '+(err?.message||'connessione Supabase'))
+  console.error('AUTH BOOT ERROR:',err);
+  showLogin('Errore di autenticazione: '+(err?.message||'connessione Supabase'));
+  return;
  }
+
+ session=data?.session||null;
+
+ if(!session){
+  showLogin();
+  return;
+ }
+
+ // Sessione valida: la login resta chiusa qualunque cosa succeda dopo.
+ enterApp();
+ setSync('','Caricamento…');
+
+ try{
+  renderAll();
+ }catch(err){
+  console.error('BOOT UI ERROR:',err);
+  setSync('error','Errore interfaccia');
+ }
+
+ initCloud().catch(err=>{
+  console.error('BOOT CLOUD ERROR:',err);
+  setSync('error','Solo locale');
+ });
 }
 
 loginForm.onsubmit=async e=>{
@@ -126,6 +142,8 @@ loginForm.onsubmit=async e=>{
  loginMessage.textContent='';
  loginBtn.disabled=true;
  loginBtn.textContent='Accesso...';
+
+ let authData=null;
 
  try{
   const {data,error}=await sb.auth.signInWithPassword({
@@ -136,24 +154,38 @@ loginForm.onsubmit=async e=>{
   if(error)throw error;
   if(!data?.session)throw new Error('Sessione non ricevuta da Supabase');
 
-  session=data.session;
-  manualLogout=false;
-
-  // LOGIN RIUSCITO: da qui non si torna più alla schermata login.
-  enterApp();
-  renderAll();
-  setSync('','Connessione…');
-
-  // Inizializzazione cloud separata dal login.
-  initCloud();
+  authData=data;
 
  }catch(err){
-  console.error('LOGIN:',err);
-  showLogin('Accesso non riuscito: '+(err?.message||'controlla le credenziali'))
- }finally{
+  console.error('AUTH ERROR:',err);
+  showLogin('Accesso non riuscito: '+(err?.message||'controlla le credenziali'));
   loginBtn.disabled=false;
-  loginBtn.textContent='Accedi'
+  loginBtn.textContent='Accedi';
+  return;
  }
+
+ // DA QUI L'AUTENTICAZIONE È GIÀ RIUSCITA.
+ // Nessun errore dell'interfaccia o del database può più riaprire la login.
+ session=authData.session;
+ manualLogout=false;
+ enterApp();
+ setSync('','Caricamento…');
+
+ try{
+  renderAll();
+ }catch(err){
+  console.error('UI RENDER ERROR:',err);
+  setSync('error','Errore interfaccia');
+ }
+
+ // Cloud separato e non bloccante
+ initCloud().catch(err=>{
+  console.error('CLOUD AFTER LOGIN:',err);
+  setSync('error','Solo locale');
+ });
+
+ loginBtn.disabled=false;
+ loginBtn.textContent='Accedi';
 };
 
 async function initCloud(){
