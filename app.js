@@ -143,6 +143,36 @@ function save(){
 }
 function dateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function dateObj(k){let [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d,12)}
+
+const WASTE_WEEK={
+ 1:{label:'Organico',short:'Organico',icon:'🟫',tone:'organic',description:'Umido e scarti di cucina'},
+ 2:{label:'Imballaggi e contenitori',short:'Imballaggi',icon:'🟨',tone:'packaging',description:'Plastica, lattine, barattoli e contenitori'},
+ 3:{label:'Carta e cartone',short:'Carta e cartone',icon:'🟦',tone:'paper',description:'Carta, scatole e cartone'},
+ 4:{label:'Organico',short:'Organico',icon:'🟫',tone:'organic',description:'Umido e scarti di cucina'},
+ 5:{label:'Residuo non differenziabile',short:'Residuo',icon:'🗑️',tone:'residual',description:'Quello che non va nelle altre raccolte'}
+};
+function wasteDate(d=new Date()){let x=new Date(d);x.setHours(12,0,0,0);return x}
+function wasteForDate(d=new Date()){return WASTE_WEEK[wasteDate(d).getDay()]||null}
+function nextWaste(d=new Date(),includeToday=false){let base=wasteDate(d);for(let i=includeToday?0:1;i<=8;i++){let x=new Date(base);x.setDate(x.getDate()+i);let info=wasteForDate(x);if(info)return {date:x,info}}return null}
+function wasteDayName(d){return new Intl.DateTimeFormat('it-IT',{weekday:'long'}).format(d)}
+function wasteDateLabel(d){return new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'}).format(d)}
+function wasteMonday(d=new Date()){let x=wasteDate(d),day=x.getDay()||7;x.setDate(x.getDate()-(day-1));return x}
+function wasteCardHtml(title,date,info,secondary=''){
+ let dateText=wasteDateLabel(date);
+ if(!info)return `<div class="wasteHeroCard wasteHeroEmpty"><small>${title}</small><h3>Nessun ritiro</h3><p>${dateText}</p>${secondary?`<span>${secondary}</span>`:''}</div>`;
+ return `<div class="wasteHeroCard waste-${info.tone}"><small>${title}</small><div class="wasteHeroLine"><span class="wasteBinIcon">${info.icon}</span><div><h3>${esc(info.label)}</h3><p>${dateText}</p></div></div>${secondary?`<span>${secondary}</span>`:''}</div>`
+}
+function renderWaste(){
+ if(!document.getElementById('wasteHero'))return;
+ let today=wasteDate(),todayInfo=wasteForDate(today),next=nextWaste(today,false);
+ wasteHero.innerHTML=wasteCardHtml('OGGI',today,todayInfo,todayInfo?'Prepara il contenitore previsto.':'Oggi non c’è raccolta porta a porta.')+(next?wasteCardHtml('PROSSIMO RITIRO',next.date,next.info,'Il prossimo ritiro in programma.'):'');
+ let monday=wasteMonday(today),rows=[];
+ for(let i=0;i<5;i++){
+  let d=new Date(monday);d.setDate(monday.getDate()+i);let info=wasteForDate(d);
+  rows.push(`<div class="wasteWeekRow waste-${info.tone}"><div class="wasteDayBadge"><b>${new Intl.DateTimeFormat('it-IT',{weekday:'short'}).format(d).replace('.','').toUpperCase()}</b><span>${d.getDate()}</span></div><span class="wasteRowIcon">${info.icon}</span><div class="grow"><b>${esc(info.label)}</b><small>${esc(info.description)}</small></div></div>`)
+ }
+ wasteWeekList.innerHTML=rows.join('');
+}
 function offsetDate(n){let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);return d}
 function longDate(d=new Date()){return new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'}).format(d)}
 function timeLabel(iso){return new Date(iso).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}
@@ -785,9 +815,9 @@ function go(id){
  const target=document.getElementById(id);if(!target)return;
  target.classList.add('on');
  document.querySelectorAll('nav [data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
- const titles={home:'La nostra giornata',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Risparmi',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',organize:'Organizza'};
+ const titles={home:'La nostra giornata',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Risparmi',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',waste:'Rifiuti',organize:'Organizza'};
  pageTitle.textContent=titles[id]||'Fagiolini';
- if(id==='home')renderHome();if(id==='today')renderToday();if(id==='organize')renderOrganize();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
+ if(id==='home')renderHome();if(id==='today')renderToday();if(id==='waste')renderWaste();if(id==='organize')renderOrganize();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
  scrollTo(0,0)
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -840,6 +870,10 @@ function renderHome(){
  const activeProjects=Object.values(s.savingsProjects||{}).filter(p=>p.active);
  if(homeSavingsProjects)homeSavingsProjects.innerHTML=activeProjects.length?activeProjects.map(p=>`<span>${p.icon} ${esc(p.label)} · ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}</span>`).join(''):'<span>🏖️ Vacanze e 🎄 Natale pronti quando servono.</span>';
 
+ const wasteToday=wasteForDate(now),wasteNext=nextWaste(now,false);
+ if(wasteToday){homeWasteText.innerHTML=`<b>Oggi: ${esc(wasteToday.short)}</b>`;homeWasteNextText.textContent=wasteNext?`Domani / prossimo: ${wasteNext.info.short} · ${wasteDayName(wasteNext.date)}`:'Apri per vedere la settimana.'}
+ else{homeWasteText.innerHTML='<b>Oggi niente ritiro</b>';homeWasteNextText.textContent=wasteNext?`Prossimo: ${wasteNext.info.short} · ${wasteDayName(wasteNext.date)}`:'Nessun turno disponibile.'}
+
  const bell=document.querySelector('.reminderBell .bellDot');if(bell)bell.classList.toggle('show',urgentRem.length>0);
 }
 
@@ -866,6 +900,8 @@ function renderOrganize(){
  organizeMaintenanceText.textContent=nextMaint?`${nextMaint.title} · ${birthLabel(nextMaint.date)}`:'Nessun lavoro urgente';
  const rem=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue','upcoming'].includes(reminderState(x))).length;
  organizeReminderText.textContent=rem?`${rem} ${rem===1?'promemoria':'promemoria'} da vedere`:'Niente da ricordare';
+ const wasteToday=wasteForDate(new Date()),wasteNext=nextWaste(new Date(),false);
+ if(typeof organizeWasteText!=='undefined'&&organizeWasteText)organizeWasteText.textContent=wasteToday?`Oggi: ${wasteToday.short}`:(wasteNext?`Prossimo: ${wasteNext.info.short} · ${wasteDayName(wasteNext.date)}`:'Nessun ritiro oggi');
  renderBirthdayPreview();
 }
 function openPerson(id){current=id;dayOffset=0;go('person');renderPerson()}
@@ -2057,6 +2093,6 @@ window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'){if(await checkSessionExpiry(true))return;if(cloudReady)pullCloudState(true)}});
 
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
-function renderAll(){renderHome();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
+function renderAll(){renderHome();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('waste').classList.contains('on'))renderWaste();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(money.classList.contains('on')){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();startSessionActivityTracking();bootCloud();

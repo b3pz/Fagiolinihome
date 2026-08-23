@@ -100,9 +100,10 @@
     <div id="homeSavingsProjects" class="homeSavingsProjects"></div>
   </button>
 
-  <button class="dashboardCard wasteHomeCard" data-go="organize">
+  <button class="dashboardCard wasteHomeCard" data-go="waste">
     <div class="dashboardCardHead"><span class="dashboardIcon">♻️</span><div><small>RACCOLTA</small><h3>Rifiuti</h3></div><em>›</em></div>
-    <p id="homeWasteText" class="dashboardNote">Turni da impostare: la sezione è pronta.</p>
+    <div id="homeWasteText" class="dashboardBigText"></div>
+    <p id="homeWasteNextText" class="dashboardNote"></p>
   </button>
 </section>
 
@@ -297,6 +298,22 @@
 </section>
 
 
+<section id="waste" class="view">
+  <div class="sectionTitle pageIntro"><div><small>RACCOLTA PORTA A PORTA</small><h2>♻️ Rifiuti</h2><p class="muted">Così sappiamo subito cosa preparare, senza cercare il calendario.</p></div></div>
+
+  <div id="wasteHero" class="wasteHeroGrid"></div>
+
+  <div class="card wasteWeekCard">
+    <div class="sectionTitle compact"><div><small>OGNI SETTIMANA</small><h3>Il calendario</h3></div><span class="wasteValidPill">dal 5 gennaio 2026</span></div>
+    <div id="wasteWeekList" class="wasteWeekList"></div>
+  </div>
+
+  <div class="wasteInfoGrid">
+    <div class="card wasteInfoCard"><span>🍾</span><div><b>Vetro</b><p>Va conferito nei contenitori stradali: non fa parte del normale ritiro porta a porta.</p></div></div>
+    <div class="card wasteInfoCard"><span>🧷</span><div><b>Supporti igienici</b><p>È un servizio separato, disponibile solo se attivato. Non lo contiamo nel calendario standard.</p></div></div>
+  </div>
+</section>
+
 <section id="organize" class="view">
   <div class="sectionTitle pageIntro"><div><small>TUTTO IL RESTO</small><h2>☰ Organizza</h2><p class="muted">Le cose importanti che non servono ogni minuto.</p></div></div>
 
@@ -308,6 +325,7 @@
     <button class="organizeCard" data-go="maintenance"><span>🔧</span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Manutenzioni</small></div><em>›</em></button>
     <button class="organizeCard" data-go="reminders"><span>🔔</span><div><b>Promemoria</b><small id="organizeReminderText">Da ricordare</small></div><em>›</em></button>
     <button class="organizeCard" data-go="calendar"><span>📆</span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="waste"><span>♻️</span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
   </div>
 
   <div class="card birthdayCard">
@@ -319,12 +337,6 @@
     <div class="sectionTitle compact"><div><small>NOTIFICHE</small><h3>✈️ Telegram</h3></div><span class="connectedPill">● Collegato</span></div>
     <p>I promemoria della famiglia vengono controllati automaticamente ogni 5 minuti e inviati nel gruppo.</p>
     <div class="telegramFacts"><span>🏠 Casa</span><span>🩺 Salute</span><span>🚗 Auto</span><span>💳 Bollette</span><span>🔔 Promemoria</span></div>
-  </div>
-
-  <div class="card wasteCard">
-    <div class="sectionTitle compact"><div><small>PREPARATA PER DOMANI</small><h3>♻️ Raccolta differenziata</h3></div></div>
-    <p class="muted">Qui comparirà subito cosa buttare oggi e cosa preparare per domani.</p>
-    <div class="wastePlaceholder"><b>Turni ancora da impostare</b><span>Quando avremo il calendario reale basterà inserirlo una volta.</span></div>
   </div>
 
   <div class="card settingsCard">

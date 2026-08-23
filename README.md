@@ -382,3 +382,37 @@ Questa build corregge i punti emersi dai test reali su iPhone.
 - Smart working, ferie e malattia restano disponibili e finiscono in Oggi + Calendario
 
 Login, Supabase, family_id, sincronizzazione, timeout 3 ore e backend Telegram non sono stati riscritti.
+
+
+## V9 — Family First XL + Rifiuti reali
+
+Baseline: V8.5.2 stabile. Login, Supabase, family_id, timeout 3 ore, sincronizzazione, Piano Casa, Fagiolini Bank e backend Telegram non sono stati riscritti.
+
+### Interfaccia XL
+- testi, titoli, pulsanti, card, campi e aree touch sensibilmente più grandi
+- bottom bar ancora più alta e leggibile
+- Home centrale da 80+ px, rialzata e nettamente diversa dagli altri tasti
+- maggiore spazio utile su iPhone / Safari e safe-area mantenuta
+- Login riassestato per evitare sovrapposizioni e tagli strani su iPhone
+
+### Rifiuti — calendario reale Figline e Incisa Valdarno
+Valido dal 5 gennaio 2026:
+- lunedì: Organico
+- martedì: Imballaggi e contenitori
+- mercoledì: Carta e cartone
+- giovedì: Organico
+- venerdì: Residuo non differenziabile
+- vetro: contenitori stradali, fuori dal normale porta a porta
+- supporti igienici: servizio separato, non mostrato come turno standard
+
+La Home mostra cosa si butta oggi e il prossimo ritiro. È presente anche una pagina Rifiuti completa e un accesso diretto da Organizza.
+
+### Funzioni V8.5.2 mantenute
+- Calendario cliccabile: tocco sul giorno → aggiungi evento con data già compilata
+- Calcetto JJ
+- Compleanni amici e parenti ricorrenti ogni anno
+- Smart working / ferie / malattia
+- vincoli Casa: Lavatrice → Asciugatrice e Spazzare → Lavare pavimenti
+- niente testo “asciugaculo”: resta Cambio asciugamani
+- foto vere nei profili
+- nessun badge fisiologico nella Home famiglia
