@@ -54,3 +54,9 @@ errore RLS, errore family_state o perdita temporanea di rete.
 - autenticazione e rendering UI hanno catch separati
 - un errore in renderAll non viene più interpretato come login fallito
 - dopo una sessione valida la schermata login non può essere riaperta da errori UI/cloud
+
+## NO LOGIN GATE CLEAN
+- Fagiolini si apre sempre con localStorage
+- il login Supabase è richiesto solo per sincronizzare
+- account senza sessione apre la schermata login
+- problemi cloud/RLS non possono bloccare l'app

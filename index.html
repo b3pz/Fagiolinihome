@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="loginScreen" class="loginScreen">
+<div id="loginScreen" class="loginScreen hidden">
   <div class="loginCard">
     <div class="loginLogo">🌱</div>
     <b class="brand">FAGIOLINI</b>
@@ -19,6 +19,7 @@
       <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required>
       <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required>
       <button id="loginBtn" class="primary">Accedi</button>
+<button id="loginClose" type="button" class="secondaryFull">Continua senza sincronizzare</button>
     </form>
     <div id="loginMessage" class="errorText"></div>
   </div>
