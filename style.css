@@ -1074,3 +1074,153 @@ dialog.dialogFallbackOpen>.dialogBox{margin:auto;background:var(--card);box-shad
   nav button:not(.navHomeCenter) small{font-size:15px!important}
   nav .navHomeCenter .navIcon{width:94px!important;height:94px!important;margin-top:-50px!important}
 }
+
+/* =========================================================
+   V9.4 FINAL STABLE — BALANCED MOBILE + REAL DESKTOP
+   ========================================================= */
+
+/* Theme */
+html.themeDark{
+ --bg:#101713;
+ --card:#18221c;
+ --text:#eef5ef;
+ --muted:#b6c3b9;
+ --line:#314238;
+ --soft:#223027;
+ --accent:#8bbb91;
+ --accent-dark:#d8eadc;
+ --orange:#f08a61;
+ --gold:#e0ad68;
+ --cream:#1d2921;
+ --shadow:0 12px 32px rgba(0,0,0,.24);
+ color-scheme:dark;
+}
+html.themeDark body{background:var(--bg);color:var(--text)}
+html.themeDark .round,html.themeDark .cloudStatus,html.themeDark .familyMemberCard,html.themeDark nav,
+html.themeDark input,html.themeDark select,html.themeDark textarea{background:var(--card);color:var(--text);border-color:var(--line)}
+html.themeDark .homeHeroShade{background:linear-gradient(to bottom,transparent 55%,rgba(16,23,19,.18) 68%,rgba(16,23,19,.92) 100%)}
+html.themeDark .homeHeroText{color:#f3f8f4;text-shadow:0 1px 2px #000}
+html.themeDark .bankAction.expense,html.themeDark .bankAction.income,html.themeDark .bankAction.bill{background:var(--card)}
+html.themeDark dialog::backdrop{background:rgba(0,0,0,.68)}
+html.themeDark .loginCard{background:rgba(24,34,28,.96);color:var(--text)}
+html.themeDark .loginBackdrop:after{background:linear-gradient(to bottom,rgba(10,15,12,.18),rgba(10,15,12,.52))}
+
+.themeQuickBtn .uiIcon,.reminderBell .uiIcon{width:23px;height:23px}
+.themeChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.themeChoices button{min-height:64px;border:1px solid var(--line);border-radius:18px;background:var(--soft);display:flex;align-items:center;justify-content:center;gap:9px;font-size:17px;font-weight:850}
+.themeChoices button .uiIcon{width:24px;height:24px}
+.themeChoices button.active{background:var(--accent-dark);color:var(--card);border-color:var(--accent-dark)}
+html.themeDark .themeChoices button.active{color:#112017;background:#9bc8a1}
+
+/* Birthday: visible, warm, not a technical alert */
+.birthdayCelebration{display:flex;align-items:center;gap:16px;padding:18px 20px;margin:0 0 18px;border:1px solid color-mix(in srgb,var(--gold) 45%,var(--line));border-radius:25px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 15%,var(--card)),var(--card));box-shadow:var(--shadow)}
+.birthdayCelebration[hidden]{display:none}
+.birthdayCelebrationIcon{width:62px;height:62px;flex:0 0 62px;border-radius:20px;background:color-mix(in srgb,var(--gold) 18%,var(--soft));display:grid;place-items:center;color:var(--gold)}
+.birthdayCelebrationIcon .uiIcon{width:34px;height:34px}
+.birthdayCelebration small{display:block;font-weight:900;letter-spacing:.12em;margin-bottom:4px}
+.birthdayCelebration strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:28px;color:var(--accent-dark);line-height:1.05}
+.birthdayCelebration p{margin:6px 0 0;font-size:17px;color:var(--muted);line-height:1.4}
+
+/* Menu: first today, one selected day, recipes belong to the family */
+.menuTodayOverview{padding:22px}
+.menuTodayBrief{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.menuTodayBrief button{border:1px solid var(--line);background:var(--soft);border-radius:20px;padding:17px;text-align:left;min-height:100px}
+.menuTodayBrief small{display:block;margin-bottom:7px;font-weight:900}.menuTodayBrief b{display:block;font-size:22px;line-height:1.2}
+.menuPrimaryActions{display:grid;grid-template-columns:1.25fr 1fr;gap:12px;margin-bottom:16px}
+.menuPrimaryActions button{min-height:68px;border:1px solid var(--line);border-radius:21px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:10px;font-size:19px;color:var(--accent-dark)}
+.menuPrimaryActions .uiIcon{width:27px;height:27px}
+.menuPrimaryActions .primary{background:var(--accent);color:white;border-color:var(--accent)}
+.simpleSummaryLine{display:flex;justify-content:space-between;align-items:center;gap:12px}.simpleSummaryLine b{font-size:22px}.simpleSummaryLine span{font-size:17px;color:var(--muted);text-align:right}
+.menuDayTabs{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:5px 0 18px}
+.menuDayTabs button{border:1px solid var(--line);border-radius:16px;background:var(--soft);padding:10px 3px;min-width:0}
+.menuDayTabs button small{display:block;text-transform:capitalize;letter-spacing:0;font-size:13px}.menuDayTabs button b{display:block;font-size:21px;margin-top:2px}
+.menuDayTabs button.active{background:var(--accent-dark);color:white}.menuDayTabs button.active small{color:rgba(255,255,255,.78)}
+.menuDay.focusedDay{margin:0;border:0;box-shadow:none;padding:0}.menuDay.focusedDay>h3{font-size:25px;margin:4px 0 15px}
+.recipeLibraryCard{scroll-margin-top:18px}.customRecipePreview{display:grid;gap:9px}
+.customRecipeRow{display:grid;grid-template-columns:48px 1fr auto auto;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:18px;background:var(--soft)}
+.recipeRowIcon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--card);color:var(--accent-dark)}.recipeRowIcon .uiIcon{width:24px;height:24px}
+.customRecipeRow b{font-size:18px}.customRecipeRow small{display:block;letter-spacing:0;margin-top:3px}.customRecipeRow button{min-height:42px;border:1px solid var(--line);background:var(--card);border-radius:12px;font-weight:800}
+.compactBalance{margin-top:16px}.menuExtraOptions{margin-bottom:20px}
+
+/* Auto: no form open until requested */
+.autoQuickActions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.autoQuickActions button{min-height:68px;border-radius:21px;border:1px solid var(--line);background:var(--card);font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:9px;color:var(--accent-dark)}
+.autoQuickActions .primary{background:var(--accent);color:white;border-color:var(--accent)}.autoQuickActions .uiIcon{width:27px;height:27px}
+
+/* Bank detail content is now a real page, not a floating long popup */
+.bankDetailView{max-width:920px;margin:0 auto}
+.bankDetailView>.dialogBox{position:static!important;transform:none!important;inset:auto!important;margin:0!important;width:100%!important;max-width:none!important;max-height:none!important;overflow:visible!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+.bankDetailView .sectionTitle:first-child{margin-top:0}
+.bankDetailView .bankDialogDivider{margin:24px 0}
+
+/* Correct dialog geometry for the SHORT actions that remain */
+dialog{padding:0;border:0;background:transparent;max-width:none;max-height:none}
+dialog[open]{position:fixed!important;inset:0!important;margin:auto!important;width:min(92vw,620px)!important;height:max-content!important;max-height:84dvh!important;transform:none!important;overflow:visible!important}
+dialog .dialogBox{width:100%!important;max-width:none!important;max-height:84dvh!important;overflow:auto!important;margin:0!important;border-radius:28px!important;background:var(--card)!important;color:var(--text)!important;padding:22px!important;box-shadow:0 24px 70px rgba(0,0,0,.28)!important}
+dialog::backdrop{background:rgba(31,37,33,.54);backdrop-filter:blur(5px)}
+
+/* MOBILE: readable text, but icons/nav remain proportional */
+@media (max-width: 699px){
+ html,body{font-size:19px!important;line-height:1.48}
+ .app{max-width:none!important;padding-left:16px!important;padding-right:16px!important;padding-bottom:calc(102px + env(safe-area-inset-bottom))!important}
+ header{padding-top:18px!important;padding-bottom:15px!important}.headerTools{gap:6px}.cloudStatus{padding:7px 9px}.round{width:43px;height:43px}
+ header h1{font-size:34px!important}.pageIntro h2{font-size:36px!important;line-height:1.05}.pageIntro p{font-size:18px!important}.homeWelcome h2{font-size:37px!important}.homeWelcome p{font-size:18px!important}
+ .card{padding:19px!important;border-radius:23px!important;margin-bottom:14px!important}.card h3,.sectionTitle h3{font-size:23px!important}.muted{font-size:17px}.tiny{font-size:15px!important}small{font-size:14px!important}
+ button,.primary,.smallBtn,.fullBtn,input,select,textarea{font-size:18px!important}.fieldLabel{font-size:17px!important}
+ input,select,textarea{min-height:56px!important;padding:13px 14px!important}textarea{min-height:120px!important}
+ .homeHeroCompact{height:225px!important;aspect-ratio:auto!important;margin-bottom:14px!important}.homeHeroText{font-size:19px!important;bottom:17px!important;text-align:left!important}
+ .dashboardCardHead .dashboardIcon{width:54px!important;height:54px!important;font-size:28px!important}.dashboardCardHead .dashboardIcon .uiIcon{width:28px!important;height:28px!important}.dashboardCardHead h3{font-size:23px!important}.dashboardBigText b{font-size:29px!important}.dashboardNote{font-size:17px!important}
+ .familyStripHome{gap:7px}.familyStripHome .familyMemberCard{padding:5px!important;border-radius:17px!important}.familyStripHome .familyMemberCard b{font-size:14px!important}
+ .birthdayCelebration{padding:15px 16px}.birthdayCelebrationIcon{width:54px;height:54px;flex-basis:54px}.birthdayCelebration strong{font-size:25px}.birthdayCelebration p{font-size:16px}
+ .menuTodayBrief{grid-template-columns:1fr 1fr}.menuTodayBrief b{font-size:20px}.menuPrimaryActions{grid-template-columns:1fr}.simpleSummaryLine{display:grid}.simpleSummaryLine span{text-align:left}
+ .menuDayTabs{gap:5px}.menuDayTabs button{padding:9px 2px}.menuDayTabs button small{font-size:12px!important}.menuDayTabs button b{font-size:19px}
+ .mealEdit{grid-template-columns:1fr!important}.mealEdit label{font-size:17px!important}.mealEdit input{grid-column:1/-1}.mealEdit .mealSwap,.mealEdit .recipeBtn{min-height:48px!important}
+ .autoQuickActions{grid-template-columns:1fr 1fr}.bankQuickActions{grid-template-columns:1fr 1fr 1fr}.bankAction{min-height:64px!important;font-size:18px!important}.bankActionIcon{display:none}
+ .bankMenuCard{min-height:88px!important;padding:15px!important}.bankMenuIcon{width:50px!important;height:50px!important}.bankMenuCard b{font-size:21px!important}.bankMenuCard small{font-size:16px!important}
+ nav{height:84px!important;min-height:84px!important;padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important;grid-template-columns:repeat(5,1fr)!important;align-items:center!important}
+ nav button{min-height:64px!important;padding:5px 2px!important;gap:4px!important}nav button:not(.navHomeCenter) .navIcon{width:29px!important;height:29px!important}nav button:not(.navHomeCenter) small{font-size:13px!important;margin-top:4px!important}
+ nav .navHomeCenter .navIcon{width:60px!important;height:60px!important;margin:-19px auto 1px!important;padding:14px!important;border-radius:21px!important}nav .navHomeCenter small{font-size:14px!important;margin-top:0!important}
+ dialog[open]{width:min(92vw,600px)!important;max-height:80dvh!important}
+ dialog .dialogBox{padding:20px!important;border-radius:26px!important}
+ .themeChoices{grid-template-columns:1fr 1fr 1fr}.themeChoices button{font-size:15px!important;min-height:58px}
+}
+
+@media (max-width: 390px){
+ html,body{font-size:18px!important}.pageIntro h2{font-size:34px!important}.homeWelcome h2{font-size:35px!important}
+ nav button:not(.navHomeCenter) .navIcon{width:27px!important;height:27px!important}nav .navHomeCenter .navIcon{width:58px!important;height:58px!important}
+ .menuDayTabs button small{font-size:11px!important}.menuDayTabs button b{font-size:18px}
+}
+
+/* DESKTOP / MAC / PC: landscape, not a stretched phone */
+@media (min-width: 1000px){
+ html,body{font-size:17px!important}
+ body{padding-bottom:0}
+ .app{max-width:1480px!important;padding:18px 30px 110px!important}
+ header{max-width:1320px;margin:0 auto;padding:18px 10px 15px!important;align-items:center}
+ header h1{font-size:34px!important;margin:8px 0 4px!important}.headerIdentity{display:grid;grid-template-columns:auto 1fr;column-gap:18px;align-items:center}.headerIdentity .brand{grid-row:1/3}.headerIdentity #todayLabel{grid-column:2}
+ main{max-width:1320px;margin:0 auto}
+ #home.on{display:grid!important;grid-template-columns:1.15fr 1fr;gap:18px;align-items:start}
+ #home .homeWelcome,#home .birthdayCelebration,#home .familyDashboardCard{grid-column:1/-1;margin-bottom:0}
+ #home .homeHeroCompact{grid-column:1;grid-row:3 / span 2;height:390px;aspect-ratio:auto;margin:0}
+ #home .dashboardHero{grid-column:2;margin:0}
+ #home .homeDashboardGrid{grid-column:2;grid-template-columns:1fr 1fr;margin:0}
+ #home .savingsHomeCard,#home .wasteHomeCard{margin:0}
+ .organizeGrid{grid-template-columns:repeat(3,1fr)!important}
+ #menu.on{display:grid!important;grid-template-columns:.8fr 1.2fr;gap:18px;align-items:start}
+ #menu .pageIntro{grid-column:1/-1}
+ #menu .menuTodayOverview,#menu .menuPrimaryActions,#menu .menuCompactSummary{grid-column:1;margin-bottom:0}
+ #menu .menuWeekCard{grid-column:2;grid-row:2 / span 4;margin:0}
+ #menu .recipeLibraryCard,#menu .menuExtraOptions{grid-column:1/-1}
+ #auto.on{display:grid!important;grid-template-columns:.9fr 1.1fr;gap:18px;align-items:start}
+ #auto .pageIntro{grid-column:1/-1}#auto .autoQuickActions{grid-column:1}#auto>.card:not(.sectionSummaryCard){grid-column:2;grid-row:2 / span 2}#auto>details{grid-column:1/-1}
+ .bankSimpleView.on{max-width:1050px;margin:0 auto}.bankSimpleMenu{grid-template-columns:repeat(4,1fr)!important}.bankQuickActions{max-width:760px}
+ .bankDetailView.on{max-width:1050px;margin:0 auto}
+ .calendar{max-width:none}.calDay{min-height:104px}
+ nav{position:fixed!important;left:50%!important;right:auto!important;bottom:18px!important;transform:translateX(-50%)!important;width:min(820px,calc(100vw - 80px))!important;height:68px!important;min-height:68px!important;border:1px solid var(--line)!important;border-radius:24px!important;padding:5px 14px!important;box-shadow:0 14px 40px rgba(20,40,27,.15)!important;grid-template-columns:repeat(5,1fr)!important}
+ nav button{min-height:54px!important;display:flex!important;flex-direction:row!important;gap:8px!important;align-items:center!important;justify-content:center!important;border-radius:16px!important}
+ nav .navIcon,nav button:not(.navHomeCenter) .navIcon,nav .navHomeCenter .navIcon{width:27px!important;height:27px!important;margin:0!important;padding:0!important;background:transparent!important;color:currentColor!important;box-shadow:none!important;border-radius:0!important}
+ nav small,nav button:not(.navHomeCenter) small,nav .navHomeCenter small{font-size:14px!important;margin:0!important}
+ nav button.active{background:var(--soft)!important;color:var(--accent-dark)!important}
+ .homeHeroText{font-size:21px!important}
+ dialog[open]{width:min(620px,80vw)!important}
+}
