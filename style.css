@@ -1810,3 +1810,102 @@ main{max-width:1480px;margin:0 auto}
 /* Dark: real high contrast surfaces */
 html.themeDark{--v11-bg:#0e1712;--v11-surface:#17241c;--v11-soft:#223329;--v11-ink:#f3f7f4;--v11-muted:#b9c8be;--v11-shadow:0 12px 34px rgba(0,0,0,.22)}
 html.themeDark body{background:var(--v11-bg)!important;color:var(--v11-ink)!important}html.themeDark .card,html.themeDark .nativeSection,html.themeDark .diaryHero,html.themeDark .dashboardCard,html.themeDark .bankSimpleHero,html.themeDark .bankSimpleMenu,html.themeDark .menuTodayOverview,html.themeDark .menuWeekCard,html.themeDark .recipeLibraryCard,html.themeDark .calendar.card,html.themeDark .calendarDayCard{background:var(--v11-surface)!important;color:var(--v11-ink)!important}html.themeDark h1,html.themeDark h2,html.themeDark h3,html.themeDark h4,html.themeDark b,html.themeDark strong,html.themeDark .dashboardBigText,html.themeDark .diaryTime{color:var(--v11-ink)!important}html.themeDark .muted,html.themeDark .meta,html.themeDark .tiny,html.themeDark small,html.themeDark .dashboardNote{color:var(--v11-muted)!important}html.themeDark input,html.themeDark select,html.themeDark textarea{background:#223329!important;color:#fff!important;border-color:#344a3d!important}html.themeDark .calGrid{background:#101a14!important}html.themeDark .calDay{background:#18261d!important;color:#eef5f0!important}html.themeDark .calDay.weekend{background:#21352a!important}html.themeDark .calDay.sunday{background:#263b30!important}html.themeDark .calDay.today{background:#294433!important;outline-color:#6aa57a!important}html.themeDark .calDay.selected{background:#31533e!important;box-shadow:inset 0 0 0 2px #8ac599!important}html.themeDark .menuDayTabs,html.themeDark .diaryStats .stat,html.themeDark .diaryEventIcon,html.themeDark .mealEdit input{background:#223329!important}html.themeDark #todayAgenda .agendaItem,html.themeDark .diaryRow,html.themeDark .mealEdit,html.themeDark .bankMenuCard{border-color:rgba(255,255,255,.10)!important}
+
+/* =========================================================
+   FAGIOLINI V11.1 — PRECISION PASS
+   Home tab = option B: no floating circle, active pill only.
+   ========================================================= */
+
+/* Organizza is a real hub: secondary content opens only on request. */
+.organizeGridSecondary{margin-top:14px}
+.organizePanel{margin-top:16px}
+.panelActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.telegramFactsNative span{display:inline-flex!important;align-items:center;gap:6px}
+.telegramFactsNative .uiIcon{width:18px;height:18px}
+
+/* Remove redundant floating/raised Home treatment everywhere. */
+.mobileNav .navHomeCenter,
+.desktopNav .navHomeCenter{transform:none!important}
+
+/* MOBILE — compact native tab bar, all five items share one geometry.
+   Home is distinguished only by the active pill, never by a circle. */
+@media (max-width:699px){
+  :root{--nav-h:72px}
+  .mobileNav{
+    left:8px!important;right:8px!important;bottom:6px!important;
+    min-height:62px!important;height:auto!important;
+    padding:5px 6px calc(5px + env(safe-area-inset-bottom))!important;
+    border-radius:19px!important;
+    overflow:visible!important;
+  }
+  .mobileNav button,
+  .mobileNav .navHomeCenter{
+    height:52px!important;min-height:52px!important;
+    padding:5px 2px!important;
+    border-radius:13px!important;
+    gap:3px!important;
+    background:transparent!important;
+  }
+  .mobileNav button .navIcon,
+  .mobileNav button:not(.navHomeCenter) .navIcon,
+  .mobileNav .navHomeCenter .navIcon,
+  .mobileNav .navHomeCenter.active .navIcon{
+    width:25px!important;height:25px!important;
+    min-width:25px!important;min-height:25px!important;
+    max-width:25px!important;max-height:25px!important;
+    margin:0!important;padding:0!important;
+    border-radius:0!important;background:transparent!important;
+    box-shadow:none!important;color:#536c5e!important;
+  }
+  .mobileNav button .navIcon svg,
+  .mobileNav .navHomeCenter .navIcon svg,
+  .mobileNav .navHomeCenter.active .navIcon svg{
+    width:25px!important;height:25px!important;max-width:25px!important;max-height:25px!important;
+  }
+  .mobileNav button small,
+  .mobileNav .navHomeCenter small{
+    font-size:11.5px!important;line-height:1!important;margin:0!important;
+    color:#536c5e!important;font-weight:850!important;
+  }
+  .mobileNav button.active,
+  .mobileNav .navHomeCenter.active{
+    background:#e6efe5!important;
+    box-shadow:inset 0 0 0 1px rgba(47,100,67,.08)!important;
+  }
+  .mobileNav button.active .navIcon,
+  .mobileNav button.active small,
+  .mobileNav .navHomeCenter.active .navIcon,
+  .mobileNav .navHomeCenter.active small{color:var(--accent-dark)!important}
+  html.themeDark .mobileNav .navHomeCenter.active .navIcon{background:transparent!important;color:#fff!important}
+  html.themeDark .mobileNav button.active,
+  html.themeDark .mobileNav .navHomeCenter.active{background:#294032!important;box-shadow:inset 0 0 0 1px #3a5a46!important}
+  .app{padding-bottom:calc(82px + env(safe-area-inset-bottom))!important}
+
+  .organizeGridSecondary{grid-template-columns:1fr!important}
+  .organizePanel{border-radius:24px!important;padding:18px!important}
+  .organizePanel .sectionTitle.compact{align-items:flex-start!important;gap:12px!important}
+  .organizePanel .panelActions{width:100%;justify-content:flex-start}
+}
+
+/* DESKTOP — one coherent header row; Home is just another tab with a pill state. */
+@media (min-width:1000px){
+  header{
+    grid-template-columns:minmax(190px,.8fr) minmax(520px,auto) minmax(250px,.8fr)!important;
+    gap:14px!important;
+    align-items:center!important;
+  }
+  .desktopNav{min-width:0!important;width:100%!important;max-width:660px!important;justify-self:center!important}
+  .desktopNav button,
+  .desktopNav .navHomeCenter{min-width:0!important;height:46px!important;min-height:46px!important;border-radius:13px!important}
+  .desktopNav .navHomeCenter .navIcon,
+  .desktopNav .navHomeCenter.active .navIcon{width:22px!important;height:22px!important;background:transparent!important;padding:0!important;border-radius:0!important;color:currentColor!important;box-shadow:none!important}
+  .desktopNav .navHomeCenter .navIcon svg{width:22px!important;height:22px!important}
+  .desktopNav button.active,.desktopNav .navHomeCenter.active{background:var(--soft)!important;color:var(--accent-dark)!important}
+  .organizeGridSecondary{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .organizePanel{max-width:980px;margin:18px auto 0}
+}
+
+@media (min-width:1000px) and (max-width:1180px){
+  header{grid-template-columns:minmax(180px,1fr) auto!important}
+  .desktopNav{grid-column:1/-1!important;grid-row:2!important;max-width:660px!important;min-width:0!important}
+}

@@ -16,7 +16,7 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=11.0.0">
+<link rel="stylesheet" href="style.css?v=11.1.0">
 </head>
 <body data-page="home">
 
@@ -366,19 +366,25 @@
     <button class="organizeCard" data-go="waste"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg></span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
   </div>
 
-  <div class="card birthdayCard">
-    <div class="sectionTitle compact"><div><small>DA NON DIMENTICARE</small><h3>🎂 Compleanni</h3></div><button id="addBirthdayQuick">＋ Aggiungi</button></div>
+  <div class="organizeGrid organizeGridSecondary">
+    <button class="organizeCard" data-organize-panel="birthdays"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-gift"></use></svg></span><div><b>Compleanni</b><small>Amici e parenti da ricordare</small></div><em>›</em></button>
+    <button class="organizeCard" data-organize-panel="telegram"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg></span><div><b>Telegram</b><small>Notifiche automatiche collegate</small></div><em>›</em></button>
+    <button class="organizeCard" data-organize-panel="settings"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-device"></use></svg></span><div><b>Impostazioni</b><small>Tema e account</small></div><em>›</em></button>
+  </div>
+
+  <div id="organizePanelBirthdays" class="card organizePanel" hidden>
+    <div class="sectionTitle compact"><div><small>DA NON DIMENTICARE</small><h3 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-gift"></use></svg><span>Compleanni</span></h3></div><div class="panelActions"><button data-close-organize-panel>← Indietro</button><button id="addBirthdayQuick">＋ Aggiungi</button></div></div>
     <div id="birthdayPreview" class="birthdayPreview"></div>
   </div>
 
-  <div class="card telegramCard">
-    <div class="sectionTitle compact"><div><small>NOTIFICHE</small><h3>✈️ Telegram</h3></div><span class="connectedPill">● Collegato</span></div>
+  <div id="organizePanelTelegram" class="card organizePanel" hidden>
+    <div class="sectionTitle compact"><div><small>NOTIFICHE</small><h3 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg><span>Telegram</span></h3></div><div class="panelActions"><span class="connectedPill">● Collegato</span><button data-close-organize-panel>← Indietro</button></div></div>
     <p>I promemoria della famiglia vengono controllati automaticamente ogni 5 minuti e inviati nel gruppo.</p>
-    <div class="telegramFacts"><span>🏠 Casa</span><span>🩺 Salute</span><span>🚗 Auto</span><span>💳 Bollette</span><span>🔔 Promemoria</span></div>
+    <div class="telegramFacts telegramFactsNative"><span><svg class="uiIcon"><use href="icons.svg#icon-housework"></use></svg> Casa</span><span><svg class="uiIcon"><use href="icons.svg#icon-health"></use></svg> Salute</span><span><svg class="uiIcon"><use href="icons.svg#icon-car"></use></svg> Auto</span><span><svg class="uiIcon"><use href="icons.svg#icon-card"></use></svg> Bollette</span><span><svg class="uiIcon"><use href="icons.svg#icon-bell"></use></svg> Promemoria</span></div>
   </div>
 
-  <div class="card settingsCard">
-    <div class="sectionTitle compact"><div><small>IMPOSTAZIONI</small><h3>Aspetto e account</h3></div><button id="organizeAccountBtn">Account</button></div>
+  <div id="organizePanelSettings" class="card organizePanel" hidden>
+    <div class="sectionTitle compact"><div><small>IMPOSTAZIONI</small><h3>Aspetto e account</h3></div><div class="panelActions"><button data-close-organize-panel>← Indietro</button><button id="organizeAccountBtn">Account</button></div></div>
     <p class="muted">Scegli il tema più comodo. La scelta resta salvata.</p>
     <div class="themeChoices" role="group" aria-label="Tema">
       <button data-theme-choice="light"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-sun"></use></svg><b>Chiaro</b></button>
@@ -899,5 +905,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=11.0.0"></script>
+<script src="app.js?v=11.1.0"></script>
 </body></html>

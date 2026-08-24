@@ -2213,3 +2213,22 @@ resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se 
 function renderAll(){renderHome();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('waste').classList.contains('on'))renderWaste();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].some(id=>document.getElementById(id)?.classList.contains('on'))){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();startSessionActivityTracking();bootCloud();
+
+
+// V11.1 — Organizza hub panels
+function closeOrganizePanels(){
+  ['organizePanelBirthdays','organizePanelTelegram','organizePanelSettings'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.hidden=true;
+  });
+}
+document.querySelectorAll('[data-organize-panel]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    closeOrganizePanels();
+    const map={birthdays:'organizePanelBirthdays',telegram:'organizePanelTelegram',settings:'organizePanelSettings'};
+    const panel=document.getElementById(map[btn.dataset.organizePanel]);
+    if(panel){panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+document.querySelectorAll('[data-close-organize-panel]').forEach(btn=>{
+  btn.addEventListener('click',()=>{closeOrganizePanels();document.querySelector('#organize .organizeGridSecondary')?.scrollIntoView({behavior:'smooth',block:'center'});});
+});
