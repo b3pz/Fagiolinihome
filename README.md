@@ -1,11 +1,18 @@
-# Fagiolini V11.1 — Precision Pass
+# Fagiolini V12 — WIP Current Stable
 
-Patch visuale/UX sulla V11 stabile.
+Versione V12 generata come base di lavoro attuale, partendo dalla V11.1 stabile.
 
-## Modifiche
-- Bottom bar iPhone ridisegnata con **Home opzione B**: niente cerchio/floating button; Home è una normale voce centrale evidenziata da una pillola quando attiva.
-- Dimensioni della barra mobile blindate per evitare che regole globali rendano di nuovo enormi le icone.
-- Desktop: Home usa lo stesso linguaggio delle altre tab; topbar più coerente e proporzionata.
-- Organizza trasformato davvero in hub: **Compleanni, Telegram e Impostazioni** sono accessi separati e il contenuto appare solo quando richiesto.
-- Rimosse le emoji decorative principali da questi blocchi, sostituite con gli sprite SVG del design system.
-- Nessuna modifica alla logica stabile di login, Supabase, Telegram backend, Casa, Calendario, Pasti o Fagiolini Bank.
+## Stato attuale
+- Base funzionale confermata.
+- Bottom bar mobile con Home centrale in versione pill.
+- Hub Organizza separato in sezioni dedicate.
+- Login, Supabase e promemoria Telegram invariati dalla base stabile.
+- Casa, Calendario, Pasti, Bank e Diario figli mantenuti nello stato corrente.
+
+## Nota
+Questa V12 è una **base di continuità** per verificare rapidamente che tutto giri “per il momento”, prima di eventuali rifiniture grafiche ulteriori.
+
+## Recap rapido
+- nome build: `fagiolini-v12-WIP-CURRENT-STABLE-root.zip`
+- contenuto root: `index.html` + immagini/avatar
+- uso: sostituire i file esistenti nel repository/pagina con quelli di questa build
