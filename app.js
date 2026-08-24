@@ -89,7 +89,7 @@ const ADULTS={
 };
 const META={
  pappa:['🍼','Pappa'],pannolino:['🚼','Pannolino'],cacca:['💩','Cacca'],nanna:['😴','Nanna'],bagnetto:['🛁','Bagnetto'],
- traversina:['🐾','Traversina'],pipi:['💧','Pipì'],farmaco:['💊','Farmaco'],toeletta:['🛁','Toeletta']
+ traversina:['🐾','Traversina'],pipi:['💧','Pipì'],farmaco:['💊','Medicina'],toeletta:['🛁','Toeletta'],crescita:['','Crescita'],nota:['','Nota']
 };
 let s=load(),current='caty',currentAdult='jj',dayOffset=0,personInsightDays=7,menuSelectedDay=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null,editingHouseTaskId=null,moneyMacroFilter=null;
 
@@ -942,8 +942,10 @@ function renderOrganize(){
  renderBirthdayPreview();
 }
 function openPerson(id){current=id;dayOffset=0;go('person');renderPerson()}
-function personActionKeys(c){return c.type==='dog'?['pappa','traversina','cacca','pipi','farmaco','toeletta']:['pappa','pannolino','cacca','nanna','bagnetto']}
-function actionIcon(type,person){if(type==='pappa')return person==='kiko'?'🍼':'🍽️';return META[type]?.[0]||'•'}
+function personActionKeys(c){return c.type==='dog'?['pappa','traversina','cacca','pipi','farmaco','toeletta']:['pappa','pannolino','cacca','nanna','bagnetto','farmaco','crescita','nota']}
+function childIconId(type){return ({pappa:'icon-bottle',pannolino:'icon-diaper',cacca:'icon-poop',nanna:'icon-sleep',bagnetto:'icon-bath',farmaco:'icon-medicine',crescita:'icon-growth',nota:'icon-note'})[type]||'icon-note'}
+function childIconSvg(type){return `<svg class="uiIcon diaryIcon" aria-hidden="true"><use href="icons.svg#${childIconId(type)}"></use></svg>`}
+function actionIcon(type,person){if(person==='astro')return META[type]?.[0]||'•';return childIconSvg(type)}
 function countRange(person,type,days){let vals=[];for(let i=days-1;i>=0;i--){let d=offsetDate(-i),n=count(person,type,d);vals.push({date:d,count:n})}return vals}
 function renderPersonInsights(){
  const c=s.children.find(x=>x.id===current);if(!c)return;
@@ -960,22 +962,46 @@ function renderPersonInsights(){
 }
 function renderPerson(){
  let c=s.children.find(x=>x.id===current);if(!c)return;personTitle.textContent=c.name;personAvatar.src=avatarFor(c.id);personAvatar.alt=c.name;if(personSubtitle)personSubtitle.textContent=ageFromBirth(c.birthDate);
- if(c.type==='dog')personStats.innerHTML=[['🐾 Traversine',count(current,'traversina')],['🍽️ Pappe',count(current,'pappa')],['💩 Cacche',count(current,'cacca')],['💧 Pipì',count(current,'pipi')]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
- else personStats.innerHTML=[['💩 Cacche',count(current,'cacca')],['🚼 Pannolini',count(current,'pannolino')],[current==='kiko'?'🍼 Pasti':'🍽️ Pasti',count(current,'pappa')],['😴 Sonno',duration(sleepMinutes(current))]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ let selectedDay=offsetDate(dayOffset);
+ if(c.type==='dog')personStats.innerHTML=[['Traversine',count(current,'traversina',selectedDay)],['Pappe',count(current,'pappa',selectedDay)],['Cacche',count(current,'cacca',selectedDay)],['Pipì',count(current,'pipi',selectedDay)]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ else personStats.innerHTML=[['Pasti',count(current,'pappa',selectedDay)],['Sonno',duration(sleepMinutes(current,selectedDay))],['Pannolini',count(current,'pannolino',selectedDay)],['Cacche',count(current,'cacca',selectedDay)]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ if(personDiarySentence){let ev=events(current,selectedDay),parts=[];if(c.type!=='dog'){let meals=ev.filter(e=>e.type==='pappa').length,sleeps=ev.filter(e=>e.type==='nanna').length,poops=ev.filter(e=>e.type==='cacca').length;if(meals)parts.push(`${meals} ${meals===1?'pasto':'pasti'}`);if(sleeps)parts.push(`${sleeps} ${sleeps===1?'sonnellino':'sonnellini'}`);if(poops)parts.push(`${poops} ${poops===1?'cacca':'cacche'}`)}personDiarySentence.textContent=parts.length?`Registrati ${parts.join(', ')}.`:'La giornata è pronta per essere raccontata, un momento alla volta.'}
  renderPersonInsights();
  personActions.innerHTML=personActionKeys(c).map(k=>`<button data-action="${k}">${actionIcon(k,current)}<small>${actionLabel(k,current)}</small></button>`).join('');
  personActions.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>handleAction(current,b.dataset.action));
  let d=offsetDate(dayOffset);dayLabel.textContent=dayOffset===0?'Oggi':longDate(d);dayNext.disabled=dayOffset>=0;
- let a=events(current,d);personTimeline.innerHTML=a.length?a.map(e=>{let m=META[e.type]||['•',e.type],note=e.note||'';if(e.type==='nanna')note=e.endAt?`Fine ${timeLabel(e.endAt)} · ${duration(Math.round((new Date(e.endAt)-new Date(e.at))/60000))}`:'In corso';return `<div class="row"><b>${timeLabel(e.at)}</b><span>${actionIcon(e.type,current)}</span><div class="grow"><b>${m[1]}</b><div class="meta">${esc(note)}</div></div><button class="del" data-del-event="${e.id}">✕</button></div>`}).join(''):'<div class="muted">Niente registrato in questa giornata.</div>';
- personTimeline.querySelectorAll('[data-del-event]').forEach(b=>b.onclick=()=>{s.events=s.events.filter(e=>e.id!==b.dataset.delEvent);save()})
+ let a=events(current,d);personTimeline.innerHTML=a.length?a.map(e=>{let m=META[e.type]||['•',e.type],note=e.note||'';if(e.type==='nanna')note=e.endAt?`Fino alle ${timeLabel(e.endAt)} · ${duration(Math.round((new Date(e.endAt)-new Date(e.at))/60000))}`:'In corso';return `<div class="diaryRow"><span class="diaryTime">${timeLabel(e.at)}</span><span class="diaryEventIcon">${current==='astro'?(m[0]||'•'):childIconSvg(e.type)}</span><div class="grow"><b>${esc(m[1])}</b>${note?`<small>${esc(note)}</small>`:''}</div><button class="diaryEdit" data-edit-event="${e.id}">Modifica</button></div>`}).join(''):'<div class="friendlyEmpty"><b>Niente registrato</b><span>Puoi aggiungere anche qualcosa di ieri o di un giorno passato.</span></div>';
+ personTimeline.querySelectorAll('[data-edit-event]').forEach(b=>b.onclick=()=>openChildDiary(b.dataset.editEvent));
 }
 dayPrev.onclick=()=>{dayOffset--;renderPerson()};dayNext.onclick=()=>{if(dayOffset<0){dayOffset++;renderPerson()}};
 
+let editingDiaryEventId=null;
+function currentLocalTime(){let n=new Date();return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`}
+function localEventIso(k,t){let [y,m,d]=k.split('-').map(Number),[hh,mm]=(t||'00:00').split(':').map(Number);return new Date(y,m-1,d,hh||0,mm||0,0,0).toISOString()}
+function setDiaryConditional(){let t=childDiaryType.value;childDiarySleepFields.hidden=t!=='nanna';childDiaryPoopFields.hidden=t!=='cacca';childDiaryGrowthFields.hidden=t!=='crescita'}
+function openChildDiary(id=null,presetType='pappa'){
+ let c=s.children.find(x=>x.id===current);if(!c||c.type==='dog'){if(presetType)handleAction(current,presetType);return}
+ editingDiaryEventId=id;let e=id?s.events.find(x=>x.id===id):null;
+ childDiaryDialogTitle.textContent=e?'Modifica registrazione':`Aggiungi al diario di ${c.name}`;
+ childDiaryType.value=e?.type||presetType||'pappa';
+ let at=e?new Date(e.at):new Date();childDiaryDate.value=dateKey(at);childDiaryTime.value=`${String(at.getHours()).padStart(2,'0')}:${String(at.getMinutes()).padStart(2,'0')}`;
+ childDiaryEndTime.value=e?.endAt?timeLabel(e.endAt):'';
+ let note=e?.note||'';childDiaryPoopType.value='Normale';
+ if(e?.type==='cacca'&&note){let bits=note.split(' · ');if(['Normale','Dura','Morbida','Liquida'].includes(bits[0])){childDiaryPoopType.value=bits.shift();note=bits.join(' · ')}}
+ childDiaryWeight.value='';childDiaryHeight.value='';
+ if(e?.type==='crescita'){let wm=(e.note||'').match(/Peso\s*([\d.,]+)/i),hm=(e.note||'').match(/Altezza\s*([\d.,]+)/i);if(wm)childDiaryWeight.value=wm[1].replace(',','.');if(hm)childDiaryHeight.value=hm[1].replace(',','.');note=(e.note||'').split(' · ').filter(x=>!/^Peso |^Altezza /i.test(x)).join(' · ')}
+ childDiaryNote.value=note;childDiaryDeleteBtn.hidden=!e;setDiaryConditional();childDiaryDialog.showModal()
+}
 function handleAction(person,type){
+ let c=s.children.find(x=>x.id===person);if(c&&c.type!=='dog'){pendingPerson=person;openChildDiary(null,type);return}
  if(type==='cacca'){pendingPerson=person;poopType.value='Normale';poopNote.value='';poopDialog.showModal();return}
  if(type==='nanna'){pendingPerson=person;let a=sleepActive(person);sleepMessage.textContent=a?'La nanna è in corso. Segno il risveglio adesso?':'Segno l’inizio della nanna adesso?';sleepDialog.showModal();return}
  s.events.push({id:crypto.randomUUID(),childId:person,type,at:new Date().toISOString(),note:''});save()
 }
+if(addDiaryEntryBtn)addDiaryEntryBtn.onclick=()=>openChildDiary(null,'pappa');
+if(childDiaryType)childDiaryType.onchange=setDiaryConditional;
+if(childDiaryForm)childDiaryForm.onsubmit=e=>{e.preventDefault();let type=childDiaryType.value,date=childDiaryDate.value,time=childDiaryTime.value||'00:00',note=childDiaryNote.value.trim();if(type==='cacca')note=[childDiaryPoopType.value,note].filter(Boolean).join(' · ');if(type==='crescita'){let bits=[];if(childDiaryWeight.value)bits.push(`Peso ${Number(childDiaryWeight.value).toLocaleString('it-IT')} kg`);if(childDiaryHeight.value)bits.push(`Altezza ${Number(childDiaryHeight.value).toLocaleString('it-IT')} cm`);if(note)bits.push(note);note=bits.join(' · ')}let payload={childId:current,type,at:localEventIso(date,time),note};if(type==='nanna'&&childDiaryEndTime.value){let end=localEventIso(date,childDiaryEndTime.value);if(new Date(end)<new Date(payload.at)){let ed=new Date(end);ed.setDate(ed.getDate()+1);end=ed.toISOString()}payload.endAt=end}else if(type==='nanna')payload.endAt=null;if(editingDiaryEventId){let old=s.events.find(x=>x.id===editingDiaryEventId);if(old)Object.assign(old,payload)}else s.events.push({id:crypto.randomUUID(),...payload});editingDiaryEventId=null;childDiaryDialog.close();save();renderPerson()};
+if(childDiaryDeleteBtn)childDiaryDeleteBtn.onclick=()=>{if(!editingDiaryEventId)return;if(confirm('Eliminare questa registrazione dal diario?')){s.events=s.events.filter(x=>x.id!==editingDiaryEventId);editingDiaryEventId=null;childDiaryDialog.close();save();renderPerson()}};
 poopForm.onsubmit=e=>{e.preventDefault();s.events.push({id:crypto.randomUUID(),childId:pendingPerson,type:'cacca',at:new Date().toISOString(),note:[poopType.value,poopNote.value.trim()].filter(Boolean).join(' · ')});poopDialog.close();save()};
 sleepForm.onsubmit=e=>{e.preventDefault();let a=sleepActive(pendingPerson);if(a)a.endAt=new Date().toISOString();else s.events.push({id:crypto.randomUUID(),childId:pendingPerson,type:'nanna',at:new Date().toISOString(),endAt:null,note:''});sleepDialog.close();save()};
 
@@ -1579,7 +1605,7 @@ function dayData(k){
 function renderCalendar(){
  let base=monthBase(calOffset),y=base.getFullYear(),m=base.getMonth();calMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(base);
  let first=new Date(y,m,1,12),start=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prevDays=new Date(y,m,0).getDate(),cells=[];
- for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length;cells.push(`<button class="calDay ${other?'other':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}">${d.getDate()}${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
+ for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length,weekend=(i%7)>=5;cells.push(`<button class="calDay ${other?'other':''} ${weekend?'weekend':''} ${i%7===5?'saturday':''} ${i%7===6?'sunday':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}"><span class="calNum">${d.getDate()}</span>${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
  calendarGrid.innerHTML=cells.join('');calendarGrid.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>openCalendarDay(b.dataset.date));renderCalendarDetails()
 }
 function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedDate);selectedDateTitle.textContent=longDate(d);calendarDetails.innerHTML=a.length?a.map(x=>{

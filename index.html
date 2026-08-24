@@ -16,7 +16,7 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=10.0.0">
+<link rel="stylesheet" href="style.css?v=11.0.0">
 </head>
 <body data-page="home">
 
@@ -69,7 +69,7 @@
 </header>
 
 <main>
-<section id="home" class="view on">
+<section id="home" class="view on homeHeroRemoved">
   <div class="homeWelcome">
     <div>
       <small>LA NOSTRA FAMIGLIA</small>
@@ -82,12 +82,6 @@
   <div id="birthdayCelebration" class="birthdayCelebration" hidden>
     <span class="birthdayCelebrationIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-gift"></use></svg></span>
     <div><small>OGGI FESTEGGIAMO</small><strong id="birthdayCelebrationTitle">Tanti auguri!</strong><p id="birthdayCelebrationText"></p></div>
-  </div>
-
-  <div class="homeHero homeHeroCompact">
-    <img src="family-hero.jpg" alt="La famiglia Fagiolini">
-    <div class="homeHeroShade"></div>
-    <div class="homeHeroText">La giornata della famiglia,<br>in un colpo d’occhio.</div>
   </div>
 
   <button class="dashboardCard dashboardHero" data-go="today">
@@ -145,28 +139,40 @@
   </div>
 </section>
 
-<section id="person" class="view">
-  <div class="personPageHead">
+<section id="person" class="view nativePersonView">
+  <div class="personPageHead nativePageHead">
     <div class="personIdentity">
       <img id="personAvatar" class="personAvatar" src="caty-avatar.jpg" alt="">
-      <div><small>FAGIOLINI</small><h2 id="personTitle"></h2><p id="personSubtitle" class="muted">Oggi</p></div>
+      <div><small>DIARIO</small><h2 id="personTitle"></h2><p id="personSubtitle" class="muted">Oggi</p></div>
     </div>
     <button class="backHomeBtn" data-go="home">← Home</button>
   </div>
-  <div id="personStats" class="stats"></div>
-  <div class="card personInsightCard">
-    <div class="sectionTitle compact"><div><small>IN BREVE</small><h3>Andamento</h3></div><div class="insightSwitch"><button id="insight7" class="active">7 giorni</button><button id="insight30">30 giorni</button></div></div>
+
+  <div class="diaryHero">
+    <div><small>OGGI</small><h3>La giornata in breve</h3><p id="personDiarySentence" class="muted"></p></div>
+    <button id="addDiaryEntryBtn" class="primary diaryAddMain"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-plus"></use></svg><span>Aggiungi al diario</span></button>
+  </div>
+
+  <div id="personStats" class="stats diaryStats"></div>
+
+  <div class="nativeSection diaryTimelineSection">
+    <div class="sectionTitle compact">
+      <div><small>DIARIO DELLA GIORNATA</small><h3>Timeline</h3></div>
+      <div class="daySwitch"><button id="dayPrev">←</button><span id="dayLabel"></span><button id="dayNext">→</button></div>
+    </div>
+    <div id="personTimeline" class="diaryTimeline"></div>
+  </div>
+
+  <div class="nativeSection personInsightCard">
+    <div class="sectionTitle compact"><div><small>ANDAMENTO</small><h3>Ultimi giorni</h3></div><div class="insightSwitch"><button id="insight7" class="active">7 giorni</button><button id="insight30">30 giorni</button></div></div>
     <div id="personInsightText" class="insightText"></div>
     <div id="poopChart" class="miniBarChart"></div>
   </div>
-  <div class="card">
-    <h3>Segna adesso</h3>
-    <div id="personActions" class="actions"></div>
-  </div>
-  <div class="card">
-    <div class="sectionTitle compact"><h3>Registro</h3><div class="daySwitch"><button id="dayPrev">←</button><span id="dayLabel"></span><button id="dayNext">→</button></div></div>
-    <div id="personTimeline"></div>
-  </div>
+
+  <details class="nativeDisclosure">
+    <summary><span><small>ALTRO</small><b>Registrazioni rapide</b></span><em>＋</em></summary>
+    <div id="personActions" class="actions diaryQuickActions"></div>
+  </details>
 </section>
 
 <section id="adult" class="view">
@@ -856,9 +862,42 @@
 </form></dialog>
 
 <dialog id="quickDialog"><div class="dialogBox"><div class="sectionTitle compact"><h3>Segna qualcosa</h3><button data-close="quickDialog">✕</button></div><div id="quickPeople" class="peopleGrid dialogPeople"></div><div id="quickActions" class="actions"></div></div></dialog>
+<dialog id="childDiaryDialog"><form id="childDiaryForm" class="dialogBox nativeSheet">
+  <div class="sectionTitle compact"><div><small>DIARIO BAMBINI</small><h3 id="childDiaryDialogTitle">Aggiungi al diario</h3></div><button type="button" data-close="childDiaryDialog">✕</button></div>
+  <label class="fieldLabel">Cosa vuoi segnare?
+    <select id="childDiaryType">
+      <option value="pappa">Pappa / latte</option>
+      <option value="pannolino">Pannolino</option>
+      <option value="cacca">Cacca</option>
+      <option value="nanna">Sonno</option>
+      <option value="bagnetto">Bagnetto</option>
+      <option value="farmaco">Medicina</option>
+      <option value="crescita">Crescita</option>
+      <option value="nota">Nota</option>
+    </select>
+  </label>
+  <div class="diaryDateGrid">
+    <label class="fieldLabel">Data<input id="childDiaryDate" type="date" required></label>
+    <label class="fieldLabel">Ora<input id="childDiaryTime" type="time" required></label>
+  </div>
+  <div id="childDiarySleepFields" class="diaryConditional" hidden>
+    <label class="fieldLabel">Fine sonno (facoltativa)<input id="childDiaryEndTime" type="time"></label>
+  </div>
+  <div id="childDiaryPoopFields" class="diaryConditional" hidden>
+    <label class="fieldLabel">Com'era?<select id="childDiaryPoopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select></label>
+  </div>
+  <div id="childDiaryGrowthFields" class="diaryConditional diaryDateGrid" hidden>
+    <label class="fieldLabel">Peso (kg)<input id="childDiaryWeight" type="number" min="0" step="0.01" placeholder="Es. 12,4"></label>
+    <label class="fieldLabel">Altezza (cm)<input id="childDiaryHeight" type="number" min="0" step="0.1" placeholder="Es. 82"></label>
+  </div>
+  <label class="fieldLabel">Nota (facoltativa)<textarea id="childDiaryNote" rows="3" placeholder="Qualsiasi dettaglio utile..."></textarea></label>
+  <div class="sheetActions"><button class="primary" type="submit">Salva nel diario</button><button id="childDiaryDeleteBtn" class="dangerSoft" type="button" hidden>Elimina</button></div>
+  <p class="tiny">Puoi registrare anche ieri o un giorno passato: data e ora restano sempre modificabili.</p>
+</form></dialog>
+
 <dialog id="poopDialog"><form id="poopForm" class="dialogBox"><h3>💩 Cacca</h3><select id="poopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select><input id="poopNote" placeholder="Nota facoltativa"><button class="primary">Salva</button><button type="button" data-close="poopDialog">Annulla</button></form></dialog>
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=10.0.0"></script>
+<script src="app.js?v=11.0.0"></script>
 </body></html>
