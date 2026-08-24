@@ -1,18 +1,25 @@
-# Fagiolini V12.1 — Mobile Home Pill + Desktop Landscape
+# Fagiolini V12.2 — Home Nav Hard Reset + Desktop Landscape
 
-Patch unica che contiene entrambi i fix richiesti:
+Patch mirata sulla V12.1.
 
-1. **iPhone / mobile**
-   - Home non è più un cerchio/floating button.
-   - Tutte e cinque le voci hanno la stessa geometria.
-   - Home si distingue solo con una pillola quando è attiva.
-   - Icona casa completamente contenuta e dimensioni bloccate.
+## Correzione Home mobile
+La voce Home della bottom navigation usa ora una classe mobile dedicata (`navHomeTab`) e non eredita più nessuna delle vecchie regole `navHomeCenter` accumulate nelle versioni precedenti.
 
-2. **Mac / PC**
-   - Layout realmente landscape.
-   - L'app usa fino a circa 1500–1580 px invece di restare una colonna stretta al centro.
-   - Home organizzata su una griglia desktop a 12 colonne.
-   - Calendario e sezioni principali possono usare tutta la larghezza utile.
-   - Navigazione desktop nella testata; barra mobile nascosta su desktop.
+- niente cerchio
+- niente pulsante floating
+- niente icona che esce dal contenitore
+- icona Home 25×25 px come le altre
+- Home evidenziata soltanto da una pillola morbida quando attiva
+- barra 5 voci compatta e fissa
 
-Cache busting CSS/JS: `v=12.1.0`.
+## Desktop
+Mantiene il layout landscape della V12.1:
+- larghezza ampia
+- dashboard a griglia
+- navigazione desktop separata
+- bottom navigation mobile nascosta su desktop
+
+## Cache
+`style.css?v=12.2.0` e `app.js?v=12.2.0`.
+
+Nessuna modifica alla logica di login, Supabase, Telegram o dati famiglia.

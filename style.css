@@ -2113,3 +2113,81 @@ html.themeDark body{background:var(--v11-bg)!important;color:var(--v11-ink)!impo
   #home .dashboardHero{grid-column:1/8!important}
   #home .homeDashboardGrid{grid-column:8/13!important}
 }
+
+/* =========================================================
+   FAGIOLINI V12.2 — MOBILE HOME HARD RESET
+   The mobile Home tab is intentionally NOT circular/floating.
+   It is a normal centered tab highlighted by a soft pill.
+   This block must stay at the absolute end of the stylesheet.
+   ========================================================= */
+@media (max-width:699px){
+  .mobileNav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    left:10px!important;right:10px!important;bottom:7px!important;
+    width:auto!important;min-height:66px!important;height:auto!important;
+    padding:6px 7px calc(6px + env(safe-area-inset-bottom))!important;
+    gap:4px!important;border-radius:20px!important;overflow:hidden!important;
+  }
+  .mobileNav button,
+  .mobileNav .navHomeTab{
+    all:unset;
+    box-sizing:border-box!important;
+    cursor:pointer!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    width:100%!important;
+    height:52px!important;
+    min-height:52px!important;
+    border-radius:14px!important;
+    color:#536c5e!important;
+    font-family:inherit!important;
+  }
+  .mobileNav .navIcon,
+  .mobileNav button .navIcon,
+  .mobileNav .navHomeTab .navIcon{
+    display:grid!important;
+    place-items:center!important;
+    width:25px!important;height:25px!important;
+    min-width:25px!important;min-height:25px!important;
+    max-width:25px!important;max-height:25px!important;
+    margin:0!important;padding:0!important;
+    border:0!important;border-radius:0!important;
+    background:none!important;box-shadow:none!important;
+    transform:none!important;color:currentColor!important;
+  }
+  .mobileNav .navIcon svg,
+  .mobileNav .navHomeTab .navIcon svg{
+    display:block!important;
+    width:25px!important;height:25px!important;
+    max-width:25px!important;max-height:25px!important;
+    margin:0!important;transform:none!important;
+    overflow:hidden!important;
+  }
+  .mobileNav button small,
+  .mobileNav .navHomeTab small{
+    display:block!important;
+    margin:0!important;
+    font-size:11.5px!important;
+    line-height:1!important;
+    font-weight:850!important;
+    color:currentColor!important;
+  }
+  .mobileNav button.active,
+  .mobileNav .navHomeTab.active{
+    background:#e5efe4!important;
+    color:var(--accent-dark)!important;
+    box-shadow:inset 0 0 0 1px rgba(47,100,67,.12)!important;
+  }
+  html.themeDark .mobileNav button,
+  html.themeDark .mobileNav .navHomeTab{color:#b9c8be!important}
+  html.themeDark .mobileNav button.active,
+  html.themeDark .mobileNav .navHomeTab.active{
+    background:#294032!important;color:#fff!important;
+    box-shadow:inset 0 0 0 1px #3a5a46!important;
+  }
+  .app{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
+}
