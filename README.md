@@ -1,11 +1,18 @@
-# Fagiolini V12 — Complete Mobile Nav Fix
+# Fagiolini V12.1 — Mobile Home Pill + Desktop Landscape
 
-Questa V12 corregge il pacchetto precedente, che non includeva tutti gli asset necessari.
+Patch unica che contiene entrambi i fix richiesti:
 
-## Fix principale
-- ZIP completo con `style.css`, `app.js`, `icons.svg`, `manifest.json` e `sw.js`.
-- Bottom bar iPhone con geometria compatta e Home centrale in modalità pillola, non cerchio flottante.
-- Cache busting aggiornato a `v=12.0.1` per forzare Safari/GitHub Pages a caricare CSS e JS nuovi.
+1. **iPhone / mobile**
+   - Home non è più un cerchio/floating button.
+   - Tutte e cinque le voci hanno la stessa geometria.
+   - Home si distingue solo con una pillola quando è attiva.
+   - Icona casa completamente contenuta e dimensioni bloccate.
 
-## Importante
-Per aggiornare GitHub Pages, sostituire tutti i file della root con quelli presenti in questo ZIP, non solo `index.html`.
+2. **Mac / PC**
+   - Layout realmente landscape.
+   - L'app usa fino a circa 1500–1580 px invece di restare una colonna stretta al centro.
+   - Home organizzata su una griglia desktop a 12 colonne.
+   - Calendario e sezioni principali possono usare tutta la larghezza utile.
+   - Navigazione desktop nella testata; barra mobile nascosta su desktop.
+
+Cache busting CSS/JS: `v=12.1.0`.

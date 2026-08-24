@@ -1909,3 +1909,207 @@ html.themeDark body{background:var(--v11-bg)!important;color:var(--v11-ink)!impo
   header{grid-template-columns:minmax(180px,1fr) auto!important}
   .desktopNav{grid-column:1/-1!important;grid-row:2!important;max-width:660px!important;min-width:0!important}
 }
+
+/* =========================================================
+   FAGIOLINI V12.1 — COMBINED PRECISION FIX
+   1) Mobile Home = normal tab + active pill, never a circle.
+   2) Desktop = true landscape layout using available width.
+   MUST REMAIN AT END OF FILE.
+   ========================================================= */
+
+/* MOBILE NAV — option B, locked dimensions */
+@media (max-width: 699px){
+  .mobileNav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:6px!important;
+    width:auto!important;
+    height:auto!important;
+    min-height:64px!important;
+    padding:6px 7px calc(6px + env(safe-area-inset-bottom))!important;
+    gap:4px!important;
+    border-radius:20px!important;
+    overflow:hidden!important;
+  }
+  .mobileNav button,
+  .mobileNav button.navHomeCenter,
+  .mobileNav .navHomeCenter{
+    position:relative!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    height:52px!important;
+    min-height:52px!important;
+    padding:5px 2px!important;
+    margin:0!important;
+    gap:3px!important;
+    border-radius:14px!important;
+    transform:none!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    overflow:hidden!important;
+  }
+  .mobileNav .navIcon,
+  .mobileNav button .navIcon,
+  .mobileNav button:not(.navHomeCenter) .navIcon,
+  .mobileNav .navHomeCenter .navIcon,
+  .mobileNav .navHomeCenter.active .navIcon{
+    display:grid!important;
+    place-items:center!important;
+    width:25px!important;
+    height:25px!important;
+    min-width:25px!important;
+    min-height:25px!important;
+    max-width:25px!important;
+    max-height:25px!important;
+    padding:0!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    transform:none!important;
+    color:#536c5e!important;
+  }
+  .mobileNav .navIcon svg,
+  .mobileNav button .navIcon svg,
+  .mobileNav .navHomeCenter .navIcon svg,
+  .mobileNav .navHomeCenter.active .navIcon svg{
+    display:block!important;
+    width:25px!important;
+    height:25px!important;
+    max-width:25px!important;
+    max-height:25px!important;
+    overflow:visible!important;
+  }
+  .mobileNav button small,
+  .mobileNav .navHomeCenter small{
+    display:block!important;
+    margin:0!important;
+    font-size:11.5px!important;
+    line-height:1!important;
+    font-weight:850!important;
+    color:#536c5e!important;
+    letter-spacing:0!important;
+  }
+  .mobileNav button.active,
+  .mobileNav button.navHomeCenter.active,
+  .mobileNav .navHomeCenter.active{
+    background:#e6efe5!important;
+    box-shadow:inset 0 0 0 1px rgba(47,100,67,.10)!important;
+  }
+  .mobileNav button.active .navIcon,
+  .mobileNav button.active small,
+  .mobileNav .navHomeCenter.active .navIcon,
+  .mobileNav .navHomeCenter.active small{
+    color:var(--accent-dark)!important;
+  }
+  html.themeDark .mobileNav button.active,
+  html.themeDark .mobileNav .navHomeCenter.active{
+    background:#294032!important;
+    box-shadow:inset 0 0 0 1px #3a5a46!important;
+  }
+  html.themeDark .mobileNav button.active .navIcon,
+  html.themeDark .mobileNav button.active small,
+  html.themeDark .mobileNav .navHomeCenter.active .navIcon,
+  html.themeDark .mobileNav .navHomeCenter.active small{color:#fff!important}
+  .app{padding-bottom:calc(84px + env(safe-area-inset-bottom))!important}
+}
+
+/* DESKTOP LANDSCAPE — use the monitor, don't render a narrow phone column */
+@media (min-width:1000px){
+  body{overflow-x:hidden}
+  .app{
+    width:min(96vw,1500px)!important;
+    max-width:1500px!important;
+    margin:0 auto!important;
+    padding:18px clamp(24px,3vw,48px) 44px!important;
+  }
+  header{
+    display:grid!important;
+    grid-template-columns:minmax(250px,1fr) minmax(560px,680px) minmax(300px,1fr)!important;
+    align-items:center!important;
+    gap:20px!important;
+    width:100%!important;
+    padding:14px 0 22px!important;
+  }
+  .headerIdentity{justify-self:start!important}
+  .headerTools{justify-self:end!important;flex-wrap:nowrap!important}
+  .desktopNav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(90px,1fr))!important;
+    width:100%!important;
+    max-width:680px!important;
+    min-width:560px!important;
+    margin:0!important;
+    justify-self:center!important;
+    position:static!important;
+    transform:none!important;
+  }
+  .desktopNav button,
+  .desktopNav .navHomeCenter{
+    height:48px!important;
+    min-height:48px!important;
+    padding:0 14px!important;
+    border-radius:14px!important;
+  }
+  .desktopNav .navIcon,
+  .desktopNav .navHomeCenter .navIcon,
+  .desktopNav .navHomeCenter.active .navIcon{
+    width:21px!important;height:21px!important;
+    min-width:21px!important;min-height:21px!important;
+    margin:0!important;padding:0!important;
+    background:transparent!important;border-radius:0!important;box-shadow:none!important;
+  }
+  .desktopNav .navIcon svg{width:21px!important;height:21px!important}
+  .desktopNav small{font-size:13px!important;margin:0!important}
+
+  main{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+  .view.on{width:100%!important;max-width:none!important}
+
+  /* Home: broad dashboard, balanced rather than centered narrow column */
+  #home.on{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    gap:18px!important;
+    align-items:start!important;
+    width:100%!important;
+  }
+  #home .homeWelcome{grid-column:1/-1!important}
+  #home .birthdayCelebration{grid-column:1/-1!important;margin-bottom:0!important}
+  #home .dashboardHero{grid-column:1/8!important;margin:0!important;min-height:260px!important}
+  #home .homeDashboardGrid{
+    grid-column:8/13!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:18px!important;
+    margin:0!important;
+  }
+  #home .homeDashboardGrid .dashboardCard{min-height:121px!important;margin:0!important}
+  #home .familyDashboardCard{grid-column:1/9!important;margin:0!important}
+  #home .savingsHomeCard{grid-column:9/13!important;margin:0!important}
+  #home .wasteHomeCard{grid-column:9/13!important;margin:0!important}
+
+  /* Other main views: wider, landscape-friendly working areas */
+  #calendar.on,#today.on,#house.on,#menu.on,#organize.on,#money.on,#person.on,#health.on,#auto.on,#maintenance.on,#shop.on,#reminders.on,#waste.on{
+    width:100%!important;
+    max-width:none!important;
+  }
+  #organize .organizeGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #calendar .calendar.card{width:100%!important;max-width:none!important}
+  #calendar .calDay{min-height:105px!important}
+
+  /* No mobile bottom bar on desktop, ever */
+  .mobileNav{display:none!important}
+}
+
+@media (min-width:1280px){
+  .app{width:min(94vw,1580px)!important;max-width:1580px!important}
+  #home .dashboardHero{grid-column:1/8!important}
+  #home .homeDashboardGrid{grid-column:8/13!important}
+}
