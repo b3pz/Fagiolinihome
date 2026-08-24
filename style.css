@@ -954,3 +954,123 @@ nav .navHomeCenter small{font-size:18px;font-weight:950;line-height:1}
  .bankMenuCard b{font-size:21px}.bankMenuCard small{font-size:16px}
  .bankDialogBox{padding:20px 17px}
 }
+
+/* ============================================================
+   V9.3 — MOBILE XL + SPRITE UI + BANK NAV FIX
+   ============================================================ */
+.uiIcon{width:1em;height:1em;display:block;fill:none;stroke:none;color:currentColor;overflow:visible}
+.titleWithIcon{display:flex;align-items:center;gap:.34em}
+.titleWithIcon>.uiIcon{flex:0 0 auto;width:.92em;height:.92em;color:var(--accent-dark)}
+.titleWithIcon.smallTitle{font-size:inherit}
+.savingSprite{width:48px;height:48px;border-radius:16px;background:var(--soft);display:grid;place-items:center;color:var(--accent-dark);flex:0 0 auto}
+.savingSprite .uiIcon{width:28px;height:28px}
+.dashboardIcon .uiIcon{width:1em;height:1em}
+.organizeCard>span .uiIcon{width:31px;height:31px;color:var(--accent-dark)}
+.bankMenuIcon .uiIcon{width:31px;height:31px;color:var(--accent-dark)}
+.bankActionIcon{display:grid;place-items:center;width:31px;height:31px}
+.bankActionIcon .uiIcon{width:27px;height:27px}
+.navIcon{display:grid!important;place-items:center;color:currentColor}
+.navIcon .uiIcon{width:100%;height:100%}
+
+/* Le quattro card di Fagiolini Bank sono vere azioni touch. */
+.bankMenuCard{
+  position:relative;
+  z-index:2;
+  cursor:pointer;
+  pointer-events:auto;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(47,108,73,.14);
+  user-select:none;
+}
+.bankMenuCard:active{transform:scale(.985);background:#f1f6ee}
+.bankMenuCard::after{content:"";position:absolute;inset:-3px;border-radius:27px;pointer-events:none}
+.bankSimpleMenu{position:relative;z-index:3}
+
+/* Dialog fallback per Safari/PWA: se showModal non è disponibile. */
+dialog.dialogFallbackOpen{display:block;position:fixed;inset:0;margin:auto;z-index:3000;border:0;background:rgba(31,45,37,.32);width:100vw;height:100dvh;max-width:none;max-height:none;padding:5dvh 10px;overflow:auto}
+dialog.dialogFallbackOpen>.dialogBox{margin:auto;background:var(--card);box-shadow:0 20px 60px rgba(0,0,0,.22)}
+
+/* Mobile vero: niente compressione "desktop miniaturizzato". */
+@media(max-width:600px){
+  html{
+    -webkit-text-size-adjust:115%;
+    text-size-adjust:115%;
+  }
+  html,body{font-size:22px!important;line-height:1.52}
+  .app{
+    max-width:none!important;
+    width:100%!important;
+    padding-left:20px!important;
+    padding-right:20px!important;
+    padding-top:max(82px,calc(env(safe-area-inset-top) + 30px))!important;
+    padding-bottom:calc(164px + env(safe-area-inset-bottom))!important;
+  }
+  small{font-size:17px!important}
+  .tiny{font-size:18px!important}
+  .pageIntro h2{font-size:46px!important;line-height:1.03}
+  .pageIntro p{font-size:22px!important;line-height:1.48}
+  .card{padding:27px!important;border-radius:30px}
+  button,.primary,.smallBtn,.fullBtn,input,select,textarea{font-size:20px}
+  input,select,textarea{min-height:64px}
+  .fieldLabel{font-size:19px!important}
+  .sectionTitle button,.daySwitch button,.calendarHead button,.monthSwitch button{min-height:58px;font-size:19px}
+
+  /* Home e card principali */
+  .homeWelcome h2{font-size:48px!important}
+  .homeWelcome p{font-size:22px!important}
+  .dashboardCardHead h3{font-size:31px!important}
+  .dashboardCardHead small{font-size:16px!important}
+  .dashboardCardHead .dashboardIcon{width:72px!important;height:72px!important;font-size:39px!important}
+  .dashboardBigText b{font-size:37px!important}
+  .dashboardNote{font-size:21px!important}
+
+  /* Fagiolini Bank: leggibilità prima della densità */
+  .bankSimpleView{max-width:none!important;width:100%}
+  .bankSimpleHero{padding:26px!important}
+  .bankSimpleHeroTop{display:grid;gap:10px}
+  .bankSimpleHeroTop>strong{text-align:left;font-size:58px!important}
+  .bankSimpleHeroTop h3{font-size:30px!important}
+  .bankHeroNumbers{grid-template-columns:1fr!important}
+  .bankHeroNumbers span{font-size:19px!important}
+  .bankHeroNumbers b{font-size:32px!important}
+  .bankGoalLine{font-size:19px!important;align-items:flex-start}
+  .bankReportText{font-size:21px!important}
+  .bankQuickActions{grid-template-columns:1fr!important;gap:12px}
+  .bankQuickActions .bill{grid-column:auto!important}
+  .bankAction{min-height:76px!important;font-size:22px!important;border-radius:23px}
+  .bankSimpleMenu{gap:14px}
+  .bankMenuCard{min-height:112px!important;padding:18px 20px!important;gap:18px!important;border-radius:27px}
+  .bankMenuIcon{width:66px!important;height:66px!important;border-radius:20px}
+  .bankMenuIcon .uiIcon{width:36px;height:36px}
+  .bankMenuCard b{font-size:25px!important;line-height:1.12}
+  .bankMenuCard small{font-size:18px!important;line-height:1.35}
+  .bankMenuCard em{font-size:39px!important}
+
+  /* Bottom bar grande e leggibile anche con zoom */
+  :root{--nav-h:154px}
+  nav{
+    min-height:130px!important;
+    padding:12px 7px calc(12px + env(safe-area-inset-bottom))!important;
+    background:rgba(255,253,249,.98)!important;
+    backdrop-filter:blur(18px);
+  }
+  nav button{min-height:106px!important;border-radius:22px!important;padding:8px 3px!important;gap:6px!important}
+  nav button:not(.navHomeCenter) .navIcon{width:38px!important;height:38px!important}
+  nav button:not(.navHomeCenter) small{font-size:16px!important;font-weight:900!important}
+  nav .navHomeCenter .navIcon{width:100px!important;height:100px!important;margin-top:-53px!important;border-radius:31px!important;background:var(--accent-dark)!important;color:white!important;padding:25px;box-shadow:0 10px 28px rgba(29,77,53,.26)}
+  nav .navHomeCenter small{font-size:20px!important;font-weight:950!important;margin-top:-4px}
+
+  .bankDialogBox{width:calc(100vw - 18px)!important;max-height:90dvh!important;padding:23px 19px!important}
+  .bankDialogBox .sectionTitle h3{font-size:29px!important}
+  .bankDialogBox .muted{font-size:19px!important}
+}
+
+@media(max-width:390px){
+  html,body{font-size:21px!important}
+  .app{padding-left:16px!important;padding-right:16px!important}
+  .pageIntro h2{font-size:42px!important}
+  .bankMenuCard{min-height:108px!important;padding:16px!important}
+  .bankMenuCard b{font-size:23px!important}
+  nav button:not(.navHomeCenter) small{font-size:15px!important}
+  nav .navHomeCenter .navIcon{width:94px!important;height:94px!important;margin-top:-50px!important}
+}

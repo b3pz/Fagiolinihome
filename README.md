@@ -1,3 +1,16 @@
+# Fagiolini V9.3 — Mobile XL + Bank Touch + Sprite UI
+
+Questa build parte dalla V9.2 stabile e chiude gli ultimi problemi di usabilità su iPhone.
+
+## Novità V9.3
+- Interfaccia mobile resa ancora più grande: testi, pulsanti, campi, card e bottom bar aumentano solo su smartphone, senza alterare la resa desktop.
+- Safari/iPhone usa anche `text-size-adjust` maggiorato per evitare l'effetto pagina desktop miniaturizzata.
+- Home centrale nella barra inferiore ancora più evidente e leggibile.
+- Le quattro card di Fagiolini Bank (**Dove spendiamo, Salvadanai, Bollette, Ultimi movimenti**) sono interamente cliccabili/touch e aprono le relative schermate.
+- Aggiunto fallback per i dialog su Safari/PWA.
+- Le emoji decorative principali sono state sostituite con un vero sprite SVG coerente (`icons.svg`) nella Home, navigazione, Organizza e Fagiolini Bank.
+- Nessuna modifica a login, Supabase, Telegram, dati o logica della famiglia.
+
 # Fagiolini V9.2 — Fagiolini Bank Semplice
 
 Questa build parte dalla V9.1 Accessibility XL stabile e semplifica radicalmente Fagiolini Bank senza cambiare la logica dati.
@@ -41,6 +54,7 @@ Metti direttamente nella root:
 - manifest.json
 - sw.js
 - README.md
+- icons.svg
 
 Nessuna sottocartella.
 

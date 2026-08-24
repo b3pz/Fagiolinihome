@@ -821,7 +821,7 @@ function go(id){
  scrollTo(0,0)
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeDialogSafe(document.getElementById(b.dataset.close)));
 if(insight7)insight7.onclick=()=>{personInsightDays=7;renderPersonInsights()};
 if(insight30)insight30.onclick=()=>{personInsightDays=30;renderPersonInsights()};
 if(todayQuickAdd)todayQuickAdd.onclick=()=>{reminderDate.value=dateKey();reminderDialog.showModal();reminderTitle.focus()};
@@ -1910,17 +1910,21 @@ boughtForm.onsubmit=e=>{e.preventDefault();let x=s.shopping.find(i=>i.id===buyin
 function monthKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 function moneyDate(){return monthBase(moneyOffset)}
 function euro(v){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(v)||0)}
+function uiIconMarkup(name){return `<svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-${name}"></use></svg>`}
+function openDialogSafe(dialog){if(!dialog)return;try{if(typeof dialog.showModal==='function'){dialog.showModal();return}}catch(e){}dialog.classList.add('dialogFallbackOpen');dialog.setAttribute('open','')}
+function closeDialogSafe(dialog){if(!dialog)return;try{if(typeof dialog.close==='function'){dialog.close();return}}catch(e){}dialog.classList.remove('dialogFallbackOpen');dialog.removeAttribute('open')}
+document.addEventListener('click',e=>{const trigger=e.target.closest?.('[data-open-dialog]');if(!trigger)return;e.preventDefault();openDialogSafe(document.getElementById(trigger.dataset.openDialog))});
 function ensureRecurring(){let k=monthKey(moneyDate()),sources=s.expenses.filter(x=>x.recurring&&!x.sourceId),existing=new Set(s.expenses.filter(x=>x.month===k&&x.sourceId).map(x=>x.sourceId));sources.forEach(x=>{if(x.month!==k&&!existing.has(x.id))s.expenses.push({...x,id:crypto.randomUUID(),month:k,sourceId:x.id,date:k+'-01'})})}
 const MONEY_MACROS=[
- {id:'Casa',icon:'🏠',color:'#6f9f72'},
- {id:'Spesa',icon:'🛒',color:'#e1a34e'},
- {id:'Bollette',icon:'💡',color:'#7e8fb2'},
- {id:'Auto',icon:'🚗',color:'#a77d5e'},
- {id:'Bambini',icon:'👧',color:'#e98e86'},
- {id:'Salute',icon:'❤️',color:'#d86f6f'},
- {id:'Svago',icon:'🍕',color:'#9a79b7'},
- {id:'Personali',icon:'👤',color:'#62a2a5'},
- {id:'Altro',icon:'📦',color:'#a7a7a7'}
+ {id:'Casa',icon:'',color:'#6f9f72'},
+ {id:'Spesa',icon:'',color:'#e1a34e'},
+ {id:'Bollette',icon:'',color:'#7e8fb2'},
+ {id:'Auto',icon:'',color:'#a77d5e'},
+ {id:'Bambini',icon:'',color:'#e98e86'},
+ {id:'Salute',icon:'',color:'#d86f6f'},
+ {id:'Svago',icon:'',color:'#9a79b7'},
+ {id:'Personali',icon:'',color:'#62a2a5'},
+ {id:'Altro',icon:'',color:'#a7a7a7'}
 ];
 function moneyMacroMeta(id){return MONEY_MACROS.find(x=>x.id===id)||MONEY_MACROS[MONEY_MACROS.length-1]}
 function macroForExpense(x){
@@ -1956,14 +1960,28 @@ moneyForm.onsubmit=e=>{
  moneyName.value='';moneyAmount.value='';moneyRecurring.checked=false;if(moneyExpenseDialog?.open)moneyExpenseDialog.close();save();renderMoney()
 };
 
-if(bankAddIncomeBtn)bankAddIncomeBtn.onclick=()=>{incomeForm.reset();moneyIncomeDialog.showModal();setTimeout(()=>incomeName.focus(),20)};
-if(bankAddExpenseBtn)bankAddExpenseBtn.onclick=()=>{moneyForm.reset();moneyExpenseDialog.showModal();setTimeout(()=>moneyName.focus(),20)};
-if(bankEditGoalBtn)bankEditGoalBtn.onclick=()=>moneySavingsDialog.showModal();
-if(bankJarsBtn)bankJarsBtn.onclick=()=>moneySavingsDialog.showModal();
-if(bankSpendCardBtn)bankSpendCardBtn.onclick=()=>moneySpendingDialog.showModal();
-if(bankMovesBtn)bankMovesBtn.onclick=()=>moneyMovesDialog.showModal();
-if(bankBillsBtn)bankBillsBtn.onclick=()=>moneyBillsDialog.showModal();
-if(bankAddBillBtn)bankAddBillBtn.onclick=()=>{subDue.value=dateKey();subscriptionDialog.showModal()};
+const bankAddIncomeBtnEl=document.getElementById('bankAddIncomeBtn');
+const bankAddExpenseBtnEl=document.getElementById('bankAddExpenseBtn');
+const bankAddBillBtnEl=document.getElementById('bankAddBillBtn');
+const bankEditGoalBtnEl=document.getElementById('bankEditGoalBtn');
+const bankJarsBtnEl=document.getElementById('bankJarsBtn');
+const bankSpendCardBtnEl=document.getElementById('bankSpendCardBtn');
+const bankMovesBtnEl=document.getElementById('bankMovesBtn');
+const bankBillsBtnEl=document.getElementById('bankBillsBtn');
+const moneyIncomeDialogEl=document.getElementById('moneyIncomeDialog');
+const moneyExpenseDialogEl=document.getElementById('moneyExpenseDialog');
+const moneySavingsDialogEl=document.getElementById('moneySavingsDialog');
+const moneySpendingDialogEl=document.getElementById('moneySpendingDialog');
+const moneyMovesDialogEl=document.getElementById('moneyMovesDialog');
+const moneyBillsDialogEl=document.getElementById('moneyBillsDialog');
+if(bankAddIncomeBtnEl)bankAddIncomeBtnEl.addEventListener('click',()=>{incomeForm.reset();openDialogSafe(moneyIncomeDialogEl);setTimeout(()=>incomeName.focus(),40)});
+if(bankAddExpenseBtnEl)bankAddExpenseBtnEl.addEventListener('click',()=>{moneyForm.reset();openDialogSafe(moneyExpenseDialogEl);setTimeout(()=>moneyName.focus(),40)});
+if(bankEditGoalBtnEl)bankEditGoalBtnEl.addEventListener('click',()=>openDialogSafe(moneySavingsDialogEl));
+if(bankJarsBtnEl)bankJarsBtnEl.addEventListener('click',()=>openDialogSafe(moneySavingsDialogEl));
+if(bankSpendCardBtnEl)bankSpendCardBtnEl.addEventListener('click',()=>openDialogSafe(moneySpendingDialogEl));
+if(bankMovesBtnEl)bankMovesBtnEl.addEventListener('click',()=>openDialogSafe(moneyMovesDialogEl));
+if(bankBillsBtnEl)bankBillsBtnEl.addEventListener('click',()=>openDialogSafe(moneyBillsDialogEl));
+if(bankAddBillBtnEl)bankAddBillBtnEl.addEventListener('click',()=>{subDue.value=dateKey();openDialogSafe(subscriptionDialog)});
 function renderMoney(){
  ensureRecurring();
  let d=moneyDate(),k=monthKey(d),all=s.expenses.filter(x=>x.month===k);
@@ -1980,7 +1998,7 @@ function renderMoney(){
  const vp=s.savingsProjects?.vacation||DEFAULT.savingsProjects.vacation,cp=s.savingsProjects?.christmas||DEFAULT.savingsProjects.christmas;
  if(vacationActive){vacationActive.checked=!!vp.active;vacationTarget.value=vp.target||'';vacationSaved.value=vp.saved||'';vacationNote.value=vp.note||''}
  if(christmasActive){christmasActive.checked=!!cp.active;christmasTarget.value=cp.target||'';christmasSaved.value=cp.saved||'';christmasNote.value=cp.note||''}
- if(savingsProjectsPreview)savingsProjectsPreview.innerHTML=[vp,cp].map(p=>{let target=Number(p.target||0),savedP=Number(p.saved||0),pctP=target>0?Math.max(0,Math.min(100,savedP/target*100)):0;return `<div class="savingProjectSummary ${p.active?'active':''}"><div><span>${p.icon}</span><div><b>${p.label}</b><small>${p.active?'Attivo':'In pausa'}${p.note?' · '+esc(p.note):''}</small></div><strong>${euro(savedP)}${target>0?' / '+euro(target):''}</strong></div><div class="progressTrack"><i style="width:${pctP}%"></i></div></div>`}).join('');
+ if(savingsProjectsPreview)savingsProjectsPreview.innerHTML=[vp,cp].map(p=>{let target=Number(p.target||0),savedP=Number(p.saved||0),pctP=target>0?Math.max(0,Math.min(100,savedP/target*100)):0;return `<div class="savingProjectSummary ${p.active?'active':''}"><div><span class="savingSprite">${uiIconMarkup(p.label==='Vacanze'?'sun':'tree')}</span><div><b>${p.label}</b><small>${p.active?'Attivo':'In pausa'}${p.note?' · '+esc(p.note):''}</small></div><strong>${euro(savedP)}${target>0?' / '+euro(target):''}</strong></div><div class="progressTrack"><i style="width:${pctP}%"></i></div></div>`}).join('');
  savingsResult.textContent=incomeTot>0?euro(saved):'—';
  if(bankExpenseTotal)bankExpenseTotal.textContent=euro(tot);
  if(bankGoalQuickText){
@@ -2022,11 +2040,11 @@ function renderMoney(){
  all.forEach(x=>totals[macroForExpense(x)]=(totals[macroForExpense(x)]||0)+Number(x.amount||0));
  if(bankSpendSummary){
   const top=MONEY_MACROS.filter(m=>totals[m.id]>0).sort((a,b)=>totals[b.id]-totals[a.id]).slice(0,2);
-  bankSpendSummary.textContent=top.length?top.map(m=>`${m.icon} ${m.id} ${euro(totals[m.id])}`).join(' · '):'Nessuna spesa registrata';
+  bankSpendSummary.textContent=top.length?top.map(m=>`${m.id} ${euro(totals[m.id])}`).join(' · '):'Nessuna spesa registrata';
  }
  if(bankJarsSummary){
   const activeProjects=[vp,cp].filter(p=>p.active);
-  bankJarsSummary.textContent=activeProjects.length?activeProjects.map(p=>`${p.icon} ${p.label} ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}`).join(' · '):'Vacanze e Natale sono in pausa';
+  bankJarsSummary.textContent=activeProjects.length?activeProjects.map(p=>`${p.label} ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}`).join(' · '):'Vacanze e Natale sono in pausa';
  }
  if(bankMovesSummary){
   const recent=[...incomeRows.map(x=>({...x,_kind:'in'})),...all.map(x=>({...x,_kind:'out'}))].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,2);

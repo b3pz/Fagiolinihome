@@ -2,7 +2,9 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#f4f6fa">
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
@@ -68,32 +70,32 @@
   </div>
 
   <button class="dashboardCard dashboardHero" data-go="today">
-    <div class="dashboardCardHead"><span class="dashboardIcon">📅</span><div><small>OGGI</small><h3>La nostra giornata</h3></div><em>›</em></div>
+    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><small>OGGI</small><h3>La nostra giornata</h3></div><em>›</em></div>
     <div id="homeTodayBrief" class="dashboardBigText"></div>
     <div id="homeTodayList" class="dashboardPreviewList"></div>
   </button>
 
   <div class="homeDashboardGrid">
     <button class="dashboardCard" data-go="house">
-      <div class="dashboardCardHead"><span class="dashboardIcon">🧹</span><div><small>CASA</small><h3>Faccende</h3></div><em>›</em></div>
+      <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-housework"></use></svg></span><div><small>CASA</small><h3>Faccende</h3></div><em>›</em></div>
       <div id="homeHouseBrief" class="dashboardBigText"></div>
       <p id="homeHouseText" class="dashboardNote"></p>
     </button>
 
     <button class="dashboardCard" data-go="menu">
-      <div class="dashboardCardHead"><span class="dashboardIcon">🍽️</span><div><small>PASTI</small><h3>Oggi mangiamo</h3></div><em>›</em></div>
+      <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg></span><div><small>PASTI</small><h3>Oggi mangiamo</h3></div><em>›</em></div>
       <div id="homeMealsBrief" class="mealBrief"></div>
     </button>
   </div>
 
   <div class="dashboardCard familyDashboardCard">
-    <div class="dashboardCardHead"><span class="dashboardIcon">👨‍👩‍👧‍👦</span><div><small>FAMIGLIA</small><h3>Come va oggi</h3></div><button class="familyHeaderLink" data-go="organize" aria-label="Apri famiglia">›</button></div>
+    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-family"></use></svg></span><div><small>FAMIGLIA</small><h3>Come va oggi</h3></div><button class="familyHeaderLink" data-go="organize" aria-label="Apri famiglia">›</button></div>
     <div id="peopleCards" class="familyStrip familyStripHome"></div>
     <div id="homeFamilyBrief" class="familyMiniSummary"></div>
   </div>
 
   <button class="dashboardCard savingsHomeCard" data-go="money">
-    <div class="dashboardCardHead"><span class="dashboardIcon">💶</span><div><small>FAGIOLINI BANK</small><h3>Questo mese</h3></div><em>›</em></div>
+    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bank"></use></svg></span><div><small>FAGIOLINI BANK</small><h3>Questo mese</h3></div><em>›</em></div>
     <div id="homeSavingsBrief" class="dashboardBigText"></div>
     <div class="progressTrack"><i id="homeSavingsProgress"></i></div>
     <p id="homeSavingsText" class="dashboardNote"></p>
@@ -101,14 +103,14 @@
   </button>
 
   <button class="dashboardCard wasteHomeCard" data-go="waste">
-    <div class="dashboardCardHead"><span class="dashboardIcon">♻️</span><div><small>RACCOLTA</small><h3>Rifiuti</h3></div><em>›</em></div>
+    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg></span><div><small>RACCOLTA</small><h3>Rifiuti</h3></div><em>›</em></div>
     <div id="homeWasteText" class="dashboardBigText"></div>
     <p id="homeWasteNextText" class="dashboardNote"></p>
   </button>
 </section>
 
 <section id="today" class="view">
-  <div class="sectionTitle pageIntro"><div><small>LA GIORNATA</small><h2>📅 Oggi</h2><p id="todayPageDate" class="muted"></p></div><button data-go="calendar">Calendario</button></div>
+  <div class="sectionTitle pageIntro"><div><small>LA GIORNATA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><span>Oggi</span></h2><p id="todayPageDate" class="muted"></p></div><button data-go="calendar">Calendario</button></div>
   <div id="todayHero" class="card todayHeroCard"></div>
   <div class="card">
     <div class="sectionTitle compact"><div><small>DA FARE E DA RICORDARE</small><h3>Tutto in ordine</h3></div><button id="todayQuickAdd">＋ Aggiungi</button></div>
@@ -202,7 +204,7 @@
   <div class="card"><h3>Prossimi impegni</h3><div id="adultHealth"></div></div>
 </section>
 <section id="menu" class="view">
-  <div class="sectionTitle pageIntro"><div><small>PASTI</small><h2>🍽️ Cosa mangiamo</h2><p class="muted">La settimana della famiglia, semplice da cambiare.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>PASTI</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg><span>Cosa mangiamo</span></h2><p class="muted">La settimana della famiglia, semplice da cambiare.</p></div></div>
   <div id="menuWeekSummary" class="card sectionSummaryCard"></div>
 
   <div class="card introCard">
@@ -243,7 +245,7 @@
 </section>
 
 <section id="health" class="view">
-  <div class="sectionTitle pageIntro"><div><small>SALUTE</small><h2>❤️ Salute</h2><p class="muted">Visite e medicine da ricordare.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>SALUTE</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-health"></use></svg><span>Salute</span></h2><p class="muted">Visite e medicine da ricordare.</p></div></div>
   <div id="healthSummary" class="card sectionSummaryCard"></div>
 
   <form id="visitForm" class="card form healthForm">
@@ -299,7 +301,7 @@
 
 
 <section id="waste" class="view">
-  <div class="sectionTitle pageIntro"><div><small>RACCOLTA PORTA A PORTA</small><h2>♻️ Rifiuti</h2><p class="muted">Così sappiamo subito cosa preparare, senza cercare il calendario.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>RACCOLTA PORTA A PORTA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg><span>Rifiuti</span></h2><p class="muted">Così sappiamo subito cosa preparare, senza cercare il calendario.</p></div></div>
 
   <div id="wasteHero" class="wasteHeroGrid"></div>
 
@@ -315,17 +317,17 @@
 </section>
 
 <section id="organize" class="view">
-  <div class="sectionTitle pageIntro"><div><small>TUTTO IL RESTO</small><h2>☰ Organizza</h2><p class="muted">Le cose importanti che non servono ogni minuto.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>TUTTO IL RESTO</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-menu"></use></svg><span>Organizza</span></h2><p class="muted">Le cose importanti che non servono ogni minuto.</p></div></div>
 
   <div class="organizeGrid">
-    <button class="organizeCard" data-go="shop"><span>🛒</span><div><b>Spesa</b><small id="organizeShopText">Lista della spesa</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="money"><span>💶</span><div><b>Fagiolini Bank</b><small id="organizeMoneyText">Risparmi, spese e bollette</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="health"><span>❤️</span><div><b>Salute</b><small id="organizeHealthText">Visite e medicine</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="auto"><span>🚗</span><div><b>Auto</b><small id="organizeAutoText">Scadenze e costi</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="maintenance"><span>🔧</span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Manutenzioni</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="reminders"><span>🔔</span><div><b>Promemoria</b><small id="organizeReminderText">Da ricordare</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="calendar"><span>📆</span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="waste"><span>♻️</span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="shop"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><div><b>Spesa</b><small id="organizeShopText">Lista della spesa</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="money"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bank"></use></svg></span><div><b>Fagiolini Bank</b><small id="organizeMoneyText">Risparmi, spese e bollette</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="health"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-health"></use></svg></span><div><b>Salute</b><small id="organizeHealthText">Visite e medicine</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="auto"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-car"></use></svg></span><div><b>Auto</b><small id="organizeAutoText">Scadenze e costi</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="maintenance"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg></span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Manutenzioni</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="reminders"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg></span><div><b>Promemoria</b><small id="organizeReminderText">Da ricordare</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="calendar"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="waste"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg></span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
   </div>
 
   <div class="card birthdayCard">
@@ -346,7 +348,7 @@
 </section>
 
 <section id="maintenance" class="view">
-  <div class="sectionTitle pageIntro"><div><small>CASA & LAVORI</small><h2>🔧 Manutenzioni</h2><p class="muted">Scadenze e lavori importanti della casa.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>CASA & LAVORI</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg><span>Manutenzioni</span></h2><p class="muted">Scadenze e lavori importanti della casa.</p></div></div>
   <div id="maintenanceSummary" class="card sectionSummaryCard"></div>
 
   <div class="card">
@@ -357,7 +359,7 @@
 </section>
 
 <section id="auto" class="view">
-  <div class="sectionTitle pageIntro"><div><small>AUTO</small><h2>🚗 Auto</h2><p class="muted">Scadenze, manutenzione e costi.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>AUTO</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-car"></use></svg><span>Auto</span></h2><p class="muted">Scadenze, manutenzione e costi.</p></div></div>
   <div id="autoSummary" class="card sectionSummaryCard"></div>
 
   <form id="fuelForm" class="card form">
@@ -408,7 +410,7 @@
 
 
 <section id="reminders" class="view">
-  <div class="sectionTitle pageIntro"><div><small>DA RICORDARE</small><h2>🔔 Promemoria</h2><p class="muted">Quello che non deve sfuggire.</p></div><button data-go="calendar">Calendario</button></div>
+  <div class="sectionTitle pageIntro"><div><small>DA RICORDARE</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg><span>Promemoria</span></h2><p class="muted">Quello che non deve sfuggire.</p></div><button data-go="calendar">Calendario</button></div>
 
   <div id="reminderAlert" class="card reminderAlert"></div>
 
@@ -439,7 +441,7 @@
 </section>
 
 <section id="house" class="view">
-  <div class="sectionTitle pageIntro"><div><small>CASA</small><h2>🧹 Casa</h2><p class="muted">Prima quello che serve oggi. Il resto solo quando vuoi aprirlo.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>CASA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-housework"></use></svg><span>Casa</span></h2><p class="muted">Prima quello che serve oggi. Il resto solo quando vuoi aprirlo.</p></div></div>
 
   <div class="card houseTodayCard">
     <div class="sectionTitle compact"><div><small>OGGI</small><h3>Da fare oggi</h3></div><div id="housePendingCount" class="pendingBadge">0</div></div>
@@ -475,7 +477,7 @@
 </section>
 
 <section id="shop" class="view">
-  <div class="sectionTitle pageIntro"><div><small>SPESA</small><h2>🛒 Da comprare</h2><p class="muted">La lista della famiglia, senza doppioni.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>SPESA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg><span>Da comprare</span></h2><p class="muted">La lista della famiglia, senza doppioni.</p></div></div>
   <div id="shopSummary" class="card sectionSummaryCard"></div>
   <form id="shopForm" class="card form">
     <input id="shopText" placeholder="Es. Pannolini" required>
@@ -489,7 +491,7 @@
 </section>
 
 <section id="money" class="view bankSimpleView">
-  <div class="sectionTitle pageIntro"><div><small>FAGIOLINI BANK</small><h2>💶 La nostra banca</h2><p class="muted">Quanto entra, quanto esce e quanto riusciamo a mettere da parte.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>FAGIOLINI BANK</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bank"></use></svg><span>La nostra banca</span></h2><p class="muted">Quanto entra, quanto esce e quanto riusciamo a mettere da parte.</p></div></div>
   <div class="monthSwitch card bankMonthSwitch"><button id="moneyPrev">←</button><h3 id="moneyMonth"></h3><button id="moneyNext">→</button></div>
 
   <div class="card bankSimpleHero">
@@ -505,23 +507,23 @@
   </div>
 
   <div class="bankQuickActions">
-    <button id="bankAddIncomeBtn" class="bankAction income"><span>＋</span><b>Entrata</b></button>
-    <button id="bankAddExpenseBtn" class="bankAction expense"><span>−</span><b>Spesa</b></button>
-    <button id="bankAddBillBtn" class="bankAction bill"><span>＋</span><b>Bolletta</b></button>
+    <button id="bankAddIncomeBtn" class="bankAction income"><span class="bankActionIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-plus"></use></svg></span><b>Entrata</b></button>
+    <button id="bankAddExpenseBtn" class="bankAction expense"><span class="bankActionIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-minus"></use></svg></span><b>Spesa</b></button>
+    <button id="bankAddBillBtn" class="bankAction bill"><span class="bankActionIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-plus"></use></svg></span><b>Bolletta</b></button>
   </div>
 
   <div class="bankSimpleMenu">
-    <button id="bankSpendCardBtn" class="bankMenuCard">
-      <span class="bankMenuIcon">📊</span><div><b>Dove spendiamo</b><small id="bankSpendSummary">Guarda il grafico del mese</small></div><em>›</em>
+    <button id="bankSpendCardBtn" class="bankMenuCard" data-open-dialog="moneySpendingDialog">
+      <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-chart"></use></svg></span><div><b>Dove spendiamo</b><small id="bankSpendSummary">Guarda il grafico del mese</small></div><em>›</em>
     </button>
-    <button id="bankJarsBtn" class="bankMenuCard">
-      <span class="bankMenuIcon">🐷</span><div><b>Salvadanai</b><small id="bankJarsSummary">Vacanze e Natale</small></div><em>›</em>
+    <button id="bankJarsBtn" class="bankMenuCard" data-open-dialog="moneySavingsDialog">
+      <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-jar"></use></svg></span><div><b>Salvadanai</b><small id="bankJarsSummary">Vacanze e Natale</small></div><em>›</em>
     </button>
-    <button id="bankBillsBtn" class="bankMenuCard">
-      <span class="bankMenuIcon">💳</span><div><b>Bollette</b><small id="bankBillsSummary">Prossime scadenze</small></div><em>›</em>
+    <button id="bankBillsBtn" class="bankMenuCard" data-open-dialog="moneyBillsDialog">
+      <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-card"></use></svg></span><div><b>Bollette</b><small id="bankBillsSummary">Prossime scadenze</small></div><em>›</em>
     </button>
-    <button id="bankMovesBtn" class="bankMenuCard">
-      <span class="bankMenuIcon">🧾</span><div><b>Ultimi movimenti</b><small id="bankMovesSummary">Entrate e spese recenti</small></div><em>›</em>
+    <button id="bankMovesBtn" class="bankMenuCard" data-open-dialog="moneyMovesDialog">
+      <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-receipt"></use></svg></span><div><b>Ultimi movimenti</b><small id="bankMovesSummary">Entrate e spese recenti</small></div><em>›</em>
     </button>
   </div>
 
@@ -530,11 +532,11 @@
 </main>
 
 <nav aria-label="Navigazione principale">
-  <button data-go="today"><span>📅</span><small>Oggi</small></button>
-  <button data-go="house"><span>🧹</span><small>Casa</small></button>
-  <button class="navHome navHomeCenter" data-go="home"><span>🏡</span><small>Home</small></button>
-  <button data-go="menu"><span>🍽️</span><small>Pasti</small></button>
-  <button data-go="organize"><span>☰</span><small>Organizza</small></button>
+  <button data-go="today"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><small>Oggi</small></button>
+  <button data-go="house"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-housework"></use></svg></span><small>Casa</small></button>
+  <button class="navHome navHomeCenter" data-go="home"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-home"></use></svg></span><small>Home</small></button>
+  <button data-go="menu"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg></span><small>Pasti</small></button>
+  <button data-go="organize"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-menu"></use></svg></span><small>Organizza</small></button>
 </nav>
 </div>
 
@@ -558,7 +560,7 @@
 </form></dialog>
 
 <dialog id="moneySavingsDialog"><div class="dialogBox bankDialogBox bankSavingsDialogContent">
-  <div class="sectionTitle compact"><div><small>RISPARMIO</small><h3>🐷 Salvadanai</h3></div><button type="button" data-close="moneySavingsDialog">✕</button></div>
+  <div class="sectionTitle compact"><div><small>RISPARMIO</small><h3 class="titleWithIcon smallTitle"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-jar"></use></svg><span>Salvadanai</span></h3></div><button type="button" data-close="moneySavingsDialog">✕</button></div>
   <form id="savingsGoalForm" class="bankInlineForm">
     <h3>Questo mese</h3>
     <label class="fieldLabel">Quanto vogliamo risparmiare questo mese?<input id="savingsGoalInput" type="number" min="0" step="10" placeholder="Es. 500"></label>
@@ -570,13 +572,13 @@
   <div id="savingsProjectsPreview" class="savingsProjectsPreview"></div>
   <form id="savingsProjectsForm" class="savingsProjectsForm">
     <div class="savingProjectEditor">
-      <div class="savingProjectTitle"><span>🏖️</span><div><b>Vacanze</b><small>Viaggi, ferie, weekend</small></div><label class="switchLabel"><input id="vacationActive" type="checkbox"> Mostra</label></div>
+      <div class="savingProjectTitle"><span class="savingSprite"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-sun"></use></svg></span><div><b>Vacanze</b><small>Viaggi, ferie, weekend</small></div><label class="switchLabel"><input id="vacationActive" type="checkbox"> Mostra</label></div>
       <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="vacationTarget" type="number" min="0" step="10" placeholder="Es. 1200"></label>
       <label class="fieldLabel">Quanto abbiamo già messo da parte?<input id="vacationSaved" type="number" min="0" step="10" placeholder="Es. 300"></label>
       <label class="fieldLabel">Nota<input id="vacationNote" placeholder="Es. Calabria agosto, hotel da prenotare..."></label>
     </div>
     <div class="savingProjectEditor">
-      <div class="savingProjectTitle"><span>🎄</span><div><b>Natale</b><small>Regali, pranzi e feste</small></div><label class="switchLabel"><input id="christmasActive" type="checkbox"> Mostra</label></div>
+      <div class="savingProjectTitle"><span class="savingSprite"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tree"></use></svg></span><div><b>Natale</b><small>Regali, pranzi e feste</small></div><label class="switchLabel"><input id="christmasActive" type="checkbox"> Mostra</label></div>
       <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="christmasTarget" type="number" min="0" step="10" placeholder="Es. 500"></label>
       <label class="fieldLabel">Quanto abbiamo già messo da parte?<input id="christmasSaved" type="number" min="0" step="10" placeholder="Es. 100"></label>
       <label class="fieldLabel">Nota<input id="christmasNote" placeholder="Es. Regali e pranzo di Natale..."></label>
@@ -586,7 +588,7 @@
 </div></dialog>
 
 <dialog id="moneySpendingDialog"><div class="dialogBox bankDialogBox bankWideDialog">
-  <div class="sectionTitle compact"><div><small>QUESTO MESE</small><h3>📊 Dove spendiamo</h3></div><button type="button" data-close="moneySpendingDialog">✕</button></div>
+  <div class="sectionTitle compact"><div><small>QUESTO MESE</small><h3 class="titleWithIcon smallTitle"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-chart"></use></svg><span>Dove spendiamo</span></h3></div><button type="button" data-close="moneySpendingDialog">✕</button></div>
   <div class="moneyChartCard">
     <p id="bankSpendingCompare" class="reportText bankSpendingCompare"></p>
     <div class="sectionTitle compact"><div></div><button id="moneyClearFilter" class="smallBtn">Tutte</button></div>
@@ -598,14 +600,14 @@
 </div></dialog>
 
 <dialog id="moneyMovesDialog"><div class="dialogBox bankDialogBox bankWideDialog">
-  <div class="sectionTitle compact"><div><small>CRONOLOGIA</small><h3>🧾 Movimenti</h3></div><button type="button" data-close="moneyMovesDialog">✕</button></div>
+  <div class="sectionTitle compact"><div><small>CRONOLOGIA</small><h3 class="titleWithIcon smallTitle"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-receipt"></use></svg><span>Movimenti</span></h3></div><button type="button" data-close="moneyMovesDialog">✕</button></div>
   <div class="cardlessSection"><h3>Entrate</h3><div id="bankSourceBreakdown" class="bankSourceBreakdown"></div><div id="incomeList"></div></div>
   <div class="bankDialogDivider"></div>
   <div class="cardlessSection"><h3 id="moneyListTitle">Spese di questo mese</h3><div id="moneyList"></div></div>
 </div></dialog>
 
 <dialog id="moneyBillsDialog"><div class="dialogBox bankDialogBox bankWideDialog">
-  <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3>💳 Prossime scadenze</h3></div><div class="dialogHeadActions"><button id="addSubscriptionBtn" type="button">＋</button><button type="button" data-close="moneyBillsDialog">✕</button></div></div>
+  <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3 class="titleWithIcon smallTitle"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-card"></use></svg><span>Prossime scadenze</span></h3></div><div class="dialogHeadActions"><button id="addSubscriptionBtn" type="button">＋</button><button type="button" data-close="moneyBillsDialog">✕</button></div></div>
   <div id="subscriptionStats" class="stats"></div>
   <div id="subscriptionList"></div>
 </div></dialog>
