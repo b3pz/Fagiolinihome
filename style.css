@@ -528,3 +528,370 @@ nav .navHomeCenter small{font-size:16px;font-weight:950}
   .wasteWeekRow{grid-template-columns:58px 42px 1fr;gap:10px}.wasteDayBadge span{font-size:25px}.wasteRowIcon{font-size:29px}
 }
 body[data-page="waste"] .headerIdentity h1,body[data-page="waste"] #todayLabel{display:none}
+
+/* ============================================================
+   V9.1 — ACCESSIBILITY XL / EASY READ
+   Obiettivo: tutto realmente più leggibile su iPhone.
+   Nessuna modifica alla logica applicativa.
+   ============================================================ */
+:root{
+  --muted:#46594d;
+  --nav-h:142px;
+}
+html,body{
+  font-size:19px;
+  line-height:1.48;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{font-weight:500}
+small{font-size:14px;line-height:1.35}
+.tiny{font-size:15px;line-height:1.5}
+.card{padding:26px;border-radius:30px;margin-bottom:20px}
+h2{font-size:36px;line-height:1.1}
+h3{font-size:25px;line-height:1.18}
+header h1{font-size:48px}
+.brand{font-size:15px}
+#todayLabel{font-size:18px}
+.round{width:56px;height:56px;font-size:20px}
+.reminderBell{font-size:29px}
+.cloudStatus{min-height:48px;padding:10px 13px}
+.cloudStatus small{font-size:13px}
+.sectionTitle{margin-top:32px;margin-bottom:17px;gap:14px}
+.sectionTitle button,.daySwitch button,.calendarHead button,.monthSwitch button{
+  min-height:52px;padding:13px 16px;border-radius:16px;font-size:17px
+}
+.pageIntro h2{font-size:43px;line-height:1.05}
+.pageIntro p{font-size:20px;line-height:1.45}
+.pageIntro small{font-size:15px}
+
+/* Home: cards e contenuti più grandi */
+.homeWelcome{margin-bottom:19px}
+.homeWelcome h2{font-size:46px;line-height:1.02;margin:8px 0 10px}
+.homeWelcome p{font-size:21px}
+.homeWelcome small{font-size:15px}
+.homeProfileButton{width:66px;height:66px;font-size:32px;border-radius:21px}
+.homeHeroCompact{border-radius:36px;margin-bottom:22px}
+.homeHeroCompact .homeHeroText{font-size:24px;left:25px;bottom:24px;line-height:1.22}
+.dashboardCard{padding:27px;border-radius:32px;margin-bottom:20px}
+.dashboardCardHead{gap:16px}
+.dashboardCardHead .dashboardIcon{width:68px;height:68px;border-radius:22px;font-size:37px}
+.dashboardCardHead small{font-size:14px;letter-spacing:.1em}
+.dashboardCardHead h3{font-size:29px;line-height:1.1}
+.dashboardCardHead em{font-size:38px}
+.dashboardBigText{margin-top:20px}
+.dashboardBigText b{font-size:36px;line-height:1.12}
+.dashboardNote{font-size:20px;line-height:1.45;margin-top:12px}
+.dashboardPreviewList{gap:12px;margin-top:17px}
+.dashboardPreviewList span{font-size:19px;line-height:1.4}
+.dashboardPreviewList i{font-size:22px;width:32px}
+.mealBrief{gap:16px;margin-top:18px}
+.mealBrief small{font-size:15px}
+.mealBrief b{font-size:21px;line-height:1.35}
+.familyMemberCard b{font-size:16px}
+.familyMiniSummary span{font-size:17px;padding:10px 13px}
+.progressTrack{height:19px}
+
+/* Componenti generici leggibili */
+.stat{padding:24px;border-radius:26px}
+.stat span{font-size:15px;line-height:1.35}
+.stat b{font-size:36px;line-height:1.1;margin-top:9px}
+.row{padding:21px 3px;gap:16px}
+.row b{font-size:20px;line-height:1.3}
+.meta{font-size:17px;line-height:1.45;margin-top:5px}
+.del{font-size:22px;min-width:48px;min-height:48px}
+.form{gap:16px}
+.form input,.form select,.dialogBox input,.dialogBox select,.profileGrid input,.profileGrid select,.profileCard textarea{
+  min-height:64px;font-size:20px;padding:18px 17px;border-radius:18px
+}
+.primary{min-height:66px;padding:18px 22px;font-size:20px;border-radius:19px}
+.inlineBtns{gap:12px}
+.inlineBtns button{min-height:60px;font-size:19px;padding:16px 20px;border-radius:18px}
+.check{font-size:18px;gap:12px;min-height:48px}
+.check input,.switchLabel input{width:27px;height:27px}
+.fieldLabel{font-size:18px;gap:8px}
+.fieldHint{font-size:15px;line-height:1.4}
+.actions{gap:15px}
+.actions button{padding:25px 12px;font-size:40px;border-radius:23px;min-height:118px}
+.actions small{font-size:18px;line-height:1.25}
+
+/* Oggi */
+.todayHeroNumbers{gap:13px}
+.todayHeroNumbers>div{padding:20px 9px;border-radius:23px}
+.todayHeroNumbers b{font-size:39px}
+.todayHeroNumbers span{font-size:16px}
+.todayHeroCard p{font-size:20px;line-height:1.5}
+.agendaItem{padding:21px 2px;gap:16px}
+.agendaItem>span{font-size:34px}
+.agendaItem b{font-size:21px;line-height:1.32}
+.agendaItem small{font-size:16px;line-height:1.4}
+.agendaItem button{min-height:50px;font-size:17px;padding:12px 15px}
+.friendlyEmpty{padding:30px 12px;font-size:20px}
+.todayQuickGrid{gap:15px}
+.todayQuickGrid button{min-height:140px;padding:21px;border-radius:27px}
+.todayQuickGrid span{font-size:35px}
+.todayQuickGrid b{font-size:23px;margin-top:9px}
+.todayQuickGrid small{font-size:16px;line-height:1.35}
+
+/* Organizza */
+.organizeGrid{gap:15px}
+.organizeCard{grid-template-columns:76px 1fr auto;gap:18px;padding:21px;border-radius:28px}
+.organizeCard>span{width:76px;height:76px;border-radius:24px;font-size:39px}
+.organizeCard b{font-size:24px;line-height:1.2}
+.organizeCard small{font-size:17px;line-height:1.4;margin-top:6px}
+.organizeCard em{font-size:38px}
+.connectedPill{font-size:16px;padding:10px 14px}
+.telegramCard p{font-size:19px;line-height:1.5}
+.telegramFacts span{font-size:16px;padding:10px 13px}
+
+/* Casa */
+.housePrimaryActions{gap:14px}
+.housePrimaryActions button{min-height:68px;font-size:20px;border-radius:20px}
+.disclosureCard summary{min-height:94px;padding:25px 26px}
+.disclosureCard summary small{font-size:15px}
+.disclosureCard summary b{font-size:26px}
+.disclosureCard summary em{font-size:35px}
+.disclosureBody{padding:0 24px 25px}
+.houseTaskCard{font-size:19px}
+.houseDayPlan{padding:17px;border-radius:22px;margin-bottom:13px}
+.houseDayHead span{font-size:14px}
+.houseRule{padding:16px;border-radius:18px;font-size:16px}
+.houseRule select{min-height:56px;font-size:18px;padding:12px}
+.houseTaskActions{gap:9px}
+.houseTaskActions button{min-height:52px;font-size:17px;padding:10px 14px}
+
+/* Profili */
+.personPageHead{margin-bottom:25px}
+.personIdentity{gap:19px}
+.personAvatar{width:110px;height:110px;border-radius:32px}
+.personIdentity h2{font-size:45px;line-height:1.02}
+.personIdentity p{font-size:19px}
+.backHomeBtn{min-height:58px;font-size:18px;padding:14px 18px;border-radius:18px}
+.insightSwitch button{font-size:17px;padding:12px 14px;min-height:50px}
+.insightText b{font-size:24px}
+.insightText span{font-size:18px;line-height:1.45}
+.miniBarChart{height:200px}
+.barCol small,.barValue{font-size:14px}
+.adultCard{padding:22px;border-radius:26px}
+.adultCard>span{font-size:42px}
+.adultCard b{font-size:22px}
+.adultCard small{font-size:16px}
+.adultActions button{padding:21px;font-size:32px;border-radius:21px;min-height:112px}
+.adultActions b{font-size:18px}
+
+/* Calendario */
+.calendarHead h3,.monthSwitch h3{font-size:28px}
+.weekdays span{font-size:16px;padding-bottom:10px}
+.calDay{min-height:88px;font-size:20px;border-radius:19px;padding:8px}
+.dots{gap:5px;margin-top:7px}
+.dot{width:8px;height:8px}
+.calendarSheetItem{padding:20px 2px}
+.calendarSheetItem>span{font-size:35px}
+.calendarSheetItem b{font-size:21px}
+.calendarSheetItem small{font-size:17px}
+.calendarSheetItem button{min-height:50px;font-size:17px}
+.calendarAddGrid{gap:15px}
+.calendarAddGrid button{min-height:136px;padding:21px;border-radius:26px}
+.calendarAddGrid button span{font-size:42px}
+.calendarAddGrid button b{font-size:21px}
+
+/* Pasti */
+.menuDay{padding:27px;border-radius:30px;margin-bottom:16px}
+.menuDay h3{font-size:28px}
+.mealBox{padding:19px;border-radius:20px}
+.mealBox span{font-size:15px}
+.mealBox b{font-size:20px;line-height:1.35}
+.mealEdit{grid-template-columns:125px 1fr;gap:14px;margin:11px 0}
+.mealEdit label{font-size:18px}
+.mealEdit input{font-size:19px;padding:17px;min-height:60px}
+.adaptation{font-size:17px;line-height:1.45;padding:13px 15px}
+.balanceChip{font-size:16px;padding:13px 14px}
+.balanceChip b{font-size:19px}
+
+/* Fagiolini Bank / Soldi: leggibilità prima di tutto */
+.bankCard #bankIncomeTotal{font-size:40px}
+.bankSourceBreakdown{gap:11px}
+.bankSourceBreakdown span{padding:16px;border-radius:19px;font-size:18px;line-height:1.4}
+.bankSourceBreakdown b{font-size:16px}
+.savingsReportCard strong{font-size:40px}
+.reportText{font-size:20px;line-height:1.52}
+.compareChips{gap:9px}
+.compareChips span{font-size:16px;padding:10px 13px}
+.savingProjectSummary{padding:17px;border-radius:21px}
+.savingProjectSummary>div:first-child>span{font-size:32px}
+.savingProjectSummary strong{font-size:19px}
+.savingProjectSummary small{font-size:16px}
+.savingProjectEditor{padding:19px;border-radius:23px;gap:14px}
+.savingProjectTitle>span{font-size:37px}
+.savingProjectTitle b{font-size:21px}
+.savingProjectTitle small{font-size:16px}
+.switchLabel{font-size:17px;gap:9px}
+.moneyPie{max-width:280px}
+.moneyPieCenter small{font-size:15px}
+.moneyPieCenter b{font-size:24px}
+.moneyMacroLegend{gap:9px}
+.macroLegendItem{padding:13px;border-radius:16px;gap:11px}
+.macroLegendItem i{width:15px;height:15px}
+.macroLegendItem b{font-size:17px}
+.macroLegendItem small{font-size:14px}
+.moneyCategory,.moneyCategory.smart{font-size:20px;padding-top:18px;padding-bottom:18px}
+.moneyCategory.smart small{font-size:14px}
+#moneyListTitle{font-size:27px}
+
+/* Rifiuti */
+.wasteHeroGrid{gap:18px;margin-bottom:24px}
+.wasteHeroCard{padding:27px;border-radius:32px}
+.wasteHeroCard>small{font-size:15px}
+.wasteHeroLine{gap:17px;margin:17px 0 13px}
+.wasteBinIcon{width:76px;height:76px;font-size:40px;border-radius:24px}
+.wasteHeroCard h3{font-size:29px}
+.wasteHeroCard p{font-size:19px}
+.wasteHeroCard>span{font-size:18px;line-height:1.45}
+.wasteValidPill{font-size:16px;padding:11px 14px}
+.wasteWeekList{gap:14px}
+.wasteWeekRow{grid-template-columns:84px 66px 1fr;gap:17px;padding:17px 18px;border-radius:25px}
+.wasteDayBadge{padding:9px 7px;border-radius:20px}
+.wasteDayBadge b{font-size:15px}
+.wasteDayBadge span{font-size:33px}
+.wasteRowIcon{font-size:39px}
+.wasteWeekRow .grow b{font-size:23px;line-height:1.25}
+.wasteWeekRow .grow small{font-size:17px;line-height:1.4}
+.wasteInfoCard{gap:18px}
+.wasteInfoCard>span{font-size:42px}
+.wasteInfoCard b{font-size:23px}
+.wasteInfoCard p{font-size:18px;line-height:1.5}
+
+/* Dialog: quasi a tutta larghezza e testo grande */
+dialog{width:min(620px,calc(100% - 18px));border-radius:30px}
+.dialogBox{padding:27px}
+.dialogBox h3{font-size:27px}
+.accountInfo{padding:19px;border-radius:21px;font-size:18px}
+.secondaryFull{min-height:60px;font-size:19px;border-radius:18px}
+
+/* Bottom bar V9.1: volutamente molto grande e sempre fissa */
+nav{
+  min-height:var(--nav-h);
+  padding:22px 8px calc(16px + env(safe-area-inset-bottom));
+  box-shadow:0 -14px 42px rgba(72,54,38,.16)
+}
+nav button{min-height:92px;border-radius:24px;padding:9px 2px 7px}
+nav button:not(.navHomeCenter) span{font-size:38px}
+nav button:not(.navHomeCenter) small{font-size:15px;font-weight:950;line-height:1.05;margin-top:6px}
+nav .navHomeCenter span{
+  width:96px;height:96px;margin:-50px auto 5px;font-size:44px;
+  box-shadow:0 14px 34px rgba(38,87,61,.36),0 0 0 8px rgba(255,251,245,.99)
+}
+nav .navHomeCenter small{font-size:18px;font-weight:950;line-height:1}
+
+/* Login più leggibile */
+.loginCard{padding:31px 30px 28px}
+.loginCard h1{font-size:49px}
+.loginBrand{font-size:17px}
+.loginLead{font-size:20px;line-height:1.5}
+.loginInput{min-height:70px}
+.loginInput>span{font-size:27px}
+.loginInput input{font-size:20px}
+.loginButton{font-size:22px;min-height:68px}
+.loginPrivacy p{font-size:16px;line-height:1.45}
+
+@media(max-width:600px){
+  :root{--nav-h:146px}
+  html,body{font-size:20px}
+  .app{
+    padding-left:18px;
+    padding-right:18px;
+    padding-top:max(76px,calc(env(safe-area-inset-top) + 26px));
+    padding-bottom:calc(var(--nav-h) + 44px + env(safe-area-inset-bottom));
+  }
+  header{padding-top:20px;padding-bottom:19px}
+  header h1{font-size:43px}
+  .brand{font-size:14px}
+  small{font-size:15px}
+  .tiny{font-size:16px}
+  .pageIntro h2{font-size:43px}
+  .pageIntro p{font-size:20px}
+  .homeWelcome h2{font-size:44px}
+  .homeWelcome p{font-size:20px}
+  .homeHeroCompact{aspect-ratio:1.55/1}
+  .homeHeroCompact .homeHeroText{font-size:23px}
+
+  /* Meglio scrollare che stringere: una card per riga */
+  .homeDashboardGrid,.financeFormsGrid,.mealGrid,.adultGrid,.wasteHeroGrid,.wasteInfoGrid,.twoCols{
+    grid-template-columns:1fr
+  }
+  .homeDashboardGrid .dashboardCard{min-height:0}
+  .todayQuickGrid{grid-template-columns:1fr}
+  .menuBalance{grid-template-columns:1fr}
+  .moneyMacroLegend{grid-template-columns:1fr}
+  .bankSourceBreakdown{grid-template-columns:1fr}
+  .calendarAddGrid{grid-template-columns:1fr}
+  .personalExpenseForm{grid-template-columns:1fr}
+  .personalExpenseForm select,.personalExpenseForm button{grid-column:auto}
+
+  /* Famiglia: foto grandi, scorrimento orizzontale invece di 5 miniature */
+  .familyStripHome{
+    display:flex;overflow-x:auto;gap:12px;padding:2px 2px 10px;
+    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch
+  }
+  .familyStripHome .familyMemberCard{
+    flex:0 0 112px;min-width:112px;padding:8px 7px 12px;border-radius:25px;scroll-snap-align:start
+  }
+  .familyStripHome .familyMemberCard b{font-size:16px}
+
+  .dashboardCard{padding:25px}
+  .dashboardCardHead .dashboardIcon{width:66px;height:66px;font-size:36px}
+  .dashboardCardHead h3{font-size:28px}
+  .dashboardBigText b{font-size:34px}
+  .dashboardNote{font-size:19px}
+
+  .stats{grid-template-columns:1fr 1fr;gap:13px}
+  .stat{padding:21px 17px}
+  .stat span{font-size:14px}
+  .stat b{font-size:31px}
+
+  .mealEdit{grid-template-columns:1fr;gap:7px}
+  .mealEdit label{font-size:18px}
+  .mealEdit input{width:100%}
+
+  .wasteWeekRow{grid-template-columns:72px 54px 1fr;gap:13px;padding:15px 13px}
+  .wasteWeekRow .grow b{font-size:21px}
+  .wasteWeekRow .grow small{font-size:16px}
+
+  .personAvatar{width:100px;height:100px}
+  .personIdentity h2{font-size:40px}
+  .backHomeBtn{font-size:17px;min-height:54px}
+
+  .calDay{min-height:82px;font-size:19px}
+
+  nav{padding-left:5px;padding-right:5px}
+  nav button{min-height:94px}
+  nav button:not(.navHomeCenter) span{font-size:36px}
+  nav button:not(.navHomeCenter) small{font-size:14px}
+  nav .navHomeCenter span{width:94px;height:94px;font-size:43px;margin-top:-49px}
+  nav .navHomeCenter small{font-size:18px}
+
+  .loginCard{margin-top:44dvh;padding:29px 23px 25px}
+  .loginCard h1{font-size:44px}
+  .loginLead{font-size:19px}
+  .loginInput{min-height:68px}
+  .loginInput input{font-size:20px}
+}
+
+@media(max-width:390px){
+  html,body{font-size:19px}
+  .app{padding-left:15px;padding-right:15px}
+  .homeWelcome h2{font-size:41px}
+  .pageIntro h2{font-size:40px}
+  .dashboardCard{padding:22px}
+  .dashboardCardHead h3{font-size:26px}
+  .dashboardCardHead .dashboardIcon{width:62px;height:62px;font-size:34px}
+  .dashboardBigText b{font-size:31px}
+  .stats{grid-template-columns:1fr}
+  .wasteWeekRow{grid-template-columns:65px 46px 1fr;gap:10px}
+  .wasteDayBadge span{font-size:29px}
+  .wasteRowIcon{font-size:33px}
+  nav button:not(.navHomeCenter) span{font-size:33px}
+  nav button:not(.navHomeCenter) small{font-size:13px}
+  nav .navHomeCenter span{width:90px;height:90px;font-size:41px;margin-top:-47px}
+  nav .navHomeCenter small{font-size:17px}
+}

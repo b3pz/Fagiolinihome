@@ -416,3 +416,17 @@ La Home mostra cosa si butta oggi e il prossimo ritiro. È presente anche una pa
 - niente testo “asciugaculo”: resta Cambio asciugamani
 - foto vere nei profili
 - nessun badge fisiologico nella Home famiglia
+
+## V9.1 — ACCESSIBILITY XL / EASY READ
+Base: V9 Family First XL Rifiuti, con logica applicativa invariata.
+
+Obiettivo principale: leggibilità su iPhone per chi vede meno bene.
+- testo normale portato circa a 19–20 px su mobile
+- titoli pagina circa 40–43 px
+- titoli card circa 26–29 px
+- input e pulsanti 60–70 px di altezza
+- contrasto del testo secondario aumentato
+- bottom bar molto più alta, con Home centrale da circa 90–96 px
+- molte griglie mobile trasformate in una colonna: si preferisce scorrere invece di comprimere
+- familiari della Home con foto più grandi e scorrimento orizzontale
+- Fagiolini Bank, Calendario, Casa, Pasti, Profili e Rifiuti ingranditi senza alterare i dati o la sincronizzazione
