@@ -895,3 +895,62 @@ nav .navHomeCenter small{font-size:18px;font-weight:950;line-height:1}
   nav .navHomeCenter span{width:90px;height:90px;font-size:41px;margin-top:-47px}
   nav .navHomeCenter small{font-size:17px}
 }
+
+/* ============================================================
+   V9.2 — FAGIOLINI BANK SEMPLICE
+   La pagina principale mostra solo ciò che serve subito.
+   Tutti i dettagli vivono in finestre dedicate.
+   ============================================================ */
+.bankSimpleView{max-width:760px;margin-inline:auto}
+.bankSimpleView .pageIntro{margin-bottom:14px}
+.bankSimpleView .pageIntro h2{font-size:clamp(38px,8vw,50px);line-height:1.02}
+.bankSimpleView .pageIntro p{max-width:600px}
+.bankMonthSwitch{margin-bottom:16px}
+.bankSimpleHero{padding:25px;background:linear-gradient(145deg,#eef6ec 0%,#fffdf9 72%);border:1px solid rgba(34,93,61,.14)}
+.bankSimpleHeroTop{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px}
+.bankSimpleHeroTop small{display:block;color:var(--muted);font-weight:850;letter-spacing:.1em;margin-bottom:5px}
+.bankSimpleHeroTop h3{font-size:25px;margin:0}
+.bankSimpleHeroTop>strong{font-family:Georgia,'Times New Roman',serif;font-size:clamp(42px,10vw,60px);line-height:1;color:var(--accent-dark);text-align:right}
+.bankHeroNumbers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.bankHeroNumbers>div{padding:17px 18px;border-radius:21px;background:rgba(255,255,255,.82);border:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.bankHeroNumbers span{font-size:17px;color:var(--muted);font-weight:750}
+.bankHeroNumbers b{font-size:27px;color:var(--ink)}
+.bankGoalLine{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 9px;font-size:17px;font-weight:800}
+.textAction{border:0;background:transparent;color:var(--accent-dark);font-weight:900;font-size:16px;text-decoration:underline;text-underline-offset:3px;padding:8px}
+.bankReportText{font-size:19px;font-weight:700;margin-bottom:10px}
+.bankCompare{margin-top:8px}
+.bankCompare span{font-size:15px;padding:9px 12px}
+.bankQuickActions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+.bankAction{min-height:72px;border:1px solid var(--line);border-radius:21px;background:var(--card);box-shadow:var(--shadow);display:flex;justify-content:center;align-items:center;gap:8px;font-size:20px;color:var(--accent-dark);font-weight:900}
+.bankAction span{font-size:28px;line-height:1}.bankAction.expense{background:#fff8f4}.bankAction.income{background:#f1f8ef}.bankAction.bill{background:#f7f7f2}
+.bankSimpleMenu{display:grid;gap:11px;margin-top:11px}
+.bankMenuCard{width:100%;min-height:94px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;text-align:left;padding:16px 18px;color:var(--ink)}
+.bankMenuIcon{width:58px;height:58px;border-radius:18px;background:var(--soft);display:grid;place-items:center;font-size:29px}
+.bankMenuCard>div{display:grid;gap:4px}.bankMenuCard b{font-size:22px;color:var(--accent-dark)}.bankMenuCard small{font-size:17px;color:var(--muted);line-height:1.32;letter-spacing:0}.bankMenuCard em{font-style:normal;font-size:33px;color:var(--accent)}
+.bankDialogBox{width:min(680px,calc(100vw - 22px));max-height:min(88vh,900px);overflow:auto;padding:23px}
+.bankWideDialog{width:min(760px,calc(100vw - 22px))}
+.bankDialogBox .sectionTitle h3{font-size:27px}
+.bankDialogBox .muted{font-size:18px;line-height:1.45}
+.bankInlineForm{display:grid;gap:13px}.bankInlineForm h3{margin:0;font-size:23px}
+.bankDialogDivider{height:1px;background:var(--line);margin:23px 0}
+.cardlessSection{display:grid;gap:12px}.cardlessSection>h3{font-size:24px;margin:0}
+.dialogHeadActions{display:flex;gap:8px}.dialogHeadActions button{min-width:52px}
+.bankSavingsDialogContent .savingsProjectsPreview{margin-block:12px 18px}
+.bankSavingsDialogContent .savingProjectEditor{background:#f8f4ec}
+.bankSavingsDialogContent .savingProjectEditor .fieldLabel{font-size:17px}
+.bankSavingsDialogContent .savingProjectTitle b{font-size:23px}
+.bankSavingsDialogContent .savingProjectTitle small{font-size:16px}
+#moneySpendingDialog .moneyChartLayout{margin-top:5px}
+#moneyMovesDialog .row,#moneyBillsDialog .row{padding-block:15px}
+
+@media(max-width:600px){
+ .bankSimpleHero{padding:20px}
+ .bankHeroNumbers{grid-template-columns:1fr 1fr}
+ .bankQuickActions{grid-template-columns:1fr 1fr}
+ .bankQuickActions .bill{grid-column:1 / -1}
+ .bankAction{min-height:68px}
+ .bankMenuCard{min-height:90px;padding:15px}
+ .bankMenuIcon{width:54px;height:54px}
+ .bankMenuCard b{font-size:21px}.bankMenuCard small{font-size:16px}
+ .bankDialogBox{padding:20px 17px}
+}

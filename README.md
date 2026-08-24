@@ -1,3 +1,16 @@
+# Fagiolini V9.2 — Fagiolini Bank Semplice
+
+Questa build parte dalla V9.1 Accessibility XL stabile e semplifica radicalmente Fagiolini Bank senza cambiare la logica dati.
+
+## Novità V9.2
+- Fagiolini Bank non è più una pagina infinita: la schermata principale mostra solo risparmio, entrate, spese e andamento verso il risparmio mensile.
+- Tre azioni immediate: **Entrata**, **Spesa**, **Bolletta**. I form si aprono solo quando servono.
+- Le funzioni complete sono divise in quattro aree: **Dove spendiamo**, **Salvadanai**, **Bollette**, **Ultimi movimenti**.
+- Vacanze e Natale sono rinominati e spiegati come **Salvadanai**: i campi dicono chiaramente “Quanto vogliamo mettere da parte?” e “Quanto abbiamo già messo da parte?”.
+- Il confronto col mese precedente resta disponibile ma viene mostrato in forma breve.
+- Grafico, categorie, cronologia completa e scadenze non occupano più la pagina principale.
+- Login, Supabase, Telegram, calendario, Piano Casa e tutte le altre funzioni restano invariati rispetto alla V9.1.
+
 # Fagiolini V6
 
 Versione più completa e più leggibile.

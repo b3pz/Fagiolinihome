@@ -815,7 +815,7 @@ function go(id){
  const target=document.getElementById(id);if(!target)return;
  target.classList.add('on');
  document.querySelectorAll('nav [data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
- const titles={home:'La nostra giornata',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Risparmi',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',waste:'Rifiuti',organize:'Organizza'};
+ const titles={home:'La nostra giornata',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Fagiolini Bank',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',waste:'Rifiuti',organize:'Organizza'};
  pageTitle.textContent=titles[id]||'Fagiolini';
  if(id==='home')renderHome();if(id==='today')renderToday();if(id==='waste')renderWaste();if(id==='organize')renderOrganize();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(id==='money'){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
  scrollTo(0,0)
@@ -1947,14 +1947,23 @@ function macroForExpense(x){
  if(c.includes('cane'))return 'Casa';
  return MONEY_MACROS.some(m=>m.id===x.category)?x.category:'Altro'
 }
-incomeForm.onsubmit=e=>{e.preventDefault();let d=moneyDate(),k=monthKey(d);s.incomes.push({id:crypto.randomUUID(),name:incomeName.value.trim(),amount:Number(incomeAmount.value),person:incomePerson.value,month:k,date:moneyOffset===0?dateKey():k+'-01'});incomeForm.reset();save();renderMoney()};
+incomeForm.onsubmit=e=>{e.preventDefault();let d=moneyDate(),k=monthKey(d);s.incomes.push({id:crypto.randomUUID(),name:incomeName.value.trim(),amount:Number(incomeAmount.value),person:incomePerson.value,month:k,date:moneyOffset===0?dateKey():k+'-01'});incomeForm.reset();if(moneyIncomeDialog?.open)moneyIncomeDialog.close();save();renderMoney()};
 savingsGoalForm.onsubmit=e=>{e.preventDefault();let k=monthKey(moneyDate());s.savingsGoals=s.savingsGoals||{};s.savingsGoals[k]=Number(savingsGoalInput.value||0);save();renderMoney()};
 if(savingsProjectsForm)savingsProjectsForm.onsubmit=e=>{e.preventDefault();s.savingsProjects=s.savingsProjects||structuredClone(DEFAULT.savingsProjects);s.savingsProjects.vacation={label:'Vacanze',icon:'🏖️',active:vacationActive.checked,target:Number(vacationTarget.value||0),saved:Number(vacationSaved.value||0),note:vacationNote.value.trim()};s.savingsProjects.christmas={label:'Natale',icon:'🎄',active:christmasActive.checked,target:Number(christmasTarget.value||0),saved:Number(christmasSaved.value||0),note:christmasNote.value.trim()};save();renderMoney();renderHome()};
 moneyForm.onsubmit=e=>{
  e.preventDefault();let d=moneyDate(),k=monthKey(d);
  s.expenses.push({id:crypto.randomUUID(),name:moneyName.value.trim(),amount:Number(moneyAmount.value),category:moneyCat.value,recurring:moneyRecurring.checked,month:k,date:moneyOffset===0?dateKey():k+'-01'});
- moneyName.value='';moneyAmount.value='';moneyRecurring.checked=false;save();renderMoney()
+ moneyName.value='';moneyAmount.value='';moneyRecurring.checked=false;if(moneyExpenseDialog?.open)moneyExpenseDialog.close();save();renderMoney()
 };
+
+if(bankAddIncomeBtn)bankAddIncomeBtn.onclick=()=>{incomeForm.reset();moneyIncomeDialog.showModal();setTimeout(()=>incomeName.focus(),20)};
+if(bankAddExpenseBtn)bankAddExpenseBtn.onclick=()=>{moneyForm.reset();moneyExpenseDialog.showModal();setTimeout(()=>moneyName.focus(),20)};
+if(bankEditGoalBtn)bankEditGoalBtn.onclick=()=>moneySavingsDialog.showModal();
+if(bankJarsBtn)bankJarsBtn.onclick=()=>moneySavingsDialog.showModal();
+if(bankSpendCardBtn)bankSpendCardBtn.onclick=()=>moneySpendingDialog.showModal();
+if(bankMovesBtn)bankMovesBtn.onclick=()=>moneyMovesDialog.showModal();
+if(bankBillsBtn)bankBillsBtn.onclick=()=>moneyBillsDialog.showModal();
+if(bankAddBillBtn)bankAddBillBtn.onclick=()=>{subDue.value=dateKey();subscriptionDialog.showModal()};
 function renderMoney(){
  ensureRecurring();
  let d=moneyDate(),k=monthKey(d),all=s.expenses.filter(x=>x.month===k);
@@ -1973,17 +1982,32 @@ function renderMoney(){
  if(christmasActive){christmasActive.checked=!!cp.active;christmasTarget.value=cp.target||'';christmasSaved.value=cp.saved||'';christmasNote.value=cp.note||''}
  if(savingsProjectsPreview)savingsProjectsPreview.innerHTML=[vp,cp].map(p=>{let target=Number(p.target||0),savedP=Number(p.saved||0),pctP=target>0?Math.max(0,Math.min(100,savedP/target*100)):0;return `<div class="savingProjectSummary ${p.active?'active':''}"><div><span>${p.icon}</span><div><b>${p.label}</b><small>${p.active?'Attivo':'In pausa'}${p.note?' · '+esc(p.note):''}</small></div><strong>${euro(savedP)}${target>0?' / '+euro(target):''}</strong></div><div class="progressTrack"><i style="width:${pctP}%"></i></div></div>`}).join('');
  savingsResult.textContent=incomeTot>0?euro(saved):'—';
+ if(bankExpenseTotal)bankExpenseTotal.textContent=euro(tot);
+ if(bankGoalQuickText){
+  if(!incomeTot)bankGoalQuickText.textContent=goal?`Questo mese vogliamo risparmiare ${euro(goal)}`:'Decidi quanto vuoi risparmiare questo mese';
+  else if(goal<=0)bankGoalQuickText.textContent='Decidi quanto vuoi risparmiare questo mese';
+  else if(saved>=goal)bankGoalQuickText.textContent=`Volevamo risparmiare ${euro(goal)} · superato ✓`;
+  else bankGoalQuickText.textContent=`Vogliamo risparmiare ${euro(goal)} · mancano ${euro(Math.max(0,goal-saved))}`;
+ }
  let pct=incomeTot>0&&goal>0?Math.max(0,Math.min(100,saved/goal*100)):0;savingsProgressBar.style.width=pct+'%';
  if(!incomeTot)savingsReportText.textContent='Aggiungi le entrate del mese per calcolare il risparmio reale.';
- else if(goal<=0)savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Imposta un obiettivo per confrontarlo.`;
- else if(saved>=goal)savingsReportText.textContent=`Obiettivo raggiunto: ${euro(saved)} messi da parte su ${euro(goal)}.`;
- else savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Mancano ${euro(Math.max(0,goal-saved))} all’obiettivo di ${euro(goal)}.`;
+ else if(goal<=0)savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Decidi quanto vuoi risparmiare questo mese.`;
+ else if(saved>=goal)savingsReportText.textContent=`Avete messo da parte ${euro(saved)}: ${euro(Math.max(0,saved-goal))} in più di quanto avevate deciso.`;
+ else savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Mancano ${euro(Math.max(0,goal-saved))} per arrivare a ${euro(goal)}.`;
  let expenseDiff=tot-prevTot,saveDiff=(incomeTot&&prevIncome)?saved-prevSaved:null,currentByMacro={},prevByMacro={};
  MONEY_MACROS.forEach(m=>{currentByMacro[m.id]=0;prevByMacro[m.id]=0});
  all.forEach(x=>currentByMacro[macroForExpense(x)]+=Number(x.amount||0));
  prevAll.forEach(x=>prevByMacro[macroForExpense(x)]+=Number(x.amount||0));
  let biggest=MONEY_MACROS.map(m=>({id:m.id,diff:currentByMacro[m.id]-prevByMacro[m.id],icon:m.icon})).sort((a,b)=>b.diff-a.diff)[0];
- savingsCompare.innerHTML=`<span>${expenseDiff>0?'🔺':expenseDiff<0?'🔻':'•'} Spese ${expenseDiff===0?'uguali':`${euro(Math.abs(expenseDiff))} ${expenseDiff>0?'in più':'in meno'}`}</span>${saveDiff===null?'':`<span>${saveDiff>=0?'🌱':'↘️'} Risparmio ${euro(Math.abs(saveDiff))} ${saveDiff>=0?'in più':'in meno'}</span>`}${biggest&&biggest.diff>0?`<span>${biggest.icon} ${biggest.id} +${euro(biggest.diff)}</span>`:''}`;
+ if(saveDiff!==null)savingsCompare.innerHTML=`<span>${saveDiff>=0?'🌱':'↘️'} ${euro(Math.abs(saveDiff))} ${saveDiff>=0?'in più':'in meno'} rispetto al mese scorso</span>`;
+ else if(prevAll.length||prevIncome)savingsCompare.innerHTML=`<span>${expenseDiff>0?'🔺':expenseDiff<0?'🔻':'•'} Spese ${expenseDiff===0?'uguali al mese scorso':`${euro(Math.abs(expenseDiff))} ${expenseDiff>0?'in più':'in meno'} del mese scorso`}</span>`;
+ else savingsCompare.innerHTML='';
+ if(bankSpendingCompare){
+  const pieces=[];
+  if(prevAll.length)pieces.push(expenseDiff===0?'Le spese sono uguali al mese scorso.':`Questo mese avete speso ${euro(Math.abs(expenseDiff))} ${expenseDiff>0?'in più':'in meno'} rispetto al mese scorso.`);
+  if(biggest&&biggest.diff>0)pieces.push(`${biggest.icon} ${biggest.id} è aumentata di ${euro(biggest.diff)}.`);
+  bankSpendingCompare.textContent=pieces.join(' ')||'Qui vedrai come si dividono le spese del mese.';
+ }
  incomeList.innerHTML=incomeRows.length?incomeRows.map(x=>`<div class="row"><span>＋</span><div class="grow"><b>${esc(x.name)}</b><div class="meta">${x.person==='family'?'Famiglia':personName(x.person)} · Fagiolini Bank</div></div><b>${euro(x.amount)}</b><button class="del" data-income-del="${x.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessuna entrata registrata</b><span>Aggiungile per calcolare il risparmio reale.</span></div>';
  incomeList.querySelectorAll('[data-income-del]').forEach(b=>b.onclick=()=>{s.incomes=s.incomes.filter(x=>x.id!==b.dataset.incomeDel);save();renderMoney()});
 
@@ -1996,6 +2020,18 @@ function renderMoney(){
 
  let totals={};MONEY_MACROS.forEach(m=>totals[m.id]=0);
  all.forEach(x=>totals[macroForExpense(x)]=(totals[macroForExpense(x)]||0)+Number(x.amount||0));
+ if(bankSpendSummary){
+  const top=MONEY_MACROS.filter(m=>totals[m.id]>0).sort((a,b)=>totals[b.id]-totals[a.id]).slice(0,2);
+  bankSpendSummary.textContent=top.length?top.map(m=>`${m.icon} ${m.id} ${euro(totals[m.id])}`).join(' · '):'Nessuna spesa registrata';
+ }
+ if(bankJarsSummary){
+  const activeProjects=[vp,cp].filter(p=>p.active);
+  bankJarsSummary.textContent=activeProjects.length?activeProjects.map(p=>`${p.icon} ${p.label} ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}`).join(' · '):'Vacanze e Natale sono in pausa';
+ }
+ if(bankMovesSummary){
+  const recent=[...incomeRows.map(x=>({...x,_kind:'in'})),...all.map(x=>({...x,_kind:'out'}))].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,2);
+  bankMovesSummary.textContent=recent.length?recent.map(x=>`${x._kind==='in'?'＋':'−'} ${x.name} ${euro(x.amount)}`).join(' · '):'Nessun movimento questo mese';
+ }
  renderMoneyPie(totals,tot);
 
  let a=moneyMacroFilter?all.filter(x=>macroForExpense(x)===moneyMacroFilter):all;
@@ -2051,6 +2087,10 @@ moneyNext.onclick=()=>{if(moneyOffset<0){moneyOffset++;moneyMacroFilter=null;ren
 function renderSubscriptions(){
  let a=[...s.subscriptions].sort((x,y)=>x.dueDate.localeCompare(y.dueDate));
  let soon=a.filter(x=>{let d=Math.ceil((dateObj(x.dueDate)-dateObj(dateKey()))/86400000);return d>=0&&d<=7});
+ if(bankBillsSummary){
+  const next=a.find(x=>x.dueDate>=dateKey())||a[0];
+  bankBillsSummary.textContent=next?`${next.name} · ${birthLabel(next.dueDate)} · ${euro(next.amount)}`:'Nessuna bolletta in arrivo';
+ }
  subscriptionStats.innerHTML=`<div class="stat"><span>ATTIVE</span><b>${a.length}</b></div><div class="stat"><span>ENTRO 7 GIORNI</span><b>${soon.length}</b></div>`;
  subscriptionList.innerHTML=a.length?a.map(x=>`<div class="row ${x.dueDate<dateKey()?'overdue':''}"><span>${x.category==='Trasporti'?'🚆':'💳'}</span><div class="grow"><b>${esc(x.name)}</b><div class="meta">${personName(x.owner)} · ${birthLabel(x.dueDate)} · ${esc(x.frequency)} · 🔔 ${x.reminderDays}g</div></div><b>${euro(x.amount)}</b><button class="primary smallBtn" data-subpay="${x.id}">Pagata</button><button class="del" data-subdel="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna scadenza registrata.</div>';
  subscriptionList.querySelectorAll('[data-subpay]').forEach(b=>b.onclick=()=>{let x=s.subscriptions.find(v=>v.id===b.dataset.subpay);s.expenses.push({id:crypto.randomUUID(),name:x.name,amount:Number(x.amount),category:x.category,person:x.owner==='family'?null:x.owner,month:monthKey(new Date()),date:dateKey(),recurring:false,source:'subscription',sourceId:x.id});if(x.frequency==='once')s.subscriptions=s.subscriptions.filter(v=>v.id!==x.id);else{x.lastPaid=dateKey();x.dueDate=nextSubDate(x.dueDate,x.frequency)}save();renderMoney();renderSubscriptions()});

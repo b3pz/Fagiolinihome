@@ -93,7 +93,7 @@
   </div>
 
   <button class="dashboardCard savingsHomeCard" data-go="money">
-    <div class="dashboardCardHead"><span class="dashboardIcon">💶</span><div><small>RISPARMI</small><h3>Questo mese</h3></div><em>›</em></div>
+    <div class="dashboardCardHead"><span class="dashboardIcon">💶</span><div><small>FAGIOLINI BANK</small><h3>Questo mese</h3></div><em>›</em></div>
     <div id="homeSavingsBrief" class="dashboardBigText"></div>
     <div class="progressTrack"><i id="homeSavingsProgress"></i></div>
     <p id="homeSavingsText" class="dashboardNote"></p>
@@ -319,7 +319,7 @@
 
   <div class="organizeGrid">
     <button class="organizeCard" data-go="shop"><span>🛒</span><div><b>Spesa</b><small id="organizeShopText">Lista della spesa</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="money"><span>💶</span><div><b>Risparmi</b><small id="organizeMoneyText">Spese e obiettivi</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="money"><span>💶</span><div><b>Fagiolini Bank</b><small id="organizeMoneyText">Risparmi, spese e bollette</small></div><em>›</em></button>
     <button class="organizeCard" data-go="health"><span>❤️</span><div><b>Salute</b><small id="organizeHealthText">Visite e medicine</small></div><em>›</em></button>
     <button class="organizeCard" data-go="auto"><span>🚗</span><div><b>Auto</b><small id="organizeAutoText">Scadenze e costi</small></div><em>›</em></button>
     <button class="organizeCard" data-go="maintenance"><span>🔧</span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Manutenzioni</small></div><em>›</em></button>
@@ -488,96 +488,44 @@
   <div id="shopList" class="card"></div>
 </section>
 
-<section id="money" class="view">
-  <div class="sectionTitle pageIntro"><div><small>FAGIOLINI BANK</small><h2>💶 Risparmi</h2><p class="muted">Un unico conto famiglia: JJ + Kiki + entrate comuni, meno tutte le spese.</p></div></div>
-  <div class="monthSwitch card"><button id="moneyPrev">←</button><h3 id="moneyMonth"></h3><button id="moneyNext">→</button></div>
+<section id="money" class="view bankSimpleView">
+  <div class="sectionTitle pageIntro"><div><small>FAGIOLINI BANK</small><h2>💶 La nostra banca</h2><p class="muted">Quanto entra, quanto esce e quanto riusciamo a mettere da parte.</p></div></div>
+  <div class="monthSwitch card bankMonthSwitch"><button id="moneyPrev">←</button><h3 id="moneyMonth"></h3><button id="moneyNext">→</button></div>
 
-<div class="card bankCard">
-    <div class="sectionTitle compact"><div><small>CONTO UNICO</small><h3>🏦 Fagiolini Bank</h3></div><strong id="bankIncomeTotal">€0</strong></div>
-    <p class="reportText">Qui confluiscono tutte le entrate del mese. Il totale è sempre la somma di JJ, Kiki e Famiglia.</p>
-    <div id="bankSourceBreakdown" class="bankSourceBreakdown"></div>
-  </div>
-
-  <div class="card savingsReportCard">
-    <div class="sectionTitle compact"><div><small>IN BREVE</small><h3>Risparmio del mese</h3></div><strong id="savingsResult">€0</strong></div>
-    <div class="progressTrack savingsProgress"><i id="savingsProgressBar"></i></div>
-    <p id="savingsReportText" class="reportText"></p>
-    <div id="savingsCompare" class="compareChips"></div>
-  </div>
-
-  <div id="moneyStats" class="stats"></div>
-
-  <div class="financeFormsGrid">
-    <form id="incomeForm" class="card form compactFinanceForm">
-      <h3>＋ Entrata Fagiolini Bank</h3>
-      <input id="incomeName" placeholder="Es. Stipendio, rimborso, regalo..." required>
-      <input id="incomeAmount" type="number" min="0" step="0.01" placeholder="Importo €" required>
-      <label class="fieldLabel">Da chi arriva?
-        <select id="incomePerson"><option value="jj">JJ</option><option value="kiki">Kiki</option><option value="family">Famiglia</option></select>
-      </label>
-      <button class="primary">Aggiungi al conto</button>
-    </form>
-    <form id="savingsGoalForm" class="card form compactFinanceForm">
-      <h3>🎯 Obiettivo</h3>
-      <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="savingsGoalInput" type="number" min="0" step="10" placeholder="Es. 500"></label>
-      <button>Salva obiettivo</button>
-    </form>
-  </div>
-
-  <div class="card savingsProjectsCard">
-    <div class="sectionTitle compact"><div><small>OBIETTIVI SPECIALI</small><h3>🏖️ Vacanze & 🎄 Natale</h3></div></div>
-    <p class="muted">Sono salvadanai-promemoria: puoi attivarli solo quando servono, segnare quanto vuoi mettere da parte e lasciare una nota.</p>
-    <div id="savingsProjectsPreview" class="savingsProjectsPreview"></div>
-    <form id="savingsProjectsForm" class="savingsProjectsForm">
-      <div class="savingProjectEditor">
-        <div class="savingProjectTitle"><span>🏖️</span><div><b>Vacanze</b><small>Viaggi, ferie, weekend</small></div><label class="switchLabel"><input id="vacationActive" type="checkbox"> Attivo</label></div>
-        <div class="twoCols"><label class="fieldLabel">Obiettivo €<input id="vacationTarget" type="number" min="0" step="10" placeholder="Es. 1200"></label><label class="fieldLabel">Già messo da parte €<input id="vacationSaved" type="number" min="0" step="10" placeholder="Es. 300"></label></div>
-        <label class="fieldLabel">Nota<input id="vacationNote" placeholder="Es. Calabria agosto, hotel da prenotare..."></label>
-      </div>
-      <div class="savingProjectEditor">
-        <div class="savingProjectTitle"><span>🎄</span><div><b>Natale</b><small>Regali, pranzi e feste</small></div><label class="switchLabel"><input id="christmasActive" type="checkbox"> Attivo</label></div>
-        <div class="twoCols"><label class="fieldLabel">Obiettivo €<input id="christmasTarget" type="number" min="0" step="10" placeholder="Es. 500"></label><label class="fieldLabel">Già messo da parte €<input id="christmasSaved" type="number" min="0" step="10" placeholder="Es. 100"></label></div>
-        <label class="fieldLabel">Nota<input id="christmasNote" placeholder="Es. Budget regali e pranzo..."></label>
-      </div>
-      <button class="primary fullBtn">Salva Vacanze e Natale</button>
-    </form>
-  </div>
-
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>ENTRATE</small><h3>Movimenti in entrata</h3></div></div>
-    <div id="incomeList"></div>
-  </div>
-
-  <div class="card moneyChartCard">
-    <div class="sectionTitle compact"><div><small>QUESTO MESE</small><h3>Dove spendiamo</h3></div><button id="moneyClearFilter" class="smallBtn">Tutte</button></div>
-    <div class="moneyChartLayout">
-      <div id="moneyPie" class="moneyPie"><div class="moneyPieCenter"><small>Totale</small><b id="moneyPieTotal">€0</b></div></div>
-      <div id="moneyMacroLegend" class="moneyMacroLegend"></div>
+  <div class="card bankSimpleHero">
+    <div class="bankSimpleHeroTop"><div><small>QUESTO MESE</small><h3>Risparmio</h3></div><strong id="savingsResult">€0</strong></div>
+    <div class="bankHeroNumbers">
+      <div><span>Entrate</span><b id="bankIncomeTotal">€0</b></div>
+      <div><span>Spese</span><b id="bankExpenseTotal">€0</b></div>
     </div>
-    <div id="moneyFilterLabel" class="tiny"></div>
+    <div class="bankGoalLine"><span id="bankGoalQuickText">Quanto vogliamo risparmiare questo mese?</span><button id="bankEditGoalBtn" class="textAction">Modifica</button></div>
+    <div class="progressTrack savingsProgress"><i id="savingsProgressBar"></i></div>
+    <p id="savingsReportText" class="reportText bankReportText"></p>
+    <div id="savingsCompare" class="compareChips bankCompare"></div>
   </div>
 
-  <form id="moneyForm" class="card form">
-    <label class="fieldLabel">Descrizione<input id="moneyName" placeholder="Es. Affitto, luce, cinema..." required></label>
-    <label class="fieldLabel">Importo<input id="moneyAmount" type="number" min="0" step="0.01" placeholder="€" required></label>
-    <label class="fieldLabel">Dove la mettiamo?
-      <select id="moneyCat">
-        <option>Casa</option><option>Spesa</option><option>Bollette</option><option>Auto</option>
-        <option>Bambini</option><option>Salute</option><option>Svago</option><option>Personali</option><option>Altro</option>
-      </select>
-    </label>
-    <label class="check"><input id="moneyRecurring" type="checkbox"> Si ripete ogni mese</label>
-    <button class="primary">Aggiungi spesa</button>
-  </form>
-
-  <div class="card"><h3 id="moneyListTitle">Le spese di questo mese</h3><div id="moneyList"></div></div>
-  <div class="card"><h3>Riepilogo spese</h3><div id="moneyCategories"></div></div>
-
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3>⏰ Scadenze</h3></div><button id="addSubscriptionBtn">＋</button></div>
-    <div id="subscriptionStats" class="stats"></div>
-    <div id="subscriptionList"></div>
+  <div class="bankQuickActions">
+    <button id="bankAddIncomeBtn" class="bankAction income"><span>＋</span><b>Entrata</b></button>
+    <button id="bankAddExpenseBtn" class="bankAction expense"><span>−</span><b>Spesa</b></button>
+    <button id="bankAddBillBtn" class="bankAction bill"><span>＋</span><b>Bolletta</b></button>
   </div>
+
+  <div class="bankSimpleMenu">
+    <button id="bankSpendCardBtn" class="bankMenuCard">
+      <span class="bankMenuIcon">📊</span><div><b>Dove spendiamo</b><small id="bankSpendSummary">Guarda il grafico del mese</small></div><em>›</em>
+    </button>
+    <button id="bankJarsBtn" class="bankMenuCard">
+      <span class="bankMenuIcon">🐷</span><div><b>Salvadanai</b><small id="bankJarsSummary">Vacanze e Natale</small></div><em>›</em>
+    </button>
+    <button id="bankBillsBtn" class="bankMenuCard">
+      <span class="bankMenuIcon">💳</span><div><b>Bollette</b><small id="bankBillsSummary">Prossime scadenze</small></div><em>›</em>
+    </button>
+    <button id="bankMovesBtn" class="bankMenuCard">
+      <span class="bankMenuIcon">🧾</span><div><b>Ultimi movimenti</b><small id="bankMovesSummary">Entrate e spese recenti</small></div><em>›</em>
+    </button>
+  </div>
+
+  <div id="moneyStats" hidden></div>
 </section>
 </main>
 
@@ -590,6 +538,77 @@
 </nav>
 </div>
 
+
+<dialog id="moneyIncomeDialog"><form id="incomeForm" class="dialogBox bankDialogBox">
+  <div class="sectionTitle compact"><div><small>FAGIOLINI BANK</small><h3>＋ Aggiungi un'entrata</h3></div><button type="button" data-close="moneyIncomeDialog">✕</button></div>
+  <p class="muted">Stipendio, rimborso, regalo o qualsiasi somma che entra nel conto famiglia.</p>
+  <label class="fieldLabel">Cos'è?<input id="incomeName" placeholder="Es. Stipendio, rimborso, affitto..." required></label>
+  <label class="fieldLabel">Quanto?<input id="incomeAmount" type="number" min="0" step="0.01" placeholder="Importo €" required></label>
+  <label class="fieldLabel">Da chi arriva?<select id="incomePerson"><option value="jj">JJ</option><option value="kiki">Kiki</option><option value="family">Famiglia</option></select></label>
+  <button class="primary fullBtn">Aggiungi entrata</button>
+</form></dialog>
+
+<dialog id="moneyExpenseDialog"><form id="moneyForm" class="dialogBox bankDialogBox">
+  <div class="sectionTitle compact"><div><small>FAGIOLINI BANK</small><h3>− Aggiungi una spesa</h3></div><button type="button" data-close="moneyExpenseDialog">✕</button></div>
+  <label class="fieldLabel">Per cosa?<input id="moneyName" placeholder="Es. Spesa, luce, cinema..." required></label>
+  <label class="fieldLabel">Quanto?<input id="moneyAmount" type="number" min="0" step="0.01" placeholder="€" required></label>
+  <label class="fieldLabel">Dove la mettiamo?<select id="moneyCat"><option>Casa</option><option>Spesa</option><option>Bollette</option><option>Auto</option><option>Bambini</option><option>Salute</option><option>Svago</option><option>Personali</option><option>Altro</option></select></label>
+  <label class="check"><input id="moneyRecurring" type="checkbox"> Si ripete ogni mese</label>
+  <button class="primary fullBtn">Aggiungi spesa</button>
+</form></dialog>
+
+<dialog id="moneySavingsDialog"><div class="dialogBox bankDialogBox bankSavingsDialogContent">
+  <div class="sectionTitle compact"><div><small>RISPARMIO</small><h3>🐷 Salvadanai</h3></div><button type="button" data-close="moneySavingsDialog">✕</button></div>
+  <form id="savingsGoalForm" class="bankInlineForm">
+    <h3>Questo mese</h3>
+    <label class="fieldLabel">Quanto vogliamo risparmiare questo mese?<input id="savingsGoalInput" type="number" min="0" step="10" placeholder="Es. 500"></label>
+    <button class="primary fullBtn">Salva</button>
+  </form>
+  <div class="bankDialogDivider"></div>
+  <div class="sectionTitle compact"><div><small>PER LE COSE IMPORTANTI</small><h3>Vacanze e Natale</h3></div></div>
+  <p class="muted">Qui segniamo quanto vogliamo mettere da parte. Non è quanto vogliamo spendere.</p>
+  <div id="savingsProjectsPreview" class="savingsProjectsPreview"></div>
+  <form id="savingsProjectsForm" class="savingsProjectsForm">
+    <div class="savingProjectEditor">
+      <div class="savingProjectTitle"><span>🏖️</span><div><b>Vacanze</b><small>Viaggi, ferie, weekend</small></div><label class="switchLabel"><input id="vacationActive" type="checkbox"> Mostra</label></div>
+      <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="vacationTarget" type="number" min="0" step="10" placeholder="Es. 1200"></label>
+      <label class="fieldLabel">Quanto abbiamo già messo da parte?<input id="vacationSaved" type="number" min="0" step="10" placeholder="Es. 300"></label>
+      <label class="fieldLabel">Nota<input id="vacationNote" placeholder="Es. Calabria agosto, hotel da prenotare..."></label>
+    </div>
+    <div class="savingProjectEditor">
+      <div class="savingProjectTitle"><span>🎄</span><div><b>Natale</b><small>Regali, pranzi e feste</small></div><label class="switchLabel"><input id="christmasActive" type="checkbox"> Mostra</label></div>
+      <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="christmasTarget" type="number" min="0" step="10" placeholder="Es. 500"></label>
+      <label class="fieldLabel">Quanto abbiamo già messo da parte?<input id="christmasSaved" type="number" min="0" step="10" placeholder="Es. 100"></label>
+      <label class="fieldLabel">Nota<input id="christmasNote" placeholder="Es. Regali e pranzo di Natale..."></label>
+    </div>
+    <button class="primary fullBtn">Salva i salvadanai</button>
+  </form>
+</div></dialog>
+
+<dialog id="moneySpendingDialog"><div class="dialogBox bankDialogBox bankWideDialog">
+  <div class="sectionTitle compact"><div><small>QUESTO MESE</small><h3>📊 Dove spendiamo</h3></div><button type="button" data-close="moneySpendingDialog">✕</button></div>
+  <div class="moneyChartCard">
+    <p id="bankSpendingCompare" class="reportText bankSpendingCompare"></p>
+    <div class="sectionTitle compact"><div></div><button id="moneyClearFilter" class="smallBtn">Tutte</button></div>
+    <div class="moneyChartLayout"><div id="moneyPie" class="moneyPie"><div class="moneyPieCenter"><small>Totale</small><b id="moneyPieTotal">€0</b></div></div><div id="moneyMacroLegend" class="moneyMacroLegend"></div></div>
+    <div id="moneyFilterLabel" class="tiny"></div>
+  </div>
+  <div class="bankDialogDivider"></div>
+  <h3>Riepilogo per categoria</h3><div id="moneyCategories"></div>
+</div></dialog>
+
+<dialog id="moneyMovesDialog"><div class="dialogBox bankDialogBox bankWideDialog">
+  <div class="sectionTitle compact"><div><small>CRONOLOGIA</small><h3>🧾 Movimenti</h3></div><button type="button" data-close="moneyMovesDialog">✕</button></div>
+  <div class="cardlessSection"><h3>Entrate</h3><div id="bankSourceBreakdown" class="bankSourceBreakdown"></div><div id="incomeList"></div></div>
+  <div class="bankDialogDivider"></div>
+  <div class="cardlessSection"><h3 id="moneyListTitle">Spese di questo mese</h3><div id="moneyList"></div></div>
+</div></dialog>
+
+<dialog id="moneyBillsDialog"><div class="dialogBox bankDialogBox bankWideDialog">
+  <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3>💳 Prossime scadenze</h3></div><div class="dialogHeadActions"><button id="addSubscriptionBtn" type="button">＋</button><button type="button" data-close="moneyBillsDialog">✕</button></div></div>
+  <div id="subscriptionStats" class="stats"></div>
+  <div id="subscriptionList"></div>
+</div></dialog>
 
 <dialog id="reminderDialog"><form id="reminderForm" class="dialogBox">
   <div class="sectionTitle compact"><h3>📅 Evento / promemoria</h3><button type="button" data-close="reminderDialog">✕</button></div>
