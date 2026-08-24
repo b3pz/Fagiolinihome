@@ -217,6 +217,11 @@ function nextBirthdayDate(b,from=new Date()){
  return k
 }
 function birthdayText(b){return `${b.name}${b.relation?' · '+b.relation:''}`}
+function normalizePersonName(v){return String(v||'').trim().toLocaleLowerCase('it-IT').replace(/[^a-z0-9à-ÿ]+/g,' ')}
+function isOwnFamilyBirthdayDuplicate(b){
+ const own=[...s.children.map(c=>({name:c.name,date:c.birthDate})),...Object.values(ADULTS).map(a=>({name:a.name,date:a.birthDate}))];
+ return own.some(x=>x.date&&b?.date&&x.date.slice(5)===b.date.slice(5)&&normalizePersonName(x.name)===normalizePersonName(b.name));
+}
 function actionLabel(type,person){if(type==='pappa')return person==='kiko'?'Pasto / latte':person==='astro'?'Pappa':'Pasto';return META[type]?.[1]||type}
 
 
@@ -489,7 +494,7 @@ function collectReminders(){
    note:x.note||'',triggerDate:subtractDays(x.date,days)
   })
  });
- s.birthdays.forEach(b=>{
+ s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)).forEach(b=>{
   let d=nextBirthdayDate(b),days=7;if(!d)return;
   out.push({key:reminderKey('birthday',b.id,d),source:'birthday',sourceId:b.id,icon:'🎂',title:`Compleanno di ${b.name}`,date:d,time:'',reminderDays:days,notify:'both',note:b.note||b.relation||'',triggerDate:subtractDays(d,days)})
  });
@@ -889,9 +894,9 @@ function renderHome(){
  const workToday=(s.workStatus||[]).filter(w=>today>=w.startDate&&today<=w.endDate);
  workToday.forEach(w=>familyBits.push(`${workStatusIcon(w.type)} ${personName(w.person)} · ${workStatusLabel(w.type)}`));
  s.health.filter(h=>h.date===today).slice(0,2).forEach(h=>familyBits.push(`${h.kind==='visit'?'🩺':'💊'} ${personName(h.person)} · ${h.title}${h.time?' '+h.time:''}`));
- s.birthdays.filter(b=>birthdayMatchesDate(b,today)).forEach(b=>familyBits.push(`🎂 Oggi è il compleanno di ${b.name}`));
- if(!s.birthdays.some(b=>birthdayMatchesDate(b,today))){
-  let nextB=s.birthdays.map(b=>({...b,next:nextBirthdayDate(b,now)})).sort((a,b)=>a.next.localeCompare(b.next))[0];
+ s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,today)).forEach(b=>familyBits.push(`🎂 Oggi è il compleanno di ${b.name}`));
+ if(!s.birthdays.some(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,today))){
+  let nextB=s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)).map(b=>({...b,next:nextBirthdayDate(b,now)})).sort((a,b)=>a.next.localeCompare(b.next))[0];
   if(nextB){let days=Math.round((dateObj(nextB.next)-dateObj(today))/86400000);if(days>0&&days<=7)familyBits.push(`🎂 ${nextB.name} tra ${days} ${days===1?'giorno':'giorni'}`)}
  }
  homeFamilyBrief.innerHTML=familyBits.length?familyBits.map(x=>`<span>${esc(x)}</span>`).join(''):'<span>Oggi tutto tranquillo per la famiglia.</span>';
@@ -1565,7 +1570,7 @@ function dayData(k){
  ownBirthdays.filter(b=>b.date&&b.date.slice(5)===k.slice(5)).forEach(b=>out.push({icon:'♥',text:`Compleanno di ${b.name} · Tanti auguri!`,source:'familyBirthday',id:b.id}));
 
  // Compleanni amici e parenti: ricorrono ogni anno
- s.birthdays.filter(b=>birthdayMatchesDate(b,k)).forEach(b=>out.push({
+ s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,k)).forEach(b=>out.push({
   icon:'♥',text:`Compleanno di ${b.name}${b.relation?' · '+b.relation:''}`,source:'birthday',id:b.id
  }));
 
@@ -1643,7 +1648,7 @@ if(birthdayForm)birthdayForm.onsubmit=e=>{
 };
 function renderBirthdayPreview(){
  if(!birthdayPreview)return;
- let now=new Date(),rows=(s.birthdays||[]).map(b=>({...b,next:nextBirthdayDate(b,now)})).sort((a,b)=>a.next.localeCompare(b.next));
+ let now=new Date(),rows=(s.birthdays||[]).filter(b=>!isOwnFamilyBirthdayDuplicate(b)).map(b=>({...b,next:nextBirthdayDate(b,now)})).sort((a,b)=>a.next.localeCompare(b.next));
  birthdayPreview.innerHTML=rows.length?rows.slice(0,8).map(b=>`<div class="birthdayRow"><span>🎂</span><div class="grow"><b>${esc(b.name)}</b><small>${esc(b.relation||'')} · ${longDate(dateObj(b.next))}${b.note?' · '+esc(b.note):''}</small></div><button data-birthday-edit="${b.id}">✎</button><button class="del" data-birthday-del="${b.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty compactEmpty"><b>Nessun compleanno salvato</b><span>Aggiungi amici e parenti e compariranno ogni anno nel calendario.</span></div>';
  birthdayPreview.querySelectorAll('[data-birthday-edit]').forEach(b=>b.onclick=()=>openBirthday(b.dataset.birthdayEdit));
  birthdayPreview.querySelectorAll('[data-birthday-del]').forEach(b=>b.onclick=()=>{if(confirm('Eliminare questo compleanno?')){s.birthdays=s.birthdays.filter(x=>x.id!==b.dataset.birthdayDel);save();renderBirthdayPreview()}})

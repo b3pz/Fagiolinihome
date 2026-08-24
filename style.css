@@ -1476,3 +1476,238 @@ dialog[open]{left:0!important;right:0!important;top:0!important;bottom:0!importa
   html.themeDark #menu .mealEdit input,
   html.themeDark #menu .menuCompactSummary{background:var(--card)!important;color:var(--text)!important}
 }
+
+/* =========================================================
+   V10 FINAL — balanced mobile nav + real desktop nav + dark contrast
+   ========================================================= */
+
+/* Explicit nav roles. Desktop has its own in-header navigation. */
+.desktopNav{display:none}
+.mobileNav{display:grid}
+
+/* Dark mode: every information surface must remain dark with readable text. */
+html.themeDark .dashboardHero,
+html.themeDark .dashboardCard,
+html.themeDark .homeDashboardGrid .dashboardCard,
+html.themeDark .menuTodayOverview,
+html.themeDark .menuCompactSummary,
+html.themeDark .menuWeekCard,
+html.themeDark .recipeLibraryCard,
+html.themeDark .sectionSummaryCard,
+html.themeDark .bankSimpleView .card,
+html.themeDark .bankDetailView .card,
+html.themeDark .calendarHead,
+html.themeDark .monthSwitch,
+html.themeDark .calendar,
+html.themeDark .calendarDetails,
+html.themeDark .stats .stat,
+html.themeDark .profileCard,
+html.themeDark .houseRoutineCard,
+html.themeDark .adultCard,
+html.themeDark .homeMiniPair,
+html.themeDark .homeSummaryCard,
+html.themeDark .homeAction{
+  background:var(--card)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+html.themeDark .dashboardHero *,
+html.themeDark .dashboardCard *,
+html.themeDark .menuTodayOverview *,
+html.themeDark .menuCompactSummary *,
+html.themeDark .menuWeekCard *,
+html.themeDark .recipeLibraryCard *,
+html.themeDark .calendarDetails *,
+html.themeDark .stat *,
+html.themeDark .profileCard *,
+html.themeDark .houseRoutineCard *,
+html.themeDark .adultCard *{opacity:1!important}
+html.themeDark .agendaItem,
+html.themeDark .calendarSheetItem,
+html.themeDark .row{color:var(--text)!important;border-color:var(--line)!important}
+html.themeDark .agendaItem b,
+html.themeDark .calendarSheetItem b,
+html.themeDark .row b{color:var(--text)!important}
+html.themeDark .agendaItem small,
+html.themeDark .calendarSheetItem small,
+html.themeDark .meta{color:var(--muted)!important}
+html.themeDark .calDay{color:var(--text)!important}
+html.themeDark .calDay.today{background:#25382d!important}
+html.themeDark .calDay.other{color:#839188!important;opacity:.58!important}
+
+/* iPhone/mobile: flat, compact iOS-style tab bar. No giant raised icons. */
+@media (max-width:699px){
+  :root{--nav-h:74px}
+  .desktopNav{display:none!important}
+  .mobileNav{
+    display:grid!important;
+    position:fixed!important;
+    z-index:999!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:8px!important;
+    width:auto!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:64px!important;
+    transform:none!important;
+    margin:0!important;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom))!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    border:1px solid var(--line)!important;
+    border-radius:20px!important;
+    background:rgba(255,253,249,.96)!important;
+    box-shadow:0 10px 30px rgba(33,52,41,.16)!important;
+    backdrop-filter:blur(18px)!important;
+    overflow:hidden!important;
+  }
+  .mobileNav button,
+  .mobileNav .navHomeCenter{
+    min-height:54px!important;
+    padding:5px 1px!important;
+    border:0!important;
+    border-radius:14px!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:3px!important;
+    opacity:1!important;
+  }
+  .mobileNav button .navIcon,
+  .mobileNav button:not(.navHomeCenter) .navIcon,
+  .mobileNav .navHomeCenter .navIcon{
+    width:25px!important;
+    height:25px!important;
+    min-width:25px!important;
+    min-height:25px!important;
+    margin:0!important;
+    padding:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    color:#536c5e!important;
+    box-shadow:none!important;
+    transform:none!important;
+  }
+  .mobileNav button .navIcon svg,
+  .mobileNav button:not(.navHomeCenter) .navIcon svg,
+  .mobileNav .navHomeCenter .navIcon svg{
+    display:block!important;
+    width:25px!important;
+    height:25px!important;
+    max-width:25px!important;
+    max-height:25px!important;
+  }
+  .mobileNav button small,
+  .mobileNav button:not(.navHomeCenter) small,
+  .mobileNav .navHomeCenter small{
+    display:block!important;
+    margin:0!important;
+    font-size:11px!important;
+    line-height:1.05!important;
+    font-weight:850!important;
+    letter-spacing:0!important;
+    color:#536c5e!important;
+    white-space:nowrap!important;
+  }
+  .mobileNav button.active,
+  .mobileNav .navHomeCenter.active{
+    background:#e8f1e7!important;
+  }
+  .mobileNav button.active .navIcon,
+  .mobileNav button.active small{color:var(--accent-dark)!important}
+  .mobileNav .navHomeCenter.active .navIcon{
+    width:31px!important;
+    height:31px!important;
+    min-width:31px!important;
+    min-height:31px!important;
+    padding:5px!important;
+    border-radius:11px!important;
+    background:var(--accent-dark)!important;
+    color:#fff!important;
+  }
+  .mobileNav .navHomeCenter.active .navIcon svg{
+    width:21px!important;height:21px!important;max-width:21px!important;max-height:21px!important
+  }
+  html.themeDark .mobileNav{background:rgba(19,31,24,.97)!important;border-color:#31463a!important}
+  html.themeDark .mobileNav button .navIcon,
+  html.themeDark .mobileNav button small{color:#b9c8be!important}
+  html.themeDark .mobileNav button.active{background:#263b2f!important}
+  html.themeDark .mobileNav button.active .navIcon,
+  html.themeDark .mobileNav button.active small{color:#fff!important}
+  html.themeDark .mobileNav .navHomeCenter.active .navIcon{background:#5e9d70!important;color:#fff!important}
+  .app{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
+}
+
+/* Desktop/Mac: navigation belongs in the header and never floats above content. */
+@media (min-width:1000px){
+  .mobileNav{display:none!important}
+  header{
+    display:grid!important;
+    grid-template-columns:minmax(235px,1fr) auto minmax(260px,1fr)!important;
+    gap:18px!important;
+    align-items:center!important;
+  }
+  .headerTools{justify-self:end!important}
+  .desktopNav{
+    display:flex!important;
+    position:static!important;
+    z-index:auto!important;
+    width:auto!important;
+    min-width:560px!important;
+    max-width:none!important;
+    height:58px!important;
+    min-height:58px!important;
+    transform:none!important;
+    margin:0!important;
+    padding:5px!important;
+    grid-template-columns:none!important;
+    gap:4px!important;
+    border:1px solid var(--line)!important;
+    border-radius:20px!important;
+    background:rgba(255,253,249,.92)!important;
+    box-shadow:0 8px 26px rgba(20,40,27,.09)!important;
+    backdrop-filter:blur(16px)!important;
+  }
+  .desktopNav button,
+  .desktopNav .navHomeCenter{
+    display:flex!important;
+    flex:1 1 0!important;
+    min-width:96px!important;
+    min-height:46px!important;
+    height:46px!important;
+    padding:8px 12px!important;
+    gap:7px!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:0!important;
+    border-radius:14px!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    opacity:1!important;
+  }
+  .desktopNav .navIcon,
+  .desktopNav button:not(.navHomeCenter) .navIcon,
+  .desktopNav .navHomeCenter .navIcon{
+    width:22px!important;height:22px!important;margin:0!important;padding:0!important;background:transparent!important;color:currentColor!important;border-radius:0!important;box-shadow:none!important;transform:none!important
+  }
+  .desktopNav .navIcon svg{width:22px!important;height:22px!important}
+  .desktopNav small,
+  .desktopNav button:not(.navHomeCenter) small,
+  .desktopNav .navHomeCenter small{font-size:13px!important;line-height:1!important;margin:0!important;letter-spacing:0!important;font-weight:850!important}
+  .desktopNav button.active{background:var(--soft)!important;color:var(--accent-dark)!important}
+  html.themeDark .desktopNav{background:rgba(18,30,23,.94)!important;border-color:#31463a!important}
+  html.themeDark .desktopNav button{color:#becbc2!important}
+  html.themeDark .desktopNav button.active{background:#263b2f!important;color:#fff!important}
+  main{padding-bottom:30px!important}
+}
+
+@media (min-width:1000px) and (max-width:1180px){
+  header{grid-template-columns:1fr auto!important}
+  .desktopNav{grid-column:1/-1;grid-row:2;justify-self:center;min-width:600px!important}
+  .headerTools{grid-column:2;grid-row:1}
+}
