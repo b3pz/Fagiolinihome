@@ -18,3 +18,11 @@ Login e sincronizzazione Supabase, sessione 3 ore, Telegram backend, Calendario 
 
 ## Deploy GitHub Pages
 Caricare tutti i file direttamente nella root del repository, senza creare sottocartelle.
+
+## V9.4.1 UI FIX
+- Dark mode rebuilt for real contrast: no white/light cards with faded text.
+- Pasti dark-mode inputs/cards/tabs corrected.
+- iPhone bottom navigation redesigned smaller and more iOS-like.
+- Home remains central but no longer oversized.
+- Desktop floating navigation preserved, with extra content clearance so it does not hide forms.
+- No auth, Supabase, Telegram or data model changes.

@@ -1224,3 +1224,255 @@ dialog::backdrop{background:rgba(31,37,33,.54);backdrop-filter:blur(5px)}
  .homeHeroText{font-size:21px!important}
  dialog[open]{width:min(620px,80vw)!important}
 }
+
+/* =========================================================
+   V9.4.1 UI FIX — TRUE DARK CONTRAST + BALANCED MOBILE NAV
+   Patch-only: no data/auth/cloud logic changes.
+   ========================================================= */
+
+/* ---------- TRUE DARK: never leave light cards inside dark pages ---------- */
+html.themeDark{
+  --bg:#0b1410;
+  --card:#15221b;
+  --text:#f5f8f5;
+  --muted:#c4cec7;
+  --line:#32453a;
+  --soft:#1d2c24;
+  --accent:#78b487;
+  --accent-dark:#a8d5b1;
+  --cream:#15221b;
+  --shadow:0 14px 34px rgba(0,0,0,.30);
+}
+html.themeDark body,
+html.themeDark .app{background:var(--bg)!important;color:var(--text)!important}
+html.themeDark .card,
+html.themeDark .dashboardCard,
+html.themeDark .menuDay,
+html.themeDark .mealBox,
+html.themeDark .menuPersonBlock,
+html.themeDark .todayHeroCard,
+html.themeDark .organizeCard,
+html.themeDark .familyMemberCard,
+html.themeDark .bankSimpleHero,
+html.themeDark .bankMenuCard,
+html.themeDark .savingProjectCard,
+html.themeDark .sectionSummaryCard,
+html.themeDark .wasteDayCard,
+html.themeDark .calendarSheet,
+html.themeDark .calDay,
+html.themeDark .customRecipeRow,
+html.themeDark .recipeRowIcon,
+html.themeDark details,
+html.themeDark .birthdayCelebration{
+  background:var(--card)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+html.themeDark .dashboardCard *,
+html.themeDark .card *,
+html.themeDark .menuDay *,
+html.themeDark .organizeCard *,
+html.themeDark .bankMenuCard *,
+html.themeDark .savingProjectCard *{
+  text-shadow:none!important;
+}
+html.themeDark h1,
+html.themeDark h2,
+html.themeDark h3,
+html.themeDark h4,
+html.themeDark strong,
+html.themeDark b,
+html.themeDark .dashboardBigText,
+html.themeDark .dashboardBigText b,
+html.themeDark .dashboardCardHead h3,
+html.themeDark .simpleSummaryLine b,
+html.themeDark .menuDay h3,
+html.themeDark .mealEdit label,
+html.themeDark .sectionTitle h3,
+html.themeDark .pageIntro h2{
+  color:var(--text)!important;
+}
+html.themeDark .muted,
+html.themeDark .dashboardNote,
+html.themeDark .meta,
+html.themeDark small,
+html.themeDark .mealBox span,
+html.themeDark .mealEdit label,
+html.themeDark .adaptation,
+html.themeDark .simpleSummaryLine span,
+html.themeDark .familyMiniSummary,
+html.themeDark .fieldHint{
+  color:var(--muted)!important;
+  opacity:1!important;
+}
+html.themeDark input,
+html.themeDark select,
+html.themeDark textarea,
+html.themeDark .mealEdit input{
+  background:#0f1914!important;
+  color:#f8faf8!important;
+  border-color:#3b5144!important;
+  box-shadow:none!important;
+}
+html.themeDark input::placeholder,
+html.themeDark textarea::placeholder{color:#98a69d!important;opacity:1!important}
+html.themeDark button:not(.primary):not(.navHomeCenter),
+html.themeDark .menuDayTabs button,
+html.themeDark .customRecipeRow button,
+html.themeDark .autoQuickActions button{
+  color:var(--text);
+}
+html.themeDark .menuTodayBrief button,
+html.themeDark .menuPrimaryActions button,
+html.themeDark .menuDayTabs button,
+html.themeDark .mealSwap,
+html.themeDark .recipeBtn,
+html.themeDark .balanceChip{
+  background:var(--soft)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+html.themeDark .menuPrimaryActions .primary,
+html.themeDark .autoQuickActions .primary,
+html.themeDark .primary{
+  background:#4f9363!important;
+  color:#fff!important;
+  border-color:#4f9363!important;
+}
+html.themeDark .menuDayTabs button.active{
+  background:#4f9363!important;
+  color:#fff!important;
+}
+html.themeDark .progressTrack,
+html.themeDark .savingProjectTrack{background:#29392f!important}
+html.themeDark .dashboardIcon,
+html.themeDark .organizeCard>span,
+html.themeDark .recipeRowIcon{background:#203128!important;color:#dfeee2!important}
+html.themeDark .birthdayCelebration strong{color:#f5e3ad!important}
+html.themeDark .birthdayCelebration p{color:#d5ded7!important}
+html.themeDark .birthdayCelebration{background:linear-gradient(135deg,#2a291d,#18231c)!important;border-color:#746744!important}
+
+/* ---------- DIALOGS: centered, high contrast, short-action only ---------- */
+html.themeDark dialog .dialogBox{background:#17241d!important;color:#f6f9f6!important;border:1px solid #34483b!important}
+dialog[open]{left:0!important;right:0!important;top:0!important;bottom:0!important;margin:auto!important}
+
+/* ---------- MOBILE NAV: compact iOS-like bar, no giant icons ---------- */
+@media (max-width:699px){
+  :root{--nav-h:78px}
+  .app{padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
+  nav{
+    left:10px!important;
+    right:10px!important;
+    bottom:8px!important;
+    transform:none!important;
+    width:auto!important;
+    max-width:none!important;
+    min-height:68px!important;
+    height:auto!important;
+    padding:7px 7px calc(7px + env(safe-area-inset-bottom))!important;
+    border:1px solid color-mix(in srgb,var(--line) 88%,transparent)!important;
+    border-radius:22px!important;
+    background:color-mix(in srgb,var(--card) 94%,transparent)!important;
+    box-shadow:0 10px 28px rgba(20,36,27,.18)!important;
+    backdrop-filter:blur(18px)!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    overflow:visible!important;
+  }
+  nav button{
+    min-height:54px!important;
+    padding:5px 1px!important;
+    gap:2px!important;
+    border-radius:15px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  nav button:not(.navHomeCenter) .navIcon{
+    width:25px!important;
+    height:25px!important;
+    margin:0!important;
+    padding:0!important;
+    background:transparent!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+  }
+  nav button:not(.navHomeCenter) small{
+    font-size:11.5px!important;
+    line-height:1!important;
+    margin-top:3px!important;
+    font-weight:850!important;
+  }
+  nav .navHomeCenter{
+    overflow:visible!important;
+  }
+  nav .navHomeCenter .navIcon{
+    width:54px!important;
+    height:54px!important;
+    margin:-15px auto 0!important;
+    padding:12px!important;
+    border-radius:19px!important;
+    background:var(--accent-dark)!important;
+    color:#fff!important;
+    box-shadow:0 8px 18px rgba(27,73,48,.24)!important;
+  }
+  nav .navHomeCenter small{
+    font-size:12px!important;
+    line-height:1!important;
+    margin-top:1px!important;
+    font-weight:950!important;
+  }
+  nav button.active:not(.navHomeCenter){
+    background:var(--soft)!important;
+    box-shadow:none!important;
+  }
+  html.themeDark nav{background:rgba(18,30,23,.96)!important;border-color:#31463a!important}
+  html.themeDark nav button{color:#b8c7bd!important}
+  html.themeDark nav button.active{color:#f7faf7!important}
+  html.themeDark nav .navHomeCenter .navIcon{background:#4f9363!important;color:#fff!important}
+}
+
+/* ---------- MOBILE: text remains large, controls/icons stay proportional ---------- */
+@media (max-width:699px){
+  html,body{font-size:18px!important}
+  .pageIntro h2{font-size:34px!important}
+  .homeWelcome h2{font-size:35px!important}
+  .dashboardCardHead h3{font-size:22px!important}
+  .dashboardBigText b{font-size:27px!important}
+  .card h3,.sectionTitle h3{font-size:22px!important}
+  .muted{font-size:16.5px!important}
+  button,input,select,textarea{font-size:17px!important}
+  .homeHeroCompact{height:210px!important}
+}
+
+/* ---------- DESKTOP: keep the nice floating pill, but never hide content ---------- */
+@media (min-width:1000px){
+  main{padding-bottom:120px!important}
+  nav{
+    bottom:18px!important;
+    height:64px!important;
+    min-height:64px!important;
+    width:min(760px,calc(100vw - 120px))!important;
+    border-radius:23px!important;
+    padding:5px 12px!important;
+    background:color-mix(in srgb,var(--card) 96%,transparent)!important;
+  }
+  nav button{min-height:52px!important;padding:5px 10px!important}
+  nav .navIcon,nav button:not(.navHomeCenter) .navIcon,nav .navHomeCenter .navIcon{
+    width:23px!important;height:23px!important;margin:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important
+  }
+  nav small,nav button:not(.navHomeCenter) small,nav .navHomeCenter small{font-size:13px!important}
+  html.themeDark nav{background:rgba(18,30,23,.96)!important;border-color:#31463a!important}
+  html.themeDark nav button{color:#b9c8be!important}
+  html.themeDark nav button.active{color:#fff!important;background:#22362a!important}
+
+  /* Dark desktop menu: remove every remaining white island */
+  html.themeDark #menu .menuWeekCard,
+  html.themeDark #menu .menuDay,
+  html.themeDark #menu .menuPersonBlock,
+  html.themeDark #menu .mealEdit,
+  html.themeDark #menu .mealEdit input,
+  html.themeDark #menu .menuCompactSummary{background:var(--card)!important;color:var(--text)!important}
+}
