@@ -1,22 +1,20 @@
-# Fagiolini V13 — Family First
+# Fagiolini V13.1 — Mobile Native Polish
 
-V13 parte dallo ZIP stabile realmente presente su GitHub e cambia soprattutto l’esperienza d’uso, non la logica già funzionante.
+Patch costruita sulla V13 stabile.
 
-## Novità principali
-- Home più immediata con **Segna al volo**: Pappa, Cacca, Sonno e Pannolino sono raggiungibili direttamente dalla Home.
-- Per le registrazioni dei bambini basta scegliere Caty o Kiko; il diario apre già sulla voce corretta, con data e ora modificabili anche nel passato.
-- Accesso diretto al **Calendario** dalla Home.
-- Pulsante **Evento** dalla Home per aggiungere rapidamente un appuntamento/promemoria familiare.
-- Pulsante **Altro** che mantiene il pannello rapido completo esistente.
-- Restyle globale **Apple-inspired / soft native**: superfici più continue, meno effetto gestionale, ombre più leggere, gerarchie più pulite e controlli più simili a un'app nativa.
-- Dialoghi mobile più simili a bottom sheet.
-- Calendario raffinato con weekend più leggibili.
-- Dark mode adattata al nuovo design.
-- Desktop landscape mantenuto.
+## Obiettivo
+Preservare il layout desktop V13 (che è già nella direzione giusta) e correggere definitivamente il comportamento iPhone.
 
-## Cosa NON è stato riscritto
-Login, Supabase, sincronizzazione, timeout sessione, Telegram/Cron, Piano Casa, Bank, Pasti, Auto, Salute, Rifiuti e struttura dati restano quelli della base stabile caricata dall'utente.
+## Modifiche
+- Bottom navigation mobile riscritta con override finale dedicato.
+- Icone mobile fissate a 25px: nessuna vecchia regola XL può più ingrandirle.
+- Home centrale senza cerchi/floating: è una tab normale, evidenziata da una pillola verde quando attiva.
+- Barra mobile più bassa, arrotondata e con blur leggero in stile app nativa.
+- Spazio sotto ai contenuti corretto per evitare sovrapposizioni.
+- Superfici Home leggermente alleggerite su iPhone per allinearsi al linguaggio desktop V13.
+- Dark mode adattata alla nuova barra.
+- Desktop V13 lasciato invariato.
+- Cache busting aggiornato a 13.1.0.
 
-## Flusso pensato per l'uso quotidiano
-Home → Segna al volo → scegli il bambino → Salva.
-Il Diario resta il posto completo per consultare, correggere e analizzare lo storico.
+## Logica
+Nessuna modifica a Supabase, Telegram, dati, Casa, Pasti, Calendario, Diario o Fagiolini Bank.

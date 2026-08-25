@@ -2296,3 +2296,143 @@ html.themeDark .calDay.weekend{background:#202b24!important}.themeDark .calDay.s
   .homeQuickCapture{display:grid;grid-template-columns:260px 1fr;align-items:center;gap:24px;padding:18px 22px}
   .homeQuickCaptureHead{margin:0;display:block}.homeQuickCaptureHead h3{font-size:25px}.homeQuickMore{margin-top:10px}
 }
+
+/* =========================================================
+   FAGIOLINI V13.1 — MOBILE NATIVE POLISH
+   Final mobile-only navigation + spacing override.
+   Desktop V13 layout is intentionally untouched.
+   ========================================================= */
+@media (max-width:699px){
+  :root{--mobile-nav-h:74px}
+
+  .app{
+    padding-bottom:calc(var(--mobile-nav-h) + 22px + env(safe-area-inset-bottom))!important;
+  }
+
+  nav.mobileNav{
+    position:fixed!important;
+    z-index:999!important;
+    left:12px!important;
+    right:12px!important;
+    bottom:8px!important;
+    width:auto!important;
+    height:var(--mobile-nav-h)!important;
+    min-height:var(--mobile-nav-h)!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:3px!important;
+    align-items:stretch!important;
+    padding:6px 7px calc(6px + env(safe-area-inset-bottom))!important;
+    border:1px solid rgba(33,74,52,.08)!important;
+    border-radius:24px!important;
+    background:rgba(252,250,246,.95)!important;
+    box-shadow:0 10px 35px rgba(29,48,37,.12)!important;
+    backdrop-filter:blur(22px)!important;
+    -webkit-backdrop-filter:blur(22px)!important;
+    overflow:hidden!important;
+    transform:none!important;
+  }
+
+  nav.mobileNav > button,
+  nav.mobileNav > button.navHomeTab{
+    all:unset!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    width:100%!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:4px 2px!important;
+    border-radius:17px!important;
+    color:#536b5e!important;
+    font-family:inherit!important;
+    text-align:center!important;
+    cursor:pointer!important;
+  }
+
+  nav.mobileNav > button .navIcon,
+  nav.mobileNav > button.navHomeTab .navIcon,
+  nav.mobileNav > button.navHomeTab.active .navIcon{
+    display:grid!important;
+    place-items:center!important;
+    width:25px!important;
+    height:25px!important;
+    min-width:25px!important;
+    min-height:25px!important;
+    max-width:25px!important;
+    max-height:25px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    transform:none!important;
+    color:currentColor!important;
+    overflow:hidden!important;
+  }
+
+  nav.mobileNav > button .navIcon > svg,
+  nav.mobileNav > button.navHomeTab .navIcon > svg,
+  nav.mobileNav > button.navHomeTab.active .navIcon > svg{
+    display:block!important;
+    width:25px!important;
+    height:25px!important;
+    min-width:25px!important;
+    min-height:25px!important;
+    max-width:25px!important;
+    max-height:25px!important;
+    margin:0!important;
+    padding:0!important;
+    transform:none!important;
+  }
+
+  nav.mobileNav > button small,
+  nav.mobileNav > button.navHomeTab small{
+    display:block!important;
+    margin:0!important;
+    font-size:11.5px!important;
+    line-height:1!important;
+    font-weight:800!important;
+    letter-spacing:0!important;
+    color:currentColor!important;
+  }
+
+  nav.mobileNav > button.active,
+  nav.mobileNav > button.navHomeTab.active{
+    background:#e4eee5!important;
+    color:#1e5739!important;
+    box-shadow:inset 0 0 0 1px rgba(42,94,62,.10)!important;
+  }
+
+  /* Home is highlighted exactly like a native tab: no circle, no floating object. */
+  nav.mobileNav > button.navHomeTab.active{
+    background:#2f6c49!important;
+    color:#fff!important;
+  }
+
+  /* Slightly calmer mobile surfaces, matching the desktop V13 language. */
+  #home .dashboardCard,
+  #home .homeQuickCapture,
+  #home .familyDashboardCard,
+  #home .savingsHomeCard,
+  #home .wasteHomeCard{
+    border-radius:23px!important;
+    box-shadow:0 7px 24px rgba(39,52,44,.065)!important;
+  }
+
+  #home .homeDashboardGrid{gap:10px!important}
+  #home .dashboardCardHead .dashboardIcon{width:46px!important;height:46px!important}
+
+  html.themeDark nav.mobileNav{
+    background:rgba(18,25,21,.96)!important;
+    border-color:rgba(255,255,255,.08)!important;
+    box-shadow:0 10px 35px rgba(0,0,0,.30)!important;
+  }
+  html.themeDark nav.mobileNav > button{color:#b8c6bd!important}
+  html.themeDark nav.mobileNav > button.active{background:#293a30!important;color:#fff!important}
+  html.themeDark nav.mobileNav > button.navHomeTab.active{background:#4f8a64!important;color:#fff!important}
+}
