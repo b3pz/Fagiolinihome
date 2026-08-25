@@ -2191,3 +2191,108 @@ html.themeDark body{background:var(--v11-bg)!important;color:var(--v11-ink)!impo
   }
   .app{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
 }
+
+/* =========================================================
+   FAGIOLINI V13 — FAMILY FIRST / APPLE-INSPIRED SOFT NATIVE
+   Visual-only layer + one-tap family capture. Existing logic stays intact.
+   ========================================================= */
+:root{
+  --v13-bg:#f4f3ef;
+  --v13-surface:rgba(255,255,255,.82);
+  --v13-surface-strong:#fff;
+  --v13-ink:#15271e;
+  --v13-secondary:#66746c;
+  --v13-green:#426d51;
+  --v13-green-soft:#e9f0e9;
+  --v13-hairline:rgba(23,62,43,.09);
+  --v13-shadow:0 12px 38px rgba(42,54,46,.07);
+}
+body{background:var(--v13-bg);letter-spacing:-.01em}
+.card,.dashboardCard,.nativeSection,.diaryHero{border-color:transparent!important;box-shadow:var(--v13-shadow)!important;background:var(--v13-surface)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.card,.dashboardCard,.nativeSection{border-radius:26px!important}
+header h1,.homeWelcome h2,.view h2{letter-spacing:-.035em}
+.dashboardCard{transition:transform .16s ease,box-shadow .16s ease;background:var(--v13-surface)!important}
+.dashboardCard:active{transform:scale(.987)}
+.dashboardCardHead{border-bottom:0!important}.dashboardCardHead small{font-weight:800;letter-spacing:.12em}.dashboardCardHead em{font-size:24px;opacity:.45}
+.dashboardIcon{border-radius:15px!important;background:var(--v13-green-soft)!important;color:var(--v13-green)!important}
+.homeWelcome{padding:6px 2px 2px}.homeWelcome>div>small{opacity:.65}.homeProfileButton{border:0!important;background:var(--v13-surface)!important;box-shadow:var(--v13-shadow)!important}
+
+/* Home quick capture: the main family-first interaction */
+.homeQuickCapture{background:var(--v13-surface-strong);border:1px solid var(--v13-hairline);border-radius:28px;padding:18px;margin:8px 0 18px;box-shadow:var(--v13-shadow)}
+.homeQuickCaptureHead{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}
+.homeQuickCaptureHead h3{margin:2px 0 0;font-size:23px;letter-spacing:-.025em}
+.homeQuickCaptureHead small{font-size:11px;font-weight:850;color:var(--v13-secondary)}
+.homeQuickMore{border:0;background:var(--v13-green-soft);color:var(--v13-green);font-weight:800;border-radius:999px;padding:9px 13px}
+.homeQuickCaptureGrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.homeQuickCaptureGrid button{border:0;background:transparent;border-radius:18px;padding:9px 4px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-width:0;color:var(--v13-ink)}
+.homeQuickCaptureGrid button:active{background:var(--v13-green-soft)}
+.quickCaptureIcon{width:48px;height:48px;border-radius:17px;display:grid;place-items:center;background:#eef2ed;color:var(--v13-green);box-shadow:inset 0 0 0 1px rgba(32,79,51,.04)}
+.quickCaptureIcon .uiIcon{width:25px;height:25px}
+.homeQuickCaptureGrid b{font-size:12.5px;line-height:1.05;white-space:nowrap}
+
+/* Child chooser sheet */
+.homeChildPickerSheet{max-width:470px!important}
+.sheetGrabber{display:none}
+.homeChildPickerHint{margin:-4px 0 14px;line-height:1.45}
+.homeChildPickerPeople{display:grid;gap:10px}
+.homeChildPickerPeople button{width:100%;border:0;background:#f4f6f3;border-radius:20px;padding:10px;display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;text-align:left}
+.homeChildPickerPeople img{width:58px;height:58px;border-radius:18px;object-fit:cover}
+.homeChildPickerPeople span{display:grid;gap:3px}.homeChildPickerPeople b{font-size:18px}.homeChildPickerPeople small{letter-spacing:0;font-size:13px}.homeChildPickerPeople em{font-style:normal;font-size:26px;color:#93a199}
+
+/* Make secondary screens feel like continuous app surfaces, not box stacks */
+#todayAgenda .agendaItem,.diaryRow,.calendarSheetItem,.birthdayRow,.bankMenuCard{border-bottom:1px solid var(--v13-hairline)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+#todayAgenda .agendaItem:last-child,.diaryRow:last-child,.calendarSheetItem:last-child{border-bottom:0!important}
+.nativeSection{padding:20px!important}
+
+/* Calendar refinement */
+.calendar.card{padding:14px!important;overflow:hidden}
+.calGrid{gap:3px!important;background:transparent!important}
+.calDay{border:0!important;border-radius:14px!important;box-shadow:none!important;min-height:78px!important;background:rgba(255,255,255,.48)!important}
+.calDay.weekend{background:#edf2eb!important}.calDay.sunday{background:#e7eee7!important}
+.calDay.today{outline:2px solid #5f9368!important;background:#eef5ed!important}
+.calDay.selected{box-shadow:inset 0 0 0 2px #396b4b!important;background:#e1ece2!important}
+
+/* Native-feeling dialogs on iPhone */
+dialog{padding:0!important}
+dialog::backdrop{background:rgba(13,22,17,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.dialogBox{border:0!important;box-shadow:0 30px 80px rgba(15,24,18,.2)!important}
+
+/* Dark version: charcoal + deep green rather than washed-out boxes */
+html.themeDark{--v13-bg:#0c100e;--v13-surface:rgba(25,32,28,.94);--v13-surface-strong:#19201c;--v13-ink:#f5f7f5;--v13-secondary:#b4beb7;--v13-green:#8fbea0;--v13-green-soft:#25372c;--v13-hairline:rgba(255,255,255,.09);--v13-shadow:0 16px 42px rgba(0,0,0,.24)}
+html.themeDark body{background:var(--v13-bg)!important;color:var(--v13-ink)!important}
+html.themeDark .homeQuickCapture,html.themeDark .dashboardCard,html.themeDark .card,html.themeDark .nativeSection,html.themeDark .diaryHero{background:var(--v13-surface)!important;border-color:var(--v13-hairline)!important;color:var(--v13-ink)!important}
+html.themeDark .homeQuickCaptureGrid button{color:var(--v13-ink)!important}
+html.themeDark .quickCaptureIcon,html.themeDark .homeChildPickerPeople button{background:#26322b!important;color:#d8eee0!important}
+html.themeDark .homeQuickMore{background:#26372c!important;color:#cde5d4!important}
+html.themeDark .calDay{background:#18201b!important;color:#f4f7f5!important}
+html.themeDark .calDay.weekend{background:#202b24!important}.themeDark .calDay.sunday{background:#253129!important}
+
+@media(max-width:699px){
+  .app{padding-left:14px!important;padding-right:14px!important}
+  header{padding-top:14px!important;padding-bottom:12px!important}
+  header h1{font-size:32px!important}
+  .homeWelcome h2{font-size:31px!important}
+  .homeQuickCapture{margin-left:-2px;margin-right:-2px;padding:16px 10px 12px;border-radius:24px}
+  .homeQuickCaptureGrid{grid-template-columns:repeat(3,1fr);gap:5px 2px}
+  .homeQuickCaptureGrid button{min-height:74px;padding:7px 2px}
+  .quickCaptureIcon{width:44px;height:44px;border-radius:15px}.quickCaptureIcon .uiIcon{width:23px;height:23px}
+  .homeQuickCaptureGrid b{font-size:12px}
+  .dashboardCard{padding:17px!important;border-radius:24px!important}
+  .dashboardHero{min-height:0!important}
+  .homeDashboardGrid{gap:10px!important}
+  .familyDashboardCard{padding-bottom:14px!important}
+  .homeChildPickerSheet{position:fixed!important;left:8px!important;right:8px!important;bottom:8px!important;top:auto!important;margin:0!important;width:auto!important;max-width:none!important;border-radius:28px!important;padding:11px 16px calc(18px + env(safe-area-inset-bottom))!important}
+  .sheetGrabber{display:block;width:42px;height:5px;border-radius:999px;background:#c8cec9;margin:0 auto 14px}
+}
+
+@media(min-width:1000px){
+  /* Desktop stays landscape but becomes calmer, closer to a native dashboard */
+  .app{max-width:1480px!important}
+  #home.on{gap:16px!important}
+  #home .homeQuickCapture{grid-column:1/-1!important;margin:0!important}
+  #home .dashboardHero{grid-column:1/8!important;min-height:230px!important}
+  #home .homeDashboardGrid{grid-column:8/13!important}
+  .homeQuickCaptureGrid{grid-template-columns:repeat(6,minmax(110px,1fr));max-width:900px}
+  .homeQuickCapture{display:grid;grid-template-columns:260px 1fr;align-items:center;gap:24px;padding:18px 22px}
+  .homeQuickCaptureHead{margin:0;display:block}.homeQuickCaptureHead h3{font-size:25px}.homeQuickMore{margin-top:10px}
+}

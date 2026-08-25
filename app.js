@@ -2210,6 +2210,29 @@ window.addEventListener('offline',()=>setCloudStatus('error','Offline'));
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'){if(await checkSessionExpiry(true))return;if(cloudReady)pullCloudState(true)}});
 
 resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se sei connesso, il reset verrà sincronizzato anche sugli altri dispositivi.')){localStorage.removeItem(KEY);s=structuredClone(DEFAULT);save();go('home')}};
+
+
+/* V13 — FAMILY FIRST QUICK CAPTURE */
+let homeQuickPresetType='pappa';
+function homeQuickLabel(type){return ({pappa:'Pappa / latte',cacca:'Cacca',nanna:'Sonno',pannolino:'Pannolino',bagnetto:'Bagnetto',farmaco:'Medicina',crescita:'Crescita',nota:'Nota'})[type]||'Diario'}
+function openHomeChildPicker(type){
+ homeQuickPresetType=type||'pappa';
+ const dlg=document.getElementById('homeChildPickerDialog'),list=document.getElementById('homeChildPickerPeople'),title=document.getElementById('homeChildPickerTitle');
+ if(!dlg||!list)return;
+ if(title)title.textContent=`${homeQuickLabel(homeQuickPresetType)} · per chi?`;
+ const kids=s.children.filter(c=>c.type!=='dog');
+ list.innerHTML=kids.map(c=>`<button type="button" data-home-child="${c.id}"><img src="${avatarFor(c.id)}" alt="${esc(c.name)}"><span><b>${esc(c.name)}</b><small>${ageFromBirth(c.birthDate)}</small></span><em>›</em></button>`).join('');
+ list.querySelectorAll('[data-home-child]').forEach(btn=>btn.onclick=()=>{
+   dlg.close();
+   current=btn.dataset.homeChild;
+   openChildDiary(null,homeQuickPresetType);
+ });
+ if(!dlg.open)openDialogSafe(dlg);
+}
+document.querySelectorAll('[data-home-child-quick]').forEach(btn=>btn.onclick=()=>openHomeChildPicker(btn.dataset.homeChildQuick));
+const homeQuickMoreEl=document.getElementById('homeQuickMore');if(homeQuickMoreEl)homeQuickMoreEl.onclick=openQuick;
+const homeAddAppointmentEl=document.getElementById('homeAddAppointment');if(homeAddAppointmentEl)homeAddAppointmentEl.onclick=()=>openReminder(null,{kind:'appointment',person:'family',date:dateKey(),reminderDays:0,notify:'both'});
+
 function renderAll(){renderHome();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('waste').classList.contains('on'))renderWaste();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].some(id=>document.getElementById(id)?.classList.contains('on'))){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 renderHome();fillHealthPeople();startSessionActivityTracking();bootCloud();

@@ -1,25 +1,22 @@
-# Fagiolini V12.2 — Home Nav Hard Reset + Desktop Landscape
+# Fagiolini V13 — Family First
 
-Patch mirata sulla V12.1.
+V13 parte dallo ZIP stabile realmente presente su GitHub e cambia soprattutto l’esperienza d’uso, non la logica già funzionante.
 
-## Correzione Home mobile
-La voce Home della bottom navigation usa ora una classe mobile dedicata (`navHomeTab`) e non eredita più nessuna delle vecchie regole `navHomeCenter` accumulate nelle versioni precedenti.
+## Novità principali
+- Home più immediata con **Segna al volo**: Pappa, Cacca, Sonno e Pannolino sono raggiungibili direttamente dalla Home.
+- Per le registrazioni dei bambini basta scegliere Caty o Kiko; il diario apre già sulla voce corretta, con data e ora modificabili anche nel passato.
+- Accesso diretto al **Calendario** dalla Home.
+- Pulsante **Evento** dalla Home per aggiungere rapidamente un appuntamento/promemoria familiare.
+- Pulsante **Altro** che mantiene il pannello rapido completo esistente.
+- Restyle globale **Apple-inspired / soft native**: superfici più continue, meno effetto gestionale, ombre più leggere, gerarchie più pulite e controlli più simili a un'app nativa.
+- Dialoghi mobile più simili a bottom sheet.
+- Calendario raffinato con weekend più leggibili.
+- Dark mode adattata al nuovo design.
+- Desktop landscape mantenuto.
 
-- niente cerchio
-- niente pulsante floating
-- niente icona che esce dal contenitore
-- icona Home 25×25 px come le altre
-- Home evidenziata soltanto da una pillola morbida quando attiva
-- barra 5 voci compatta e fissa
+## Cosa NON è stato riscritto
+Login, Supabase, sincronizzazione, timeout sessione, Telegram/Cron, Piano Casa, Bank, Pasti, Auto, Salute, Rifiuti e struttura dati restano quelli della base stabile caricata dall'utente.
 
-## Desktop
-Mantiene il layout landscape della V12.1:
-- larghezza ampia
-- dashboard a griglia
-- navigazione desktop separata
-- bottom navigation mobile nascosta su desktop
-
-## Cache
-`style.css?v=12.2.0` e `app.js?v=12.2.0`.
-
-Nessuna modifica alla logica di login, Supabase, Telegram o dati famiglia.
+## Flusso pensato per l'uso quotidiano
+Home → Segna al volo → scegli il bambino → Salva.
+Il Diario resta il posto completo per consultare, correggere e analizzare lo storico.

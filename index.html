@@ -16,7 +16,7 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=12.2.0">
+<link rel="stylesheet" href="style.css?v=13.0.0">
 </head>
 <body data-page="home">
 
@@ -83,6 +83,22 @@
     <span class="birthdayCelebrationIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-gift"></use></svg></span>
     <div><small>OGGI FESTEGGIAMO</small><strong id="birthdayCelebrationTitle">Tanti auguri!</strong><p id="birthdayCelebrationText"></p></div>
   </div>
+
+
+  <section class="homeQuickCapture" aria-labelledby="homeQuickTitle">
+    <div class="homeQuickCaptureHead">
+      <div><small>SEGNA AL VOLO</small><h3 id="homeQuickTitle">Cosa vuoi segnare?</h3></div>
+      <button class="homeQuickMore" id="homeQuickMore" type="button">Altro</button>
+    </div>
+    <div class="homeQuickCaptureGrid">
+      <button type="button" data-home-child-quick="pappa"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-bottle"></use></svg></span><b>Pappa</b></button>
+      <button type="button" data-home-child-quick="cacca"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-poop"></use></svg></span><b>Cacca</b></button>
+      <button type="button" data-home-child-quick="nanna"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-sleep"></use></svg></span><b>Sonno</b></button>
+      <button type="button" data-home-child-quick="pannolino"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-diaper"></use></svg></span><b>Pannolino</b></button>
+      <button type="button" data-go="calendar"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-calendar"></use></svg></span><b>Calendario</b></button>
+      <button type="button" id="homeAddAppointment"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-plus"></use></svg></span><b>Evento</b></button>
+    </div>
+  </section>
 
   <button class="dashboardCard dashboardHero" data-go="today">
     <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><small>OGGI</small><h3>La nostra giornata</h3></div><em>›</em></div>
@@ -867,6 +883,14 @@
   <button class="primary">Salva</button>
 </form></dialog>
 
+
+<dialog id="homeChildPickerDialog" class="nativeDialog"><div class="dialogBox homeChildPickerSheet">
+  <div class="sheetGrabber" aria-hidden="true"></div>
+  <div class="sectionTitle compact"><div><small>DIARIO BAMBINI</small><h3 id="homeChildPickerTitle">Per chi?</h3></div><button type="button" data-close="homeChildPickerDialog">✕</button></div>
+  <p class="muted homeChildPickerHint">Scegli il bambino. Data e ora saranno già impostate su adesso, ma puoi cambiarle anche nel passato.</p>
+  <div id="homeChildPickerPeople" class="homeChildPickerPeople"></div>
+</div></dialog>
+
 <dialog id="quickDialog"><div class="dialogBox"><div class="sectionTitle compact"><h3>Segna qualcosa</h3><button data-close="quickDialog">✕</button></div><div id="quickPeople" class="peopleGrid dialogPeople"></div><div id="quickActions" class="actions"></div></div></dialog>
 <dialog id="childDiaryDialog"><form id="childDiaryForm" class="dialogBox nativeSheet">
   <div class="sectionTitle compact"><div><small>DIARIO BAMBINI</small><h3 id="childDiaryDialogTitle">Aggiungi al diario</h3></div><button type="button" data-close="childDiaryDialog">✕</button></div>
@@ -905,5 +929,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=12.2.0"></script>
+<script src="app.js?v=13.0.0"></script>
 </body></html>
