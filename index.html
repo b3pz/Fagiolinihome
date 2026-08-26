@@ -16,7 +16,7 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=17.3.0">
+<link rel="stylesheet" href="style.css?v=18.0.0">
 </head>
 <body data-page="home">
 
@@ -134,7 +134,7 @@
   </button>
 
   <button class="dashboardCard wasteHomeCard" data-go="waste">
-    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg></span><div><small>RACCOLTA</small><h3>Rifiuti</h3></div><em>›</em></div>
+    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg></span><div><small>RACCOLTA</small><h3>Rifiuti</h3></div><em>›</em></div>
     <div id="homeWasteText" class="dashboardBigText"></div>
     <p id="homeWasteNextText" class="dashboardNote"></p>
   </button>
@@ -274,7 +274,7 @@
       <div><small>RICETTARIO DI FAMIGLIA</small><h3 class="titleWithIcon smallTitle"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recipe"></use></svg><span>Le nostre ricette</span></h3></div>
       <button id="addCustomRecipeBtn" class="primary">＋ Nuova</button>
     </div>
-    <p class="muted">Le ricette salvate qui vengono preferite quando Fagiolini prepara la settimana.</p>
+    <p class="muted">Le ricette salvate qui saranno le prime che ritrovi quando prepari la settimana.</p>
     <div id="customRecipePreview" class="customRecipePreview"></div>
   </div>
 
@@ -282,8 +282,8 @@
     <summary><span><small>ALTRE OPZIONI</small><b>Preferenze e strumenti</b></span><em>＋</em></summary>
     <div class="disclosureBody">
       <div class="inlineBtns">
-        <button id="generateEmptyMenu">Completa solo i vuoti</button>
-        <button id="undoMenu">Annulla ultima generazione</button>
+        <button id="generateEmptyMenu">Aggiungi solo ciò che manca</button>
+        <button id="undoMenu">Ripristina il menu precedente</button>
         <button data-go="profiles">Preferenze alimentari</button>
       </div>
       <div id="menuBalance" class="menuBalance compactBalance"></div>
@@ -353,7 +353,7 @@
 
 
 <section id="waste" class="view">
-  <div class="sectionTitle pageIntro"><div><small>RACCOLTA PORTA A PORTA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg><span>Rifiuti</span></h2><p class="muted">Così sappiamo subito cosa preparare, senza cercare il calendario.</p></div></div>
+  <div class="sectionTitle pageIntro"><div><small>RACCOLTA PORTA A PORTA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg><span>Rifiuti</span></h2><p class="muted">Così sappiamo subito cosa preparare, senza cercare il calendario.</p></div></div>
 
   <div id="wasteHero" class="wasteHeroGrid"></div>
 
@@ -363,7 +363,7 @@
   </div>
 
   <div class="wasteInfoGrid">
-    <div class="card wasteInfoCard"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg></span><div><b>Vetro</b><p>Va conferito nei contenitori stradali: non fa parte del normale ritiro porta a porta.</p></div></div>
+    <div class="card wasteInfoCard"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg></span><div><b>Vetro</b><p>Va conferito nei contenitori stradali: non fa parte del normale ritiro porta a porta.</p></div></div>
     <div class="card wasteInfoCard"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-note"></use></svg></span><div><b>Supporti igienici</b><p>È un servizio separato, disponibile solo se attivato. Non lo contiamo nel calendario standard.</p></div></div>
   </div>
 </section>
@@ -372,14 +372,14 @@
   <div class="sectionTitle pageIntro"><div><small>TUTTO IL RESTO</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-menu"></use></svg><span>Organizza</span></h2><p class="muted">Le cose importanti che non servono ogni minuto.</p></div></div>
 
   <div class="organizeGrid">
-    <button class="organizeCard" data-go="shop"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><div><b>Spesa</b><small id="organizeShopText">Lista della spesa</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="shop"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><div><b>Da comprare</b><small id="organizeShopText">Alimentari, bambini, Astro, regali e wishlist</small></div><em>›</em></button>
     <button class="organizeCard" data-go="money"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bank"></use></svg></span><div><b>Fagiolini Bank</b><small id="organizeMoneyText">Risparmi, spese e bollette</small></div><em>›</em></button>
     <button class="organizeCard" data-go="health"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-health"></use></svg></span><div><b>Salute</b><small id="organizeHealthText">Visite e medicine</small></div><em>›</em></button>
     <button class="organizeCard" data-go="auto"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-car"></use></svg></span><div><b>Auto</b><small id="organizeAutoText">Scadenze e costi</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="maintenance"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg></span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Manutenzioni</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="maintenance"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg></span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Bollette, tecnici e cose da comprare</small></div><em>›</em></button>
     <button class="organizeCard" data-go="reminders"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg></span><div><b>Promemoria</b><small id="organizeReminderText">Da ricordare</small></div><em>›</em></button>
     <button class="organizeCard" data-go="calendar"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="waste"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg></span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
+    <button class="organizeCard" data-go="waste"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg></span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
   </div>
 
   <div class="organizeGrid organizeGridSecondary">
@@ -410,33 +410,53 @@
   </div>
 </section>
 
-<section id="maintenance" class="view">
-  <div class="sectionTitle pageIntro"><div><small>CASA & LAVORI</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg><span>Manutenzioni</span></h2><p class="muted">Scadenze e lavori importanti della casa.</p></div></div>
+<section id="maintenance" class="view maintenanceV18">
+  <div class="sectionTitle pageIntro"><div><small>PER LA CASA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg><span>Casa & lavori</span></h2><p class="muted">Bollette, interventi e cose da comprare per la casa.</p></div></div>
   <div id="maintenanceSummary" class="card sectionSummaryCard"></div>
 
-  <div class="card">
-    <div class="sectionTitle compact"><div><small>PROGRAMMATE</small><h3>Casa</h3></div><button id="addMaintenanceBtn">＋</button></div>
-    <p class="muted">Caldaia, climatizzatore, idraulico, elettricista e qualsiasi intervento. Le date compaiono automaticamente nel Calendario.</p>
+  <div class="homeServiceGrid">
+    <button type="button" data-go="money-bills"><span><svg class="uiIcon"><use href="icons.svg#icon-card"></use></svg></span><b>Bollette</b><small>Luce, gas, acqua, internet, abbonamenti</small></button>
+    <button type="button" id="maintenanceAddMain"><span><svg class="uiIcon"><use href="icons.svg#icon-tools"></use></svg></span><b>Intervento</b><small>Chi è venuto, cosa ha fatto, quanto è costato</small></button>
+    <button type="button" id="maintenanceShopBtn"><span><svg class="uiIcon"><use href="icons.svg#icon-shop"></use></svg></span><b>Da comprare</b><small>Quello che serve per la casa</small></button>
+  </div>
+
+  <div class="card maintenanceWorkCard">
+    <div class="sectionTitle compact"><div><small>INTERVENTI</small><h3>Lavori di casa</h3></div><button id="addMaintenanceBtn">＋ Aggiungi</button></div>
+    <div class="maintenanceQuickGrid">
+      <button type="button" data-maint-quick="Caldaia"><svg class="uiIcon"><use href="icons.svg#icon-flame"></use></svg><b>Caldaia</b></button>
+      <button type="button" data-maint-quick="Idraulico"><svg class="uiIcon"><use href="icons.svg#icon-water"></use></svg><b>Idraulico</b></button>
+      <button type="button" data-maint-quick="Elettricista"><svg class="uiIcon"><use href="icons.svg#icon-bolt"></use></svg><b>Elettricista</b></button>
+      <button type="button" data-maint-quick="Climatizzatore"><svg class="uiIcon"><use href="icons.svg#icon-snow"></use></svg><b>Clima</b></button>
+      <button type="button" data-maint-quick="Elettrodomestico"><svg class="uiIcon"><use href="icons.svg#icon-plug"></use></svg><b>Elettrodomestici</b></button>
+      <button type="button" data-maint-quick="Altro"><svg class="uiIcon"><use href="icons.svg#icon-plus"></use></svg><b>Altro</b></button>
+    </div>
     <div id="maintenanceList"></div>
   </div>
 </section>
 
-<section id="auto" class="view">
-  <div class="sectionTitle pageIntro"><div><small>AUTO</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-car"></use></svg><span>Auto</span></h2><p class="muted">Scadenze e costi, senza moduli aperti inutilmente.</p></div></div>
+<section id="auto" class="view autoV18">
+  <div class="sectionTitle pageIntro"><div><small>LA NOSTRA AUTO</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-car"></use></svg><span>Auto</span></h2><p class="muted">Tocca quello che devi registrare. Le spese finiscono automaticamente nella Banca.</p></div></div>
   <div id="autoSummary" class="card sectionSummaryCard"></div>
 
-  <div class="autoQuickActions">
-    <button id="autoAddExpenseBtn" class="primary"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-plus"></use></svg><b>Aggiungi spesa</b></button>
-    <button id="addAutoDeadlineBtn"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><b>Aggiungi scadenza</b></button>
+  <div class="autoCategoryGrid">
+    <button type="button" data-auto-expense="Benzina"><span><svg class="uiIcon"><use href="icons.svg#icon-fuel"></use></svg></span><b>Benzina</b></button>
+    <button type="button" data-auto-expense="Meccanico"><span><svg class="uiIcon"><use href="icons.svg#icon-wrench"></use></svg></span><b>Meccanico</b></button>
+    <button type="button" data-auto-expense="Pedaggio"><span><svg class="uiIcon"><use href="icons.svg#icon-road"></use></svg></span><b>Autostrada</b></button>
+    <button type="button" data-auto-expense="Accessorio"><span><svg class="uiIcon"><use href="icons.svg#icon-bag"></use></svg></span><b>Accessori</b></button>
+    <button type="button" data-auto-deadline="Manutenzione"><span><svg class="uiIcon"><use href="icons.svg#icon-tools"></use></svg></span><b>Manutenzione</b></button>
+    <button type="button" data-auto-deadline="Bollo"><span><svg class="uiIcon"><use href="icons.svg#icon-document"></use></svg></span><b>Bollo</b></button>
+    <button type="button" data-auto-deadline="Assicurazione"><span><svg class="uiIcon"><use href="icons.svg#icon-shield"></use></svg></span><b>Assicurazione</b></button>
+    <button type="button" data-auto-deadline="Revisione"><span><svg class="uiIcon"><use href="icons.svg#icon-inspection"></use></svg></span><b>Revisione</b></button>
   </div>
+  <div class="autoSecondaryActions"><button id="autoAddExpenseBtn">＋ Altra spesa</button><button id="addAutoDeadlineBtn">＋ Altra scadenza</button></div>
 
   <div class="card">
-    <div class="sectionTitle compact"><div><small>PROSSIME</small><h3>Scadenze e manutenzione</h3></div></div>
+    <div class="sectionTitle compact"><div><small>DA RICORDARE</small><h3>Scadenze e manutenzione</h3></div></div>
     <div id="autoDeadlineList"></div>
   </div>
 
   <details class="card disclosureCard">
-    <summary><span><small>STORICO</small><b>Costi dell'auto</b></span><em>＋</em></summary>
+    <summary><span><small>STORICO</small><b>Spese dell'auto</b></span><em>＋</em></summary>
     <div class="disclosureBody"><div id="autoExpenseHistory"></div></div>
   </details>
 </section>
@@ -450,7 +470,7 @@
     <div id="calendarGrid" class="calGrid"></div>
   </div>
   <div class="card calendarDayCard">
-    <div class="sectionTitle compact"><div><small>GIORNO SELEZIONATO</small><h3 id="selectedDateTitle">Dettagli</h3></div><button id="calendarAddBtn" class="primary calendarAddBtn">＋ Aggiungi</button></div>
+    <div class="sectionTitle compact"><div><small>GIORNO SELEZIONATO</small><h3 id="selectedDateTitle">Dettagli</h3></div><button id="calendarAddBtn" class="primary calendarAddBtn">＋ Aggiungi al giorno</button></div>
     <div id="calendarDetails"></div>
   </div>
 </section>
@@ -523,18 +543,15 @@
   </details>
 </section>
 
-<section id="shop" class="view">
-  <div class="sectionTitle pageIntro"><div><small>SPESA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg><span>Da comprare</span></h2><p class="muted">La lista della famiglia, senza doppioni.</p></div></div>
-  <div id="shopSummary" class="card sectionSummaryCard"></div>
-  <form id="shopForm" class="card form">
-    <input id="shopText" placeholder="Es. Pannolini" required>
-    <input id="shopQty" placeholder="Qtà">
-    <select id="shopCat"><option>Alimentari</option><option>Bambini</option><option>Casa</option><option>Cane</option><option>Altro</option></select>
-    <input id="shopUrl" type="url" placeholder="Link prodotto (Amazon o altro)">
-    <input id="shopExpected" type="number" min="0" step="0.01" placeholder="Prezzo previsto €">
-    <button class="primary">Aggiungi</button>
-  </form>
-  <div id="shopList" class="card"></div>
+<section id="shop" class="view shopV18">
+  <div class="sectionTitle pageIntro"><div><small>LISTE DI CASA</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg><span>Da comprare</span></h2><p class="muted">Scegli la lista giusta e aggiungi quello che serve.</p></div><button id="shopAddBtn" class="primary compactPrimary">＋ Aggiungi</button></div>
+
+  <div id="shopCategories" class="shopCategoryGrid" aria-label="Liste della spesa"></div>
+  <div id="shopSummary" class="card sectionSummaryCard shopSummaryV18"></div>
+  <div class="card shopListCard">
+    <div class="sectionTitle compact"><div><small>LISTA APERTA</small><h3 id="shopListTitle">Tutto</h3></div><button id="shopShowAllBtn" type="button">Vedi tutto</button></div>
+    <div id="shopList"></div>
+  </div>
 </section>
 
 <section id="money" class="view bankSimpleView">
@@ -542,12 +559,12 @@
   <div class="monthSwitch card bankMonthSwitch"><button id="moneyPrev">←</button><h3 id="moneyMonth"></h3><button id="moneyNext">→</button></div>
 
   <div class="card bankSimpleHero">
-    <div class="bankSimpleHeroTop"><div><small>QUESTO MESE</small><h3>Risparmio</h3></div><strong id="savingsResult">€0</strong></div>
+    <div class="bankSimpleHeroTop"><div><small>QUESTO MESE</small><h3>Soldi del mese</h3><span class="bankHeroExplain">Quello che resta dopo le spese</span></div><div class="bankRemaining"><small>RESTA</small><strong id="savingsResult">€0</strong></div></div>
     <div class="bankHeroNumbers">
       <div><span>Entrate</span><b id="bankIncomeTotal">€0</b></div>
-      <div><span>Spese</span><b id="bankExpenseTotal">€0</b></div>
+      <div><span>Uscite</span><b id="bankExpenseTotal">€0</b></div>
     </div>
-    <div class="bankGoalLine"><span id="bankGoalQuickText">Quanto vogliamo risparmiare questo mese?</span><button id="bankEditGoalBtn" class="textAction" data-go="money-savings">Modifica</button></div>
+    <div class="bankGoalLine"><span id="bankGoalQuickText">Obiettivo del mese: quanto vogliamo mettere da parte?</span><button id="bankEditGoalBtn" class="textAction" data-go="money-savings">Modifica</button></div>
     <div class="progressTrack savingsProgress"><i id="savingsProgressBar"></i></div>
     <p id="savingsReportText" class="reportText bankReportText"></p>
     <div id="savingsCompare" class="compareChips bankCompare"></div>
@@ -564,7 +581,7 @@
       <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-chart"></use></svg></span><div><b>Dove spendiamo</b><small id="bankSpendSummary">Guarda il grafico del mese</small></div><em>›</em>
     </button>
     <button id="bankJarsBtn" class="bankMenuCard" data-go="money-savings">
-      <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-jar"></use></svg></span><div><b>Salvadanai</b><small id="bankJarsSummary">Vacanze e Natale</small></div><em>›</em>
+      <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-jar"></use></svg></span><div><b>Salvadanai</b><small id="bankJarsSummary">Soldi da mettere da parte per Vacanze e Natale</small></div><em>›</em>
     </button>
     <button id="bankBillsBtn" class="bankMenuCard" data-go="money-bills">
       <span class="bankMenuIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-card"></use></svg></span><div><b>Bollette</b><small id="bankBillsSummary">Prossime scadenze</small></div><em>›</em>
@@ -585,19 +602,19 @@
   </form>
   <div class="bankDialogDivider"></div>
   <div class="sectionTitle compact"><div><small>PER LE COSE IMPORTANTI</small><h3>Vacanze e Natale</h3></div></div>
-  <p class="muted">Qui segniamo quanto vogliamo mettere da parte. Non è quanto vogliamo spendere.</p>
+  <div class="bankSavingsExplainer"><svg class="uiIcon"><use href="icons.svg#icon-jar"></use></svg><div><b>Come funziona</b><p>Qui decidi quanti soldi vuoi accumulare <strong>prima</strong> di Vacanze o Natale. Non indica quanto puoi spendere durante la vacanza.</p></div></div>
   <div id="savingsProjectsPreview" class="savingsProjectsPreview"></div>
   <form id="savingsProjectsForm" class="savingsProjectsForm">
     <div class="savingProjectEditor">
       <div class="savingProjectTitle"><span class="savingSprite"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-sun"></use></svg></span><div><b>Vacanze</b><small>Viaggi, ferie, weekend</small></div><label class="switchLabel"><input id="vacationActive" type="checkbox"> Mostra</label></div>
-      <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="vacationTarget" type="number" min="0" step="10" placeholder="Es. 1200"></label>
-      <label class="fieldLabel">Quanto abbiamo già messo da parte?<input id="vacationSaved" type="number" min="0" step="10" placeholder="Es. 300"></label>
+      <label class="fieldLabel">Obiettivo totale da mettere da parte<input id="vacationTarget" type="number" min="0" step="10" placeholder="Es. 1200"></label>
+      <label class="fieldLabel">Già messo da parte<input id="vacationSaved" type="number" min="0" step="10" placeholder="Es. 300"></label>
       <label class="fieldLabel">Nota<input id="vacationNote" placeholder="Es. Calabria agosto, hotel da prenotare..."></label>
     </div>
     <div class="savingProjectEditor">
       <div class="savingProjectTitle"><span class="savingSprite"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tree"></use></svg></span><div><b>Natale</b><small>Regali, pranzi e feste</small></div><label class="switchLabel"><input id="christmasActive" type="checkbox"> Mostra</label></div>
-      <label class="fieldLabel">Quanto vogliamo mettere da parte?<input id="christmasTarget" type="number" min="0" step="10" placeholder="Es. 500"></label>
-      <label class="fieldLabel">Quanto abbiamo già messo da parte?<input id="christmasSaved" type="number" min="0" step="10" placeholder="Es. 100"></label>
+      <label class="fieldLabel">Obiettivo totale da mettere da parte<input id="christmasTarget" type="number" min="0" step="10" placeholder="Es. 500"></label>
+      <label class="fieldLabel">Già messo da parte<input id="christmasSaved" type="number" min="0" step="10" placeholder="Es. 100"></label>
       <label class="fieldLabel">Nota<input id="christmasNote" placeholder="Es. Regali e pranzo di Natale..."></label>
     </div>
     <button class="primary fullBtn">Salva i salvadanai</button>
@@ -620,8 +637,16 @@
   <div class="bankDialogDivider"></div>
   <div class="cardlessSection"><h3 id="moneyListTitle">Spese di questo mese</h3><div id="moneyList"></div></div>
 </div></section>
-<section id="money-bills" class="view bankDetailView"><div class="dialogBox bankDialogBox bankWideDialog">
-  <div class="sectionTitle compact"><div><small>BOLLETTE & ABBONAMENTI</small><h3 class="titleWithIcon smallTitle"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-card"></use></svg><span>Prossime scadenze</span></h3></div><div class="dialogHeadActions"><button id="addSubscriptionBtn" type="button">＋</button><button type="button" data-go="money">← Banca</button></div></div>
+<section id="money-bills" class="view bankDetailView billsV18"><div class="dialogBox bankDialogBox bankWideDialog">
+  <div class="sectionTitle compact"><div><small>CASA E SERVIZI</small><h3 class="titleWithIcon smallTitle"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-card"></use></svg><span>Bollette e abbonamenti</span></h3><p class="muted">Scegli il tipo oppure aggiungi una scadenza libera.</p></div><div class="dialogHeadActions"><button id="addSubscriptionBtn" type="button">＋ Aggiungi</button><button type="button" data-go="money">← Banca</button></div></div>
+  <div class="billQuickGrid" aria-label="Tipi di bolletta">
+    <button type="button" data-sub-quick="Luce"><span><svg class="uiIcon"><use href="icons.svg#icon-bolt"></use></svg></span><b>Luce</b></button>
+    <button type="button" data-sub-quick="Gas"><span><svg class="uiIcon"><use href="icons.svg#icon-flame"></use></svg></span><b>Gas</b></button>
+    <button type="button" data-sub-quick="Acqua"><span><svg class="uiIcon"><use href="icons.svg#icon-water"></use></svg></span><b>Acqua</b></button>
+    <button type="button" data-sub-quick="Internet"><span><svg class="uiIcon"><use href="icons.svg#icon-wifi"></use></svg></span><b>Internet</b></button>
+    <button type="button" data-sub-quick="Telefono"><span><svg class="uiIcon"><use href="icons.svg#icon-phone"></use></svg></span><b>Telefono</b></button>
+    <button type="button" data-sub-quick="Abbonamento"><span><svg class="uiIcon"><use href="icons.svg#icon-card"></use></svg></span><b>Abbonamenti</b></button>
+  </div>
   <div id="subscriptionStats" class="stats"></div>
   <div id="subscriptionList"></div>
 </div></section>
@@ -637,6 +662,16 @@
 </div>
 
 
+<dialog id="shopAddDialog" class="nativeDialog"><form id="shopForm" class="dialogBox nativeSheet shopAddSheet">
+  <div class="sheetGrabber" aria-hidden="true"></div>
+  <div class="sectionTitle compact"><div><small>DA COMPRARE</small><h3 id="shopAddTitle">Aggiungi alla lista</h3></div><button type="button" data-close="shopAddDialog">✕</button></div>
+  <label class="fieldLabel">Cosa serve?<input id="shopText" placeholder="Es. Pannolini" required></label>
+  <div class="twoCols"><label class="fieldLabel">Quantità<input id="shopQty" placeholder="Es. 2 confezioni"></label><label class="fieldLabel">Lista<select id="shopCat"><option>Alimentari</option><option>Bambini</option><option>Astro</option><option>Casa</option><option>Regali</option><option>Wishlist</option></select></label></div>
+  <label class="fieldLabel">Link <small class="fieldHint">facoltativo</small><input id="shopUrl" type="url" placeholder="Amazon o altro"></label>
+  <label class="fieldLabel">Prezzo previsto <small class="fieldHint">facoltativo</small><input id="shopExpected" type="number" min="0" step="0.01" placeholder="€"></label>
+  <button class="primary fullBtn">Aggiungi alla lista</button>
+</form></dialog>
+
 <dialog id="moneyIncomeDialog"><form id="incomeForm" class="dialogBox bankDialogBox">
   <div class="sectionTitle compact"><div><small>FAGIOLINI BANK</small><h3>＋ Aggiungi un'entrata</h3></div><button type="button" data-close="moneyIncomeDialog">✕</button></div>
   <p class="muted">Stipendio, rimborso, regalo o qualsiasi somma che entra nel conto famiglia.</p>
@@ -650,7 +685,7 @@
   <div class="sectionTitle compact"><div><small>FAGIOLINI BANK</small><h3>− Aggiungi una spesa</h3></div><button type="button" data-close="moneyExpenseDialog">✕</button></div>
   <label class="fieldLabel">Per cosa?<input id="moneyName" placeholder="Es. Spesa, luce, cinema..." required></label>
   <label class="fieldLabel">Quanto?<input id="moneyAmount" type="number" min="0" step="0.01" placeholder="€" required></label>
-  <label class="fieldLabel">Dove la mettiamo?<select id="moneyCat"><option>Casa</option><option>Spesa</option><option>Bollette</option><option>Auto</option><option>Bambini</option><option>Salute</option><option>Svago</option><option>Personali</option><option>Altro</option></select></label>
+  <label class="fieldLabel">Dove la mettiamo?<select id="moneyCat"><option>Casa</option><option>Spesa</option><option>Bollette</option><option>Auto</option><option>Astro</option><option>Bambini</option><option>Salute</option><option>Svago</option><option>Personali</option><option>Altro</option></select></label>
   <label class="check"><input id="moneyRecurring" type="checkbox"> Si ripete ogni mese</label>
   <button class="primary fullBtn">Aggiungi spesa</button>
 </form></dialog>
@@ -678,7 +713,7 @@
 
 <dialog id="autoExpenseDialog"><form id="fuelForm" class="dialogBox">
   <div class="sectionTitle compact"><div><small>AUTO</small><h3>Aggiungi una spesa</h3></div><button type="button" data-close="autoExpenseDialog">✕</button></div>
-  <label class="fieldLabel">Tipo<select id="fuelType"><option value="Carburante">Carburante</option><option value="Parcheggio">Parcheggio</option><option value="Pedaggio">Pedaggio</option><option value="Manutenzione">Manutenzione</option><option value="Assicurazione">Assicurazione</option><option value="Bollo">Bollo</option><option value="Revisione">Revisione</option><option value="Gomme">Gomme</option><option value="Altro">Altro</option></select></label>
+  <label class="fieldLabel">Tipo<select id="fuelType"><option value="Benzina">Benzina</option><option value="Meccanico">Meccanico</option><option value="Pedaggio">Autostrada / pedaggio</option><option value="Parcheggio">Parcheggio</option><option value="Accessorio">Accessori</option><option value="Manutenzione">Manutenzione</option><option value="Assicurazione">Assicurazione</option><option value="Bollo">Bollo</option><option value="Revisione">Revisione</option><option value="Gomme">Gomme</option><option value="Altro">Altro</option></select></label>
   <label class="fieldLabel">Importo<input id="fuelAmount" type="number" min="0" step="0.01" placeholder="€" required></label>
   <div class="twoCols"><label class="fieldLabel">Data<input id="fuelDate" type="date" required></label><label class="fieldLabel">Ora<input id="fuelTime" type="time"></label></div>
   <label class="fieldLabel">Km <small class="fieldHint">Facoltativi</small><input id="fuelKm" type="number" min="0" step="1" placeholder="Km auto"></label>
@@ -714,7 +749,7 @@
 <dialog id="calendarDayDialog"><div class="dialogBox calendarDaySheet">
   <div class="sectionTitle compact"><div><small>CALENDARIO</small><h3 id="calendarDayDialogTitle">Giorno</h3></div><button type="button" data-close="calendarDayDialog">✕</button></div>
   <div id="calendarDayDialogList"></div>
-  <button id="calendarDayAddBtn" class="primary fullBtn">＋ Aggiungi qualcosa</button>
+  <button id="calendarDayAddBtn" class="primary fullBtn">＋ Aggiungi a questo giorno</button>
 </div></dialog>
 
 <dialog id="calendarAddDialog"><div class="dialogBox calendarAddSheet">
@@ -782,7 +817,7 @@
   <div class="sectionTitle compact"><h3>✎ Modifica prodotto</h3><button type="button" data-close="shopEditDialog">✕</button></div>
   <input id="shopEditText" required>
   <input id="shopEditQty" placeholder="Qtà">
-  <select id="shopEditCat"><option>Alimentari</option><option>Bambini</option><option>Casa</option><option>Cane</option><option>Altro</option></select>
+  <select id="shopEditCat"><option>Alimentari</option><option>Bambini</option><option>Astro</option><option>Casa</option><option>Regali</option><option>Wishlist</option></select>
   <input id="shopEditUrl" type="url" placeholder="Link prodotto">
   <input id="shopEditExpected" type="number" min="0" step="0.01" placeholder="Prezzo previsto €">
   <button class="primary">Salva</button>
@@ -797,17 +832,15 @@
   <button class="primary">Conferma acquisto</button>
 </form></dialog>
 
-<dialog id="subscriptionDialog"><form id="subscriptionForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>Bolletta / abbonamento</h3><button type="button" data-close="subscriptionDialog">✕</button></div>
-  <input id="subName" placeholder="Es. Abbonamento treno" required>
-  <input id="subAmount" type="number" min="0" step="0.01" placeholder="Costo €" required>
-  <select id="subOwner"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
-  <select id="subCategory"><option>Trasporti</option><option>Bollette</option><option>Casa</option><option>Telefono / Internet</option><option>Streaming</option><option>Assicurazione</option><option>Altro</option></select>
-  <label>Prossima scadenza<input id="subDue" type="date" required></label>
-  <select id="subFreq"><option value="monthly">Mensile</option><option value="bimonthly">Bimestrale</option><option value="quarterly">Trimestrale</option><option value="semiannual">Semestrale</option><option value="annual">Annuale</option><option value="once">Una volta</option></select>
-  <select id="subReminder"><option value="0">Promemoria il giorno stesso</option><option value="1">1 giorno prima</option><option value="3" selected>3 giorni prima</option><option value="7">7 giorni prima</option></select>
-  <select id="subNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
-  <button class="primary">Salva</button>
+<dialog id="subscriptionDialog"><form id="subscriptionForm" class="dialogBox nativeSheet">
+  <div class="sheetGrabber" aria-hidden="true"></div>
+  <div class="sectionTitle compact"><div><small>BOLLETTE E ABBONAMENTI</small><h3 id="subscriptionDialogTitle">Aggiungi una scadenza</h3></div><button type="button" data-close="subscriptionDialog">✕</button></div>
+  <label class="fieldLabel">Come si chiama?<input id="subName" placeholder="Es. Luce Enel, Fibra, Netflix" required></label>
+  <div class="twoCols"><label class="fieldLabel">Quanto costa?<input id="subAmount" type="number" min="0" step="0.01" placeholder="€" required></label><label class="fieldLabel">Chi paga?<select id="subOwner"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select></label></div>
+  <label class="fieldLabel">Tipo<select id="subCategory"><option>Luce</option><option>Gas</option><option>Acqua</option><option>Internet</option><option>Telefono</option><option>Abbonamento</option><option>Trasporti</option><option>Streaming</option><option>Altro</option></select></label>
+  <div class="twoCols"><label class="fieldLabel">Prossima scadenza<input id="subDue" type="date" required></label><label class="fieldLabel">Ogni quanto?<select id="subFreq"><option value="monthly">Mensile</option><option value="bimonthly">Bimestrale</option><option value="quarterly">Trimestrale</option><option value="semiannual">Semestrale</option><option value="annual">Annuale</option><option value="once">Una volta</option></select></label></div>
+  <div class="twoCols"><label class="fieldLabel">Quando ricordarcelo?<select id="subReminder"><option value="0">Il giorno stesso</option><option value="1">1 giorno prima</option><option value="3" selected>3 giorni prima</option><option value="7">7 giorni prima</option></select></label><label class="fieldLabel">Chi avvisiamo?<select id="subNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select></label></div>
+  <button class="primary fullBtn">Salva scadenza</button>
 </form></dialog>
 
 <dialog id="recipeDialog"><div class="dialogBox">
@@ -818,45 +851,31 @@
 
 
 <dialog id="maintenanceDialog"><form id="maintenanceForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>Manutenzione casa</h3><button type="button" data-close="maintenanceDialog">✕</button></div>
-  <select id="maintType">
-    <option>Caldaia</option><option>Climatizzatore</option><option>Idraulico</option>
-    <option>Elettricista</option><option>Elettrodomestico</option><option>Manutenzione generica</option><option>Altro</option>
-  </select>
-  <input id="maintTitle" placeholder="Es. Controllo annuale caldaia" required>
-  <div class="twoCols"><input id="maintDate" type="date" required><input id="maintTime" type="time"></div>
-  <input id="maintExpected" type="number" min="0" step="0.01" placeholder="Costo previsto €">
-  <input id="maintActual" type="number" min="0" step="0.01" placeholder="Costo effettivo €">
-  <select id="maintFrequency">
-    <option value="once">Una volta</option><option value="annual">Annuale</option>
-    <option value="semiannual">Semestrale</option><option value="monthly">Mensile</option>
-  </select>
-  <select id="maintStatus"><option value="planned">Programmata / da fare</option><option value="done">Completata</option></select>
-  <select id="maintReminder"><option value="0">Giorno stesso</option><option value="1">1 giorno prima</option><option value="3">3 giorni prima</option><option value="7" selected>7 giorni prima</option></select>
-  <select id="maintNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
-  <input id="maintNote" placeholder="Tecnico / telefono / note">
-  <button class="primary">Salva</button>
+  <div class="sectionTitle compact"><div><small>CASA</small><h3>Intervento</h3></div><button type="button" data-close="maintenanceDialog">✕</button></div>
+  <label class="fieldLabel">Tipo<select id="maintType"><option>Caldaia</option><option>Climatizzatore</option><option>Idraulico</option><option>Elettricista</option><option>Elettrodomestico</option><option>Manutenzione generica</option><option>Altro</option></select></label>
+  <label class="fieldLabel">Chi è intervenuto?<input id="maintWho" placeholder="Es. Mario Rossi / ditta / tecnico"></label>
+  <label class="fieldLabel">Cosa c'è da fare o cosa ha fatto?<input id="maintTitle" placeholder="Es. Pulizia e controllo caldaia" required></label>
+  <div class="twoCols"><label class="fieldLabel">Data<input id="maintDate" type="date" required></label><label class="fieldLabel">Ora<input id="maintTime" type="time"></label></div>
+  <div class="twoCols"><label class="fieldLabel">Preventivo<input id="maintExpected" type="number" min="0" step="0.01" placeholder="€"></label><label class="fieldLabel">Quanto abbiamo pagato?<input id="maintActual" type="number" min="0" step="0.01" placeholder="€"></label></div>
+  <label class="fieldLabel">Si ripete?<select id="maintFrequency"><option value="once">No, una volta</option><option value="annual">Ogni anno</option><option value="semiannual">Ogni 6 mesi</option><option value="monthly">Ogni mese</option></select></label>
+  <label class="fieldLabel">Stato<select id="maintStatus"><option value="planned">Da fare</option><option value="done">Fatto / pagato</option></select></label>
+  <div class="twoCols"><label class="fieldLabel">Promemoria<select id="maintReminder"><option value="0">Giorno stesso</option><option value="1">1 giorno prima</option><option value="3">3 giorni prima</option><option value="7" selected>7 giorni prima</option></select></label><label class="fieldLabel">Avvisa<select id="maintNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select></label></div>
+  <label class="fieldLabel">Nota<input id="maintNote" placeholder="Telefono, ricambio, cosa ricordare..."></label>
+  <button class="primary fullBtn">Salva intervento</button>
 </form></dialog>
 
 <dialog id="autoDeadlineDialog"><form id="autoDeadlineForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>Scadenza Auto</h3><button type="button" data-close="autoDeadlineDialog">✕</button></div>
-  <select id="autoDeadlineType">
-    <option>Assicurazione</option><option>Bollo</option><option>Revisione</option>
-    <option>Tagliando</option><option>Gomme</option><option>Manutenzione</option><option>Altro</option>
-  </select>
-  <input id="autoDeadlineTitle" placeholder="Descrizione" required>
-  <div class="twoCols"><input id="autoDeadlineDate" type="date" required><input id="autoDeadlineTime" type="time"></div>
-  <input id="autoDeadlineCost" type="number" min="0" step="0.01" placeholder="Costo previsto/effettivo €">
-  <input id="autoDeadlineKm" type="number" min="0" step="1" placeholder="Km (facoltativo)">
-  <select id="autoDeadlineFrequency">
-    <option value="once">Una volta</option><option value="annual">Annuale</option>
-    <option value="semiannual">Semestrale</option><option value="biennial">Ogni 2 anni</option>
-  </select>
-  <select id="autoDeadlineStatus"><option value="planned">Da fare / da pagare</option><option value="done">Completata / pagata</option></select>
-  <select id="autoDeadlineReminder"><option value="0">Giorno stesso</option><option value="1">1 giorno prima</option><option value="3">3 giorni prima</option><option value="7" selected>7 giorni prima</option><option value="30">30 giorni prima</option></select>
-  <select id="autoDeadlineNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
-  <input id="autoDeadlineNote" placeholder="Compagnia / officina / note">
-  <button class="primary">Salva</button>
+  <div class="sectionTitle compact"><div><small>AUTO</small><h3 id="autoDeadlineDialogTitle">Scadenza</h3></div><button type="button" data-close="autoDeadlineDialog">✕</button></div>
+  <label class="fieldLabel">Tipo<select id="autoDeadlineType"><option>Assicurazione</option><option>Bollo</option><option>Revisione</option><option>Tagliando</option><option>Gomme</option><option>Manutenzione</option><option>Altro</option></select></label>
+  <label class="fieldLabel">Descrizione<input id="autoDeadlineTitle" placeholder="Es. Assicurazione auto" required></label>
+  <div class="twoCols"><label class="fieldLabel">Data attivazione / pagamento<input id="autoDeadlineStart" type="date"></label><label class="fieldLabel">Fine copertura / validità<input id="autoDeadlineEnd" type="date"></label></div>
+  <div class="twoCols"><label class="fieldLabel">Quando va rinnovato?<input id="autoDeadlineDate" type="date" required></label><label class="fieldLabel">Ora<input id="autoDeadlineTime" type="time"></label></div>
+  <div class="twoCols"><label class="fieldLabel">Quanto abbiamo pagato?<input id="autoDeadlineCost" type="number" min="0" step="0.01" placeholder="€"></label><label class="fieldLabel">Km <small class="fieldHint">facoltativi</small><input id="autoDeadlineKm" type="number" min="0" step="1" placeholder="Km"></label></div>
+  <label class="fieldLabel">Ogni quanto?<select id="autoDeadlineFrequency"><option value="once">Una volta</option><option value="annual">Ogni anno</option><option value="semiannual">Ogni 6 mesi</option><option value="biennial">Ogni 2 anni</option></select></label>
+  <label class="fieldLabel">Stato<select id="autoDeadlineStatus"><option value="planned">Da fare / da pagare</option><option value="done">Fatto / pagato</option></select></label>
+  <div class="twoCols"><label class="fieldLabel">Promemoria<select id="autoDeadlineReminder"><option value="0">Giorno stesso</option><option value="1">1 giorno prima</option><option value="3">3 giorni prima</option><option value="7" selected>7 giorni prima</option><option value="30">30 giorni prima</option></select></label><label class="fieldLabel">Avvisa<select id="autoDeadlineNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select></label></div>
+  <label class="fieldLabel">Nota<input id="autoDeadlineNote" placeholder="Compagnia, officina, numero polizza, note..."></label>
+  <button class="primary fullBtn">Salva</button>
 </form></dialog>
 
 <dialog id="houseTaskDialog"><form id="houseTaskForm" class="dialogBox">
@@ -917,7 +936,6 @@
       <option value="farmaco">Medicina</option>
       <option value="crescita">Crescita</option>
       <option value="nota">Nota</option>
-      <option value="traversina">Traversina</option>
       <option value="pipi">Pipì</option>
       <option value="toeletta">Toeletta</option>
     </select>
@@ -945,5 +963,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>Sonno</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=17.3.0"></script>
+<script src="app.js?v=18.0.0"></script>
 </body></html>

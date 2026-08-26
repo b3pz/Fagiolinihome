@@ -89,9 +89,9 @@ const ADULTS={
 };
 const META={
  pappa:['🍼','Pappa'],pannolino:['🚼','Pannolino'],cacca:['💩','Cacca'],nanna:['😴','Nanna'],bagnetto:['🛁','Bagnetto'],
- traversina:['🐾','Traversina'],pipi:['💧','Pipì'],farmaco:['💊','Medicina'],toeletta:['🛁','Toeletta'],crescita:['','Crescita'],nota:['','Nota']
+ traversina:['🐾','Vecchia registrazione traversina'],pipi:['💧','Pipì'],farmaco:['💊','Medicina'],toeletta:['🛁','Toeletta'],crescita:['','Crescita'],nota:['','Nota']
 };
-let s=load(),current='caty',currentAdult='jj',dayOffset=0,personInsightDays=7,menuSelectedDay=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null,editingHouseTaskId=null,moneyMacroFilter=null;
+let s=load(),current='caty',currentAdult='jj',dayOffset=0,personInsightDays=7,menuSelectedDay=0,quickPerson='caty',pendingPerson=null,moneyOffset=0,calOffset=0,selectedDate=dateKey(),editingEventId=null,editingHouseId=null,editingShopId=null,buyingShopId=null,editingMaintenanceId=null,editingAutoDeadlineId=null,editingReminderId=null,editingHouseTaskId=null,moneyMacroFilter=null,shopFilter='Tutte';
 
 function load(){
  let out=structuredClone(DEFAULT);
@@ -135,7 +135,7 @@ function load(){
  out.dismissedReminders=Array.isArray(out.dismissedReminders)?out.dismissedReminders:[];
  out.houseTasks=Array.isArray(out.houseTasks)?out.houseTasks:[];
  out.housePlanRules={...DEFAULT.housePlanRules,...(out.housePlanRules||{})};
- out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
+ out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:(x.category==='Cane'?'Astro':(x.category||'Wishlist')),url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
   return out
 }
 function save(){
@@ -162,11 +162,11 @@ function applyTheme(pref=localStorage.getItem(THEME_KEY)||'system',persist=true)
 }
 
 const WASTE_WEEK={
- 1:{label:'Organico',short:'Organico',icon:'🟫',tone:'organic',description:'Umido e scarti di cucina'},
- 2:{label:'Imballaggi e contenitori',short:'Imballaggi',icon:'🟨',tone:'packaging',description:'Plastica, lattine, barattoli e contenitori'},
- 3:{label:'Carta e cartone',short:'Carta e cartone',icon:'🟦',tone:'paper',description:'Carta, scatole e cartone'},
- 4:{label:'Organico',short:'Organico',icon:'🟫',tone:'organic',description:'Umido e scarti di cucina'},
- 5:{label:'Residuo non differenziabile',short:'Residuo',icon:'🗑️',tone:'residual',description:'Quello che non va nelle altre raccolte'}
+ 1:{label:'Organico',short:'Organico',tone:'organic',description:'Umido e scarti di cucina'},
+ 2:{label:'Imballaggi e contenitori',short:'Imballaggi',tone:'packaging',description:'Plastica, lattine, barattoli e contenitori'},
+ 3:{label:'Carta e cartone',short:'Carta e cartone',tone:'paper',description:'Carta, scatole e cartone'},
+ 4:{label:'Organico',short:'Organico',tone:'organic',description:'Umido e scarti di cucina'},
+ 5:{label:'Residuo non differenziabile',short:'Residuo',tone:'residual',description:'Quello che non va nelle altre raccolte'}
 };
 function wasteDate(d=new Date()){let x=new Date(d);x.setHours(12,0,0,0);return x}
 function wasteForDate(d=new Date()){return WASTE_WEEK[wasteDate(d).getDay()]||null}
@@ -177,7 +177,7 @@ function wasteMonday(d=new Date()){let x=wasteDate(d),day=x.getDay()||7;x.setDat
 function wasteCardHtml(title,date,info,secondary=''){
  let dateText=wasteDateLabel(date);
  if(!info)return `<div class="wasteHeroCard wasteHeroEmpty"><small>${title}</small><h3>Nessun ritiro</h3><p>${dateText}</p>${secondary?`<span>${secondary}</span>`:''}</div>`;
- return `<div class="wasteHeroCard waste-${info.tone}"><small>${title}</small><div class="wasteHeroLine"><span class="wasteBinIcon">${info.icon}</span><div><h3>${esc(info.label)}</h3><p>${dateText}</p></div></div>${secondary?`<span>${secondary}</span>`:''}</div>`
+ return `<div class="wasteHeroCard waste-${info.tone}"><small>${title}</small><div class="wasteHeroLine"><span class="wasteBinIcon"><svg class="uiIcon"><use href="icons.svg#icon-bin"></use></svg></span><div><h3>${esc(info.label)}</h3><p>${dateText}</p></div></div>${secondary?`<span>${secondary}</span>`:''}</div>`
 }
 function renderWaste(){
  if(!document.getElementById('wasteHero'))return;
@@ -186,7 +186,7 @@ function renderWaste(){
  let monday=wasteMonday(today),rows=[];
  for(let i=0;i<5;i++){
   let d=new Date(monday);d.setDate(monday.getDate()+i);let info=wasteForDate(d);
-  rows.push(`<div class="wasteWeekRow waste-${info.tone}"><div class="wasteDayBadge"><b>${new Intl.DateTimeFormat('it-IT',{weekday:'short'}).format(d).replace('.','').toUpperCase()}</b><span>${d.getDate()}</span></div><span class="wasteRowIcon">${info.icon}</span><div class="grow"><b>${esc(info.label)}</b><small>${esc(info.description)}</small></div></div>`)
+  rows.push(`<div class="wasteWeekRow waste-${info.tone}"><div class="wasteDayBadge"><b>${new Intl.DateTimeFormat('it-IT',{weekday:'short'}).format(d).replace('.','').toUpperCase()}</b><span>${d.getDate()}</span></div><span class="wasteRowIcon"><svg class="uiIcon"><use href="icons.svg#icon-bin"></use></svg></span><div class="grow"><b>${esc(info.label)}</b><small>${esc(info.description)}</small></div></div>`)
  }
  wasteWeekList.innerHTML=rows.join('');
 }
@@ -281,7 +281,7 @@ function generateHousePlan(fillOnly=false){
  let dates=houseWeekDates();
  if(!fillOnly){
   let has=s.houseTasks.some(t=>dates.includes(t.date)&&t.status==='pending'&&t.generated);
-  if(has&&!confirm('Rigenerare il Piano Casa dei prossimi 7 giorni? Le task generate ancora pending verranno sostituite; quelle manuali e quelle già completate restano.'))return;
+  if(has&&!confirm('Sostituire il piano dei prossimi 7 giorni? Le cose aggiunte a mano e quelle già fatte restano.'))return;
   s.houseTasks=s.houseTasks.filter(t=>!(dates.includes(t.date)&&t.status==='pending'&&t.generated));
  }
  ['sweep','mop','washer','sheets','towels'].forEach(rid=>{
@@ -517,7 +517,7 @@ function reminderCard(x){
    ${x.note?`<div class="meta">${esc(x.note)}</div>`:''}
   </div>
   <div class="rowActions">
-   <button data-rem-open="${x.source}" data-rem-id="${x.sourceId}">Apri</button>
+   <button data-rem-open="${x.source}" data-rem-id="${x.sourceId}">Vedi dettagli</button>
    ${x.source==='manual'?`<button class="primary smallBtn" data-rem-done="${x.sourceId}">✓ Fatto</button>`:`<button data-rem-dismiss="${esc(x.key)}">🔕</button>`}
   </div>
  </div>`
@@ -543,8 +543,8 @@ function openSourceItem(source,id){
  else if(source==='event'){let e=s.events.find(x=>x.id===id);if(e){current=e.childId;go('person');renderPerson()}}
  else if(source==='birthday'){openBirthday(id)}
 }
-function maintenanceIcon(type){return ({Caldaia:'🔥',Climatizzatore:'❄️',Idraulico:'🚰',Elettricista:'⚡',Elettrodomestico:'🔌','Manutenzione generica':'🧰',Altro:'🏠'})[type]||'🧰'}
-function autoIcon(type){return ({Assicurazione:'🛡️',Bollo:'📄',Revisione:'🔍',Tagliando:'🔧',Gomme:'🛞',Manutenzione:'🧰',Benzina:'⛽',Parcheggio:'🅿️',Pedaggio:'🛣️',Lavaggio:'🧼',Riparazione:'🔧',Accessorio:'🛒',Altro:'🚗'})[type]||'🚗'}
+function maintenanceIcon(type){let m={Caldaia:'flame',Climatizzatore:'snow',Idraulico:'water',Elettricista:'bolt',Elettrodomestico:'plug','Manutenzione generica':'tools',Altro:'tools'};return uiIconMarkup(m[type]||'tools')}
+function autoIcon(type){let m={Assicurazione:'shield',Bollo:'document',Revisione:'inspection',Tagliando:'wrench',Gomme:'car',Manutenzione:'tools',Benzina:'fuel',Carburante:'fuel',Meccanico:'wrench',Parcheggio:'car',Pedaggio:'road',Lavaggio:'car',Riparazione:'wrench',Accessorio:'bag',Altro:'car'};return uiIconMarkup(m[type]||'car')}
 function nextRecurringDate(k,f){let d=dateObj(k);if(f==='monthly')d.setMonth(d.getMonth()+1);else if(f==='semiannual')d.setMonth(d.getMonth()+6);else if(f==='annual')d.setFullYear(d.getFullYear()+1);else if(f==='biennial')d.setFullYear(d.getFullYear()+2);return dateKey(d)}
 function ensureExpenseOnce(source,sourceId,name,amount,category,date,person=null){
  if(!Number(amount)||Number(amount)<=0)return;
@@ -616,7 +616,7 @@ function normalizeRemoteState(data){
  out.dismissedReminders=Array.isArray(out.dismissedReminders)?out.dismissedReminders:[];
  out.houseTasks=Array.isArray(out.houseTasks)?out.houseTasks:[];
  out.housePlanRules={...DEFAULT.housePlanRules,...(out.housePlanRules||{})};
- out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:x.category||'Altro',url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
+ out.shopping=(out.shopping||[]).map(x=>({...x,text:x.text||x.name||'',qty:x.qty||'',category:(x.category==='Cane'?'Astro':(x.category||'Wishlist')),url:x.url||'',expectedPrice:Number(x.expectedPrice||0),actualPrice:Number(x.actualPrice||0)}));
  return out
 }
 
@@ -952,7 +952,7 @@ function renderToday(){
 
 function renderOrganize(){
  const pendingShop=s.shopping.filter(x=>!x.done).length,month=monthKey(new Date()),monthSpend=s.expenses.filter(x=>x.month===month).reduce((a,x)=>a+Number(x.amount||0),0);
- organizeShopText.textContent=pendingShop?`${pendingShop} ${pendingShop===1?'cosa':'cose'} da comprare`:'Lista vuota';
+ organizeShopText.textContent=pendingShop?`${pendingShop} ${pendingShop===1?'cosa':'cose'} da comprare`:'Per ora non serve niente';
  organizeMoneyText.textContent=`Fagiolini Bank · ${euro(monthSpend)} spesi`;
  const nextHealth=[...s.health].filter(x=>x.date>=dateKey()).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')))[0];
  organizeHealthText.textContent=nextHealth?`${nextHealth.title} · ${birthLabel(nextHealth.date)}`:'Nessuna visita vicina';
@@ -967,16 +967,16 @@ function renderOrganize(){
  renderBirthdayPreview();
 }
 function openPerson(id){current=id;dayOffset=0;go('person');renderPerson()}
-function personActionKeys(c){return c.type==='dog'?['pappa','traversina','cacca','pipi','farmaco','toeletta']:['pappa','pannolino','cacca','nanna','bagnetto','farmaco','crescita','nota']}
-function childIconId(type){return ({pappa:'icon-bottle',pannolino:'icon-diaper',cacca:'icon-poop',nanna:'icon-sleep',bagnetto:'icon-bath',farmaco:'icon-medicine',crescita:'icon-growth',nota:'icon-note',traversina:'icon-diaper',pipi:'icon-note',toeletta:'icon-bath'})[type]||'icon-note'}
+function personActionKeys(c){return c.type==='dog'?['pappa','cacca','pipi','farmaco','toeletta','crescita','nota']:['pappa','pannolino','cacca','nanna','bagnetto','farmaco','crescita','nota']}
+function childIconId(type){return ({pappa:'icon-bottle',pannolino:'icon-diaper',cacca:'icon-poop',nanna:'icon-sleep',bagnetto:'icon-bath',farmaco:'icon-medicine',crescita:'icon-growth',nota:'icon-note',traversina:'icon-diaper',pipi:'icon-water',toeletta:'icon-bath'})[type]||'icon-note'}
 function childIconSvg(type){return `<svg class="uiIcon diaryIcon" aria-hidden="true"><use href="icons.svg#${childIconId(type)}"></use></svg>`}
-function actionIcon(type,person){if(person==='astro')return META[type]?.[0]||'•';return childIconSvg(type)}
+function actionIcon(type,person){return childIconSvg(type)}
 function countRange(person,type,days){let vals=[];for(let i=days-1;i>=0;i--){let d=offsetDate(-i),n=count(person,type,d);vals.push({date:d,count:n})}return vals}
 function renderPersonInsights(){
  const c=s.children.find(x=>x.id===current);if(!c)return;
- const metric=c.type==='dog'?'traversina':'cacca';
- const icon=c.type==='dog'?'🐾':'💩';
- const singular=c.type==='dog'?'traversina':'cacca',plural=c.type==='dog'?'traversine':'cacche';
+ const metric='cacca';
+ const icon='💩';
+ const singular='cacca',plural='cacche';
  const vals=countRange(current,metric,personInsightDays),total=vals.reduce((a,x)=>a+x.count,0),prevVals=[];
  for(let i=personInsightDays*2-1;i>=personInsightDays;i--){let d=offsetDate(-i),n=count(current,metric,d);prevVals.push(n)}
  const prev=prevVals.reduce((a,x)=>a+x,0),diff=total-prev;
@@ -988,14 +988,14 @@ function renderPersonInsights(){
 function renderPerson(){
  let c=s.children.find(x=>x.id===current);if(!c)return;personTitle.textContent=c.name;personAvatar.src=avatarFor(c.id);personAvatar.alt=c.name;if(personSubtitle)personSubtitle.textContent=ageFromBirth(c.birthDate);
  let selectedDay=offsetDate(dayOffset);
- if(c.type==='dog')personStats.innerHTML=[['Traversine',count(current,'traversina',selectedDay)],['Pappe',count(current,'pappa',selectedDay)],['Cacche',count(current,'cacca',selectedDay)],['Pipì',count(current,'pipi',selectedDay)]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ if(c.type==='dog')personStats.innerHTML=[['Cacche',count(current,'cacca',selectedDay)],['Pappe',count(current,'pappa',selectedDay)],['Pipì',count(current,'pipi',selectedDay)],['Medicine',count(current,'farmaco',selectedDay)]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
  else personStats.innerHTML=[['Pasti',count(current,'pappa',selectedDay)],['Sonno',duration(sleepMinutes(current,selectedDay))],['Pannolini',count(current,'pannolino',selectedDay)],['Cacche',count(current,'cacca',selectedDay)]].map(x=>`<div class="stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
- if(personDiarySentence){let ev=events(current,selectedDay),parts=[];if(c.type!=='dog'){let meals=ev.filter(e=>e.type==='pappa').length,sleeps=ev.filter(e=>e.type==='nanna').length,poops=ev.filter(e=>e.type==='cacca').length;if(meals)parts.push(`${meals} ${meals===1?'pasto':'pasti'}`);if(sleeps)parts.push(`${sleeps} ${sleeps===1?'sonnellino':'sonnellini'}`);if(poops)parts.push(`${poops} ${poops===1?'cacca':'cacche'}`)}personDiarySentence.textContent=parts.length?`Registrati ${parts.join(', ')}.`:'La giornata è pronta per essere raccontata, un momento alla volta.'}
+ if(personDiarySentence){let ev=events(current,selectedDay),parts=[];let meals=ev.filter(e=>e.type==='pappa').length,poops=ev.filter(e=>e.type==='cacca').length;if(meals)parts.push(`${meals} ${c.type==='dog'?(meals===1?'pappa':'pappe'):(meals===1?'pasto':'pasti')}`);if(c.type!=='dog'){let sleeps=ev.filter(e=>e.type==='nanna').length;if(sleeps)parts.push(`${sleeps} ${sleeps===1?'sonnellino':'sonnellini'}`)}if(poops)parts.push(`${poops} ${poops===1?'cacca':'cacche'}`);personDiarySentence.textContent=parts.length?`Oggi: ${parts.join(', ')}.`:'Niente registrato per questa giornata.'}
  renderPersonInsights();
  personActions.innerHTML=personActionKeys(c).map(k=>`<button data-action="${k}">${actionIcon(k,current)}<small>${actionLabel(k,current)}</small></button>`).join('');
  personActions.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>handleAction(current,b.dataset.action));
  let d=offsetDate(dayOffset);dayLabel.textContent=dayOffset===0?'Oggi':longDate(d);dayNext.disabled=dayOffset>=0;
- let a=events(current,d);personTimeline.innerHTML=a.length?a.map(e=>{let m=META[e.type]||['•',e.type],note=e.note||'';if(e.type==='nanna')note=e.endAt?`Fino alle ${timeLabel(e.endAt)} · ${duration(Math.round((new Date(e.endAt)-new Date(e.at))/60000))}`:'In corso';return `<div class="diaryRow"><span class="diaryTime">${timeLabel(e.at)}</span><span class="diaryEventIcon">${current==='astro'?(m[0]||'•'):childIconSvg(e.type)}</span><div class="grow"><b>${esc(m[1])}</b>${note?`<small>${esc(note)}</small>`:''}</div><button class="diaryEdit" data-edit-event="${e.id}">Modifica</button></div>`}).join(''):'<div class="friendlyEmpty"><b>Niente registrato</b><span>Puoi aggiungere anche qualcosa di ieri o di un giorno passato.</span></div>';
+ let a=events(current,d);personTimeline.innerHTML=a.length?a.map(e=>{let m=META[e.type]||['•',e.type],note=e.note||'';if(e.type==='nanna')note=e.endAt?`Fino alle ${timeLabel(e.endAt)} · ${duration(Math.round((new Date(e.endAt)-new Date(e.at))/60000))}`:'In corso';return `<div class="diaryRow"><span class="diaryTime">${timeLabel(e.at)}</span><span class="diaryEventIcon">${childIconSvg(e.type)}</span><div class="grow"><b>${esc(m[1])}</b>${note?`<small>${esc(note)}</small>`:''}</div><button class="diaryEdit" data-edit-event="${e.id}">Modifica</button></div>`}).join(''):'<div class="friendlyEmpty"><b>Niente registrato</b><span>Puoi aggiungere anche qualcosa di ieri o di un giorno passato.</span></div>';
  personTimeline.querySelectorAll('[data-edit-event]').forEach(b=>b.onclick=()=>openChildDiary(b.dataset.editEvent));
 }
 dayPrev.onclick=()=>{dayOffset--;renderPerson()};dayNext.onclick=()=>{if(dayOffset<0){dayOffset++;renderPerson()}};
@@ -1256,7 +1256,7 @@ function mergeEmptyMenu(target,proposal){
  return out
 }
 generateMenu.onclick=()=>{
- if(weekHasMenuContent()&&!confirm('Ci sono già pasti compilati o modificati a mano. Vuoi davvero rigenerare TUTTA la settimana e sostituirli?'))return;
+ if(weekHasMenuContent()&&!confirm('Hai già compilato parte della settimana. Vuoi sostituirla tutta?'))return;
  s.menuBackup=JSON.parse(JSON.stringify(s.menu));
  let proposal=buildWeekProposal();
  Object.entries(proposal).forEach(([k,v])=>s.menu[k]=v);
@@ -1299,14 +1299,14 @@ function mealRow(k,person,meal,icon,label,value){
 function renderCustomRecipes(){
  if(typeof customRecipePreview==='undefined'||!customRecipePreview)return;
  const rows=s.customRecipes||[];
- customRecipePreview.innerHTML=rows.length?rows.map(r=>`<div class="customRecipeRow"><span class="recipeRowIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recipe"></use></svg></span><div class="grow"><b>${esc(r.name)}</b><small>${esc(categoryLabel(r.category||'altro').replace(/^\S+\s/,''))}${r.time?' · '+esc(r.time):''}</small></div><button data-custom-open="${r.id}">Apri</button><button class="del" data-custom-del="${r.id}">×</button></div>`).join(''):'<div class="friendlyEmpty compactEmpty"><b>Il ricettario è pronto</b><span>Aggiungi le ricette che cucinate davvero: Fagiolini le userà prima delle proposte base.</span></div>';
+ customRecipePreview.innerHTML=rows.length?rows.map(r=>`<div class="customRecipeRow"><span class="recipeRowIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recipe"></use></svg></span><div class="grow"><b>${esc(r.name)}</b><small>${esc(categoryLabel(r.category||'altro').replace(/^\S+\s/,''))}${r.time?' · '+esc(r.time):''}</small></div><button data-custom-open="${r.id}">Vedi ricetta</button><button class="del" data-custom-del="${r.id}">×</button></div>`).join(''):'<div class="friendlyEmpty compactEmpty"><b>Il ricettario è pronto</b><span>Aggiungi le ricette che cucinate davvero: Le ritroverai tra le proposte della settimana.</span></div>';
  customRecipePreview.querySelectorAll('[data-custom-open]').forEach(b=>b.onclick=()=>{let r=s.customRecipes.find(x=>x.id===b.dataset.customOpen);if(r)openRecipe(r.name)});
  customRecipePreview.querySelectorAll('[data-custom-del]').forEach(b=>b.onclick=()=>{if(confirm('Eliminare questa ricetta?')){s.customRecipes=s.customRecipes.filter(x=>x.id!==b.dataset.customDel);save();renderMenu()}})
 }
 function renderMenu(){
  let coreMeals=[];for(let i=0;i<7;i++){let m=s.menu[dateKey(offsetDate(i))]||{};coreMeals.push(m.breakfast||'',m.lunch||'',m.dinner||'')}
  let filled=coreMeals.filter(x=>String(x).trim()).length,missing=21-filled,unique=new Set(coreMeals.filter(x=>String(x).trim()).map(x=>String(x).trim().toLowerCase())).size;
- if(document.getElementById('menuWeekSummary'))menuWeekSummary.innerHTML=`<div class="simpleSummaryLine"><b>${filled} pasti scelti</b><span>${missing?`${missing} ancora da decidere`:`Settimana completa · ${unique} piatti diversi`}</span></div>`;
+ if(document.getElementById('menuWeekSummary')){let t=filled===0?['La settimana è ancora vuota','Scegli i pasti quando vuoi.']:missing?['La settimana è iniziata','Ci sono ancora pasti da scegliere.']:['Settimana pronta','Puoi cambiare qualsiasi pasto quando vuoi.'];menuWeekSummary.innerHTML=`<div class="simpleSummaryLine"><b>${t[0]}</b><span>${t[1]}</span></div>`;}
  const todayK=dateKey(),todayM=s.menu[todayK]||{};
  if(typeof menuTodayTitle!=='undefined'&&menuTodayTitle)menuTodayTitle.textContent=`Oggi · ${longDate()}`;
  if(typeof menuTodayBrief!=='undefined'&&menuTodayBrief)menuTodayBrief.innerHTML=`<button data-menu-jump="lunch"><small>PRANZO</small><b>${esc(todayM.lunch||'Da scegliere')}</b></button><button data-menu-jump="dinner"><small>CENA</small><b>${esc(todayM.dinner||'Da scegliere')}</b></button>`;
@@ -1359,7 +1359,7 @@ function renderMenuBalance(){
   ['🫘','Legumi',counts.legumi],['🐟','Pesce',counts.pesce],['🥚','Uova',counts.uova],
   ['🍗','Carne',counts.carne],['🥦','Vegetariano',counts.vegetariano],['🧀','Formaggio',counts.formaggio]
  ];
- menuBalance.innerHTML=known?entries.map(x=>`<div class="balanceChip"><span>${x[0]} ${x[1]}</span><b>${x[2]}</b></div>`).join(''):'<div class="muted">Genera la settimana per vedere la varietà dei pasti principali.</div>'
+ menuBalance.innerHTML=known?entries.map(x=>`<div class="balanceChip"><span>${x[0]} ${x[1]}</span><b>${x[2]}</b></div>`).join(''):'<div class="muted">Quando la settimana è compilata, qui trovi un riepilogo dei pasti principali.</div>'
 }
 function mealIngredients(name){
  let r=recipeDetails(name);
@@ -1401,7 +1401,7 @@ function addMenuWeekToShopping(){
 menuToShop.onclick=addMenuWeekToShopping;
 function renderProfiles(){
  let people=[['caty','👧 Caty'],['kiko','👶 Kiko'],['jj','👨 JJ'],['kiki','👩 Kiki']];
- profileForms.innerHTML=`<div class="card profileIntro"><b>Come usarli</b><p class="muted">Scrivi parole separate da virgola. Le preferenze aiutano il generatore, ma non bloccano mai la modifica manuale del menu.</p></div>`+
+ profileForms.innerHTML=`<div class="card profileIntro"><b>Come usarli</b><p class="muted">Scrivi parole separate da virgola. Le preferenze ci aiutano a proporre pasti più adatti, ma puoi sempre cambiare tutto a mano.</p></div>`+
  people.map(([id,label])=>{
   let p=s.profiles[id]||{};
   return `<form class="profileCard" data-profile="${id}">
@@ -1640,14 +1640,14 @@ function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedD
    <a href="${googleMapsUrl(x.location)}" target="_blank" rel="noopener">📍 Google Maps</a>
   </div>`:'';
  let canOpen=['health','maintenance','auto','subscription','manual','menu','house','houseTask','event','birthday'].includes(x.source);
- return `<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}${maps}</div>${canOpen?`<button data-cal-open="${x.source}" data-cal-id="${x.id||''}">Apri</button>`:''}</div>`;
+ return `<div class="row"><span>${x.icon}</span><div class="grow">${esc(x.text)}${maps}</div>${canOpen?`<button data-cal-open="${x.source}" data-cal-id="${x.id||''}">Vedi dettagli</button>`:''}</div>`;
 }).join(''):'<div class="muted">Niente in programma o registrato.</div>';
  calendarDetails.querySelectorAll('[data-cal-open]').forEach(b=>b.onclick=()=>openSourceItem(b.dataset.calOpen,b.dataset.calId));if(calendarDayDialog?.open)renderCalendarDayDialog()
 }
 
 let calendarAddDate=selectedDate,editingBirthdayId=null;
 function calendarDayItemHtml(x){
- return `<div class="calendarSheetItem"><span>${x.icon}</span><div class="grow"><b>${esc(cleanAgendaText(x.text))}</b><small>${({familyBirthday:'Compleanno',birthday:'Compleanno',health:'Salute',manual:'Agenda',houseTask:'Casa',work:'Lavoro',maintenance:'Casa & lavori',auto:'Auto',subscription:'Scadenza',event:'Famiglia',menu:'Pasti',house:'Casa'})[x.source]||'Calendario'}</small></div>${['health','maintenance','auto','manual','houseTask','menu','birthday'].includes(x.source)?`<button data-day-open="${x.source}" data-day-id="${x.id||''}">Apri</button>`:''}</div>`
+ return `<div class="calendarSheetItem"><span>${x.icon}</span><div class="grow"><b>${esc(cleanAgendaText(x.text))}</b><small>${({familyBirthday:'Compleanno',birthday:'Compleanno',health:'Salute',manual:'Agenda',houseTask:'Casa',work:'Lavoro',maintenance:'Casa & lavori',auto:'Auto',subscription:'Scadenza',event:'Famiglia',menu:'Pasti',house:'Casa'})[x.source]||'Calendario'}</small></div>${['health','maintenance','auto','manual','houseTask','menu','birthday'].includes(x.source)?`<button data-day-open="${x.source}" data-day-id="${x.id||''}">Vedi dettagli</button>`:''}</div>`
 }
 function renderCalendarDayDialog(){
  if(!calendarDayDialogList)return;
@@ -1894,11 +1894,12 @@ houseEditForm.onsubmit=e=>{e.preventDefault();let rid=houseEditDialog.dataset.ro
 
 
 /* V8.5 — manutenzioni e auto: moduli completi */
-function openMaintenance(id=''){
+function openMaintenance(id='',presetType=''){
  editingMaintenanceId=id||null;
  let x=id?s.maintenance.find(v=>v.id===id):null;
  maintenanceForm.reset();
- maintType.value=x?.type||'Manutenzione generica';
+ maintType.value=x?.type||presetType||'Manutenzione generica';
+ maintWho.value=x?.who||'';
  maintTitle.value=x?.title||'';
  maintDate.value=x?.date||dateKey();
  maintTime.value=x?.time||'';
@@ -1909,70 +1910,85 @@ function openMaintenance(id=''){
  maintReminder.value=String(x?.reminderDays??7);
  maintNotify.value=x?.notify||'both';
  maintNote.value=x?.note||'';
- maintenanceDialog.showModal();
- if(!x)maintTitle.focus()
+ openDialogSafe(maintenanceDialog);
+ if(!x)maintWho.focus()
 }
 function renderMaintenance(){
  let list=[...s.maintenance].sort((a,b)=>(a.status==='done')-(b.status==='done')||String(a.date).localeCompare(String(b.date)));
  let pending=list.filter(x=>x.status!=='done'),next=pending.find(x=>x.date>=dateKey());
  let year=new Date().getFullYear();
  let spent=s.expenses.filter(x=>x.source==='maintenance'&&String(x.date||'').startsWith(String(year))).reduce((a,x)=>a+Number(x.amount||0),0);
- if(document.getElementById('maintenanceSummary'))maintenanceSummary.innerHTML=`<div class="summaryNumbers"><div><b>${pending.length}</b><span>lavori aperti</span></div><div><b>${euro(spent)}</b><span>spesi quest’anno</span></div></div><p>${next?`La prossima manutenzione è <strong>${esc(next.title)}</strong> il ${birthLabel(next.date)}.`:'Nessun lavoro urgente in programma.'}</p>`;
- maintenanceList.innerHTML=list.length?list.map(x=>`<div class="row ${x.status==='done'?'done':''} ${x.date<dateKey()&&x.status!=='done'?'overdue':''}"><span>${maintenanceIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${birthLabel(x.date)}${x.time?' · '+esc(x.time):''} · ${x.status==='done'?'Fatta':'Da fare'}${x.actual?` · ${euro(x.actual)}`:x.expected?` · previsto ${euro(x.expected)}`:''}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div>${x.status!=='done'?`<button class="primary smallBtn" data-maint-done="${x.id}">✓ Fatto</button>`:''}<button class="editBtn" data-maint-edit="${x.id}">✎</button><button class="del" data-maint-del="${x.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessuna manutenzione registrata</b><span>Per ora è tutto in ordine.</span></div>';
+ if(document.getElementById('maintenanceSummary'))maintenanceSummary.innerHTML=`<div class="summaryNumbers"><div><b>${pending.length}</b><span>${pending.length===1?'intervento da fare':'interventi da fare'}</span></div><div><b>${euro(spent)}</b><span>pagati quest’anno</span></div></div><p>${next?`Il prossimo è <strong>${esc(next.title)}</strong> il ${birthLabel(next.date)}.`:'Nessun intervento in programma.'}</p>`;
+ maintenanceList.innerHTML=list.length?list.map(x=>`<div class="row maintenanceRow ${x.status==='done'?'done':''} ${x.date<dateKey()&&x.status!=='done'?'overdue':''}"><span class="rowSvgIcon">${maintenanceIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${esc(x.type)} · ${birthLabel(x.date)}${x.time?' · '+esc(x.time):''} · ${x.status==='done'?'Fatto':'Da fare'}${x.actual?` · pagato ${euro(x.actual)}`:x.expected?` · preventivo ${euro(x.expected)}`:''}</div>${x.who?`<div class="meta"><strong>Chi:</strong> ${esc(x.who)}</div>`:''}${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div>${x.status!=='done'?`<button class="primary smallBtn" data-maint-done="${x.id}">Segna fatto</button>`:''}<button class="editBtn" data-maint-edit="${x.id}" aria-label="Modifica">✎</button><button class="del" data-maint-del="${x.id}" aria-label="Elimina">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessun intervento registrato</b><span>Quando viene un tecnico, puoi segnare qui chi è venuto, cosa ha fatto e quanto avete pagato.</span></div>';
  maintenanceList.querySelectorAll('[data-maint-edit]').forEach(b=>b.onclick=()=>openMaintenance(b.dataset.maintEdit));
  maintenanceList.querySelectorAll('[data-maint-del]').forEach(b=>b.onclick=()=>{s.maintenance=s.maintenance.filter(x=>x.id!==b.dataset.maintDel);save();renderMaintenance()});
  maintenanceList.querySelectorAll('[data-maint-done]').forEach(b=>b.onclick=()=>{let x=s.maintenance.find(v=>v.id===b.dataset.maintDone);if(!x)return;x.status='done';if(Number(x.actual||x.expected||0)>0){x.actual=Number(x.actual||x.expected||0);ensureExpenseOnce('maintenance',x.id,x.title,x.actual,'Casa',x.date)}save();renderMaintenance()})
 }
 addMaintenanceBtn.onclick=()=>openMaintenance();
+if(document.getElementById('maintenanceAddMain'))maintenanceAddMain.onclick=()=>openMaintenance();
+document.querySelectorAll('[data-maint-quick]').forEach(b=>b.onclick=()=>openMaintenance('',b.dataset.maintQuick));
+if(document.getElementById('maintenanceShopBtn'))maintenanceShopBtn.onclick=()=>{shopFilter='Casa';go('shop');renderShop()};
 maintenanceForm.onsubmit=e=>{
  e.preventDefault();
- let payload={type:maintType.value,title:maintTitle.value.trim(),date:maintDate.value,time:maintTime.value,expected:Number(maintExpected.value||0),actual:Number(maintActual.value||0),frequency:maintFrequency.value,status:maintStatus.value,reminderDays:Number(maintReminder.value||0),notify:maintNotify.value,note:maintNote.value.trim()};
+ let payload={type:maintType.value,who:maintWho.value.trim(),title:maintTitle.value.trim(),date:maintDate.value,time:maintTime.value,expected:Number(maintExpected.value||0),actual:Number(maintActual.value||0),frequency:maintFrequency.value,status:maintStatus.value,reminderDays:Number(maintReminder.value||0),notify:maintNotify.value,note:maintNote.value.trim()};
  let x=editingMaintenanceId?s.maintenance.find(v=>v.id===editingMaintenanceId):null;
  if(x)Object.assign(x,payload);else{x={id:crypto.randomUUID(),...payload};s.maintenance.push(x)}
  if(x.status==='done'&&Number(x.actual||x.expected||0)>0){x.actual=Number(x.actual||x.expected||0);ensureExpenseOnce('maintenance',x.id,x.title,x.actual,'Casa',x.date)}
- editingMaintenanceId=null;maintenanceDialog.close();save();renderMaintenance()
+ editingMaintenanceId=null;closeDialogSafe(maintenanceDialog);save();renderMaintenance()
 };
 
-function openAutoDeadline(id=''){
+function openAutoDeadline(id='',presetType=''){
  editingAutoDeadlineId=id||null;
  let x=id?s.autoDeadlines.find(v=>v.id===id):null;
  autoDeadlineForm.reset();
- autoDeadlineType.value=x?.type||'Manutenzione';
- autoDeadlineTitle.value=x?.title||'';
- autoDeadlineDate.value=x?.date||dateKey();
+ autoDeadlineType.value=x?.type||presetType||'Manutenzione';
+ autoDeadlineTitle.value=x?.title||(presetType||'');
+ autoDeadlineStart.value=x?.startDate||'';
+ autoDeadlineEnd.value=x?.endDate||'';
+ autoDeadlineDate.value=x?.date||x?.endDate||dateKey();
  autoDeadlineTime.value=x?.time||'';
  autoDeadlineCost.value=x?.cost||'';
  autoDeadlineKm.value=x?.km||'';
- autoDeadlineFrequency.value=x?.frequency||'once';
+ autoDeadlineFrequency.value=x?.frequency||(presetType==='Assicurazione'||presetType==='Bollo'?'annual':'once');
  autoDeadlineStatus.value=x?.status||'planned';
  autoDeadlineReminder.value=String(x?.reminderDays??7);
  autoDeadlineNotify.value=x?.notify||'both';
  autoDeadlineNote.value=x?.note||'';
- autoDeadlineDialog.showModal();
+ const ttl=document.getElementById('autoDeadlineDialogTitle');if(ttl)ttl.textContent=x?.type||presetType||'Scadenza';
+ openDialogSafe(autoDeadlineDialog);
  if(!x)autoDeadlineTitle.focus()
+}
+function openAutoExpense(presetType=''){
+ fuelForm.reset();
+ fuelType.value=presetType||'Benzina';
+ fuelDate.value=dateKey();
+ fuelTime.value=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+ openDialogSafe(document.getElementById('autoExpenseDialog'));
 }
 function renderAuto(){
  let list=[...s.autoDeadlines].sort((a,b)=>(a.status==='done')-(b.status==='done')||String(a.date).localeCompare(String(b.date)));
  let pending=list.filter(x=>x.status!=='done'),next=pending.find(x=>x.date>=dateKey());
  let year=new Date().getFullYear();
  let spent=s.expenses.filter(x=>macroForExpense(x)==='Auto'&&String(x.date||'').startsWith(String(year))).reduce((a,x)=>a+Number(x.amount||0),0);
- if(document.getElementById('autoSummary'))autoSummary.innerHTML=`<div class="summaryNumbers"><div><b>${pending.length}</b><span>scadenze aperte</span></div><div><b>${euro(spent)}</b><span>spesi quest’anno</span></div></div><p>${next?`La prossima scadenza è <strong>${esc(next.title)}</strong> il ${birthLabel(next.date)}.`:'Nessuna scadenza vicina.'}</p>`;
- autoDeadlineList.innerHTML=list.length?list.map(x=>`<div class="row ${x.status==='done'?'done':''} ${x.date<dateKey()&&x.status!=='done'?'overdue':''}"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.title)}</b><div class="meta">${birthLabel(x.date)}${x.time?' · '+esc(x.time):''} · ${x.status==='done'?'Fatta':'Da fare'}${x.cost?` · ${euro(x.cost)}`:''}${x.km?` · ${Number(x.km).toLocaleString('it-IT')} km`:''}</div>${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div>${x.status!=='done'?`<button class="primary smallBtn" data-auto-done="${x.id}">✓ Fatto</button>`:''}<button class="editBtn" data-auto-edit="${x.id}">✎</button><button class="del" data-auto-del="${x.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessuna scadenza registrata</b><span>Per ora l’auto non richiede attenzione.</span></div>';
+ if(document.getElementById('autoSummary'))autoSummary.innerHTML=`<div class="summaryNumbers"><div><b>${next?birthLabel(next.date):'—'}</b><span>prossima scadenza</span></div><div><b>${euro(spent)}</b><span>spesi quest’anno</span></div></div><p>${next?`Da ricordare: <strong>${esc(next.title)}</strong>.`:'Non ci sono scadenze vicine.'}</p>`;
+ autoDeadlineList.innerHTML=list.length?list.map(x=>`<div class="row ${x.status==='done'?'done':''} ${x.date<dateKey()&&x.status!=='done'?'overdue':''}"><span class="rowSvgIcon">${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.title||x.type)}</b><div class="meta">${esc(x.type)} · rinnovo ${birthLabel(x.date)} · ${x.status==='done'?'Fatto / pagato':'Da fare'}${x.cost?` · ${euro(x.cost)}`:''}${x.km?` · ${Number(x.km).toLocaleString('it-IT')} km`:''}</div>${x.startDate||x.endDate?`<div class="meta">${x.startDate?'Dal '+birthLabel(x.startDate):''}${x.startDate&&x.endDate?' · ':''}${x.endDate?'al '+birthLabel(x.endDate):''}</div>`:''}${x.note?`<div class="meta">${esc(x.note)}</div>`:''}</div>${x.status!=='done'?`<button class="primary smallBtn" data-auto-done="${x.id}">Segna fatto</button>`:''}<button class="editBtn" data-auto-edit="${x.id}">✎</button><button class="del" data-auto-del="${x.id}">✕</button></div>`).join(''):'<div class="friendlyEmpty"><b>Nessuna scadenza registrata</b><span>Usa i pulsanti sopra per aggiungere bollo, assicurazione, revisione o manutenzione.</span></div>';
  autoDeadlineList.querySelectorAll('[data-auto-edit]').forEach(b=>b.onclick=()=>openAutoDeadline(b.dataset.autoEdit));
  autoDeadlineList.querySelectorAll('[data-auto-del]').forEach(b=>b.onclick=()=>{s.autoDeadlines=s.autoDeadlines.filter(x=>x.id!==b.dataset.autoDel);save();renderAuto()});
- autoDeadlineList.querySelectorAll('[data-auto-done]').forEach(b=>b.onclick=()=>{let x=s.autoDeadlines.find(v=>v.id===b.dataset.autoDone);if(!x)return;x.status='done';if(Number(x.cost||0)>0)ensureExpenseOnce('autoDeadline',x.id,x.title,x.cost,'Auto',x.date);save();renderAuto()});
- autoExpenseHistory.innerHTML=s.autoExpenses.length?[...s.autoExpenses].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,30).map(x=>`<div class="row"><span>${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.type)}</b><div class="meta">${birthLabel(x.date)}${x.km?` · ${Number(x.km).toLocaleString('it-IT')} km`:''}${x.note?` · ${esc(x.note)}`:''}</div></div><b>${euro(x.amount)}</b><button class="del" data-auto-exp-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna spesa auto registrata.</div>';
+ autoDeadlineList.querySelectorAll('[data-auto-done]').forEach(b=>b.onclick=()=>{let x=s.autoDeadlines.find(v=>v.id===b.dataset.autoDone);if(!x)return;x.status='done';if(Number(x.cost||0)>0)ensureExpenseOnce('autoDeadline',x.id,x.title||x.type,x.cost,'Auto',x.date);save();renderAuto()});
+ autoExpenseHistory.innerHTML=s.autoExpenses.length?[...s.autoExpenses].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,30).map(x=>`<div class="row"><span class="rowSvgIcon">${autoIcon(x.type)}</span><div class="grow"><b>${esc(x.type)}</b><div class="meta">${birthLabel(x.date)}${x.km?` · ${Number(x.km).toLocaleString('it-IT')} km`:''}${x.note?` · ${esc(x.note)}`:''}</div></div><b>${euro(x.amount)}</b><button class="del" data-auto-exp-del="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna spesa auto registrata.</div>';
  autoExpenseHistory.querySelectorAll('[data-auto-exp-del]').forEach(b=>b.onclick=()=>{let id=b.dataset.autoExpDel;s.autoExpenses=s.autoExpenses.filter(x=>x.id!==id);s.expenses=s.expenses.filter(x=>!(x.source==='autoExpense'&&x.sourceId===id));save();renderAuto()});
- if(!fuelDate.value)fuelDate.value=dateKey();if(!fuelTime.value)fuelTime.value=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})
 }
 addAutoDeadlineBtn.onclick=()=>openAutoDeadline();
+if(document.getElementById('autoAddExpenseBtn'))autoAddExpenseBtn.onclick=()=>openAutoExpense();
+document.querySelectorAll('[data-auto-expense]').forEach(b=>b.onclick=()=>openAutoExpense(b.dataset.autoExpense));
+document.querySelectorAll('[data-auto-deadline]').forEach(b=>b.onclick=()=>openAutoDeadline('',b.dataset.autoDeadline));
 autoDeadlineForm.onsubmit=e=>{
  e.preventDefault();
- let payload={type:autoDeadlineType.value,title:autoDeadlineTitle.value.trim(),date:autoDeadlineDate.value,time:autoDeadlineTime.value,cost:Number(autoDeadlineCost.value||0),km:Number(autoDeadlineKm.value||0),frequency:autoDeadlineFrequency.value,status:autoDeadlineStatus.value,reminderDays:Number(autoDeadlineReminder.value||0),notify:autoDeadlineNotify.value,note:autoDeadlineNote.value.trim()};
+ let payload={type:autoDeadlineType.value,title:autoDeadlineTitle.value.trim(),startDate:autoDeadlineStart.value,endDate:autoDeadlineEnd.value,date:autoDeadlineDate.value,time:autoDeadlineTime.value,cost:Number(autoDeadlineCost.value||0),km:Number(autoDeadlineKm.value||0),frequency:autoDeadlineFrequency.value,status:autoDeadlineStatus.value,reminderDays:Number(autoDeadlineReminder.value||0),notify:autoDeadlineNotify.value,note:autoDeadlineNote.value.trim()};
  let x=editingAutoDeadlineId?s.autoDeadlines.find(v=>v.id===editingAutoDeadlineId):null;
  if(x)Object.assign(x,payload);else{x={id:crypto.randomUUID(),...payload};s.autoDeadlines.push(x)}
- if(x.status==='done'&&Number(x.cost||0)>0)ensureExpenseOnce('autoDeadline',x.id,x.title,x.cost,'Auto',x.date);
- editingAutoDeadlineId=null;autoDeadlineDialog.close();save();renderAuto()
+ if(x.status==='done'&&Number(x.cost||0)>0)ensureExpenseOnce('autoDeadline',x.id,x.title||x.type,x.cost,'Auto',x.date);
+ editingAutoDeadlineId=null;closeDialogSafe(autoDeadlineDialog);save();renderAuto()
 };
 if(typeof customRecipeForm!=="undefined"&&customRecipeForm)customRecipeForm.onsubmit=e=>{
  e.preventDefault();
@@ -1985,22 +2001,46 @@ if(typeof customRecipeForm!=="undefined"&&customRecipeForm)customRecipeForm.onsu
 };
 
 fuelForm.onsubmit=e=>{
- e.preventDefault();let id=crypto.randomUUID(),amount=Number(fuelAmount.value||0),date=fuelDate.value||dateKey();let row={id,type:fuelType.value,amount,km:Number(fuelKm.value||0),note:fuelNote.value.trim(),date,time:fuelTime.value||''};s.autoExpenses.push(row);if(amount>0)ensureExpenseOnce('autoExpense',id,row.type,amount,'Auto',date);fuelForm.reset();fuelDate.value=dateKey();fuelTime.value=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});closeDialogSafe(document.getElementById('autoExpenseDialog'));save();renderAuto()
+ e.preventDefault();let id=crypto.randomUUID(),amount=Number(fuelAmount.value||0),date=fuelDate.value||dateKey();let row={id,type:fuelType.value,amount,km:Number(fuelKm.value||0),note:fuelNote.value.trim(),date,time:fuelTime.value||''};s.autoExpenses.push(row);if(amount>0)ensureExpenseOnce('autoExpense',id,row.type,amount,'Auto',date);fuelForm.reset();closeDialogSafe(document.getElementById('autoExpenseDialog'));save();renderAuto()
 };
 
 
-shopForm.onsubmit=e=>{e.preventDefault();s.shopping.push({id:crypto.randomUUID(),text:shopText.value.trim(),qty:shopQty.value.trim(),category:shopCat.value,url:shopUrl.value.trim(),expectedPrice:Number(shopExpected.value||0),actualPrice:0,done:false});shopForm.reset();save();renderShop()};
+const SHOP_CATEGORIES=[
+ {id:'Alimentari',label:'Alimentari',icon:'shop'},
+ {id:'Bambini',label:'Bambini',icon:'family'},
+ {id:'Astro',label:'Astro',icon:'dog'},
+ {id:'Casa',label:'Casa',icon:'home'},
+ {id:'Regali',label:'Regali',icon:'gift'},
+ {id:'Wishlist',label:'Wishlist',icon:'star'}
+];
+function openShopAdd(category=''){
+ if(category&&category!=='Tutte')shopCat.value=category;
+ else shopCat.value=shopFilter!=='Tutte'?shopFilter:'Alimentari';
+ shopAddTitle.textContent=`Aggiungi · ${shopCat.value}`;
+ openDialogSafe(shopAddDialog);
+ setTimeout(()=>shopText.focus(),50)
+}
+if(document.getElementById('shopAddBtn'))shopAddBtn.onclick=()=>openShopAdd();
+if(document.getElementById('shopShowAllBtn'))shopShowAllBtn.onclick=()=>{shopFilter='Tutte';renderShop()};
+shopForm.onsubmit=e=>{e.preventDefault();s.shopping.push({id:crypto.randomUUID(),text:shopText.value.trim(),qty:shopQty.value.trim(),category:shopCat.value,url:shopUrl.value.trim(),expectedPrice:Number(shopExpected.value||0),actualPrice:0,done:false});shopFilter=shopCat.value;shopForm.reset();closeDialogSafe(shopAddDialog);save();renderShop()};
 function renderShop(){
  let openShop=s.shopping.filter(x=>!x.done),expectedShop=openShop.reduce((a,x)=>a+Number(x.expectedPrice||0),0);
- if(document.getElementById('shopSummary'))shopSummary.innerHTML=`<div class="summaryNumbers"><div><b>${openShop.length}</b><span>${openShop.length===1?'cosa da comprare':'cose da comprare'}</span></div><div><b>${expectedShop?euro(expectedShop):'—'}</b><span>previsti</span></div></div><p>${openShop.length?`In lista ci sono soprattutto ${openShop.slice(0,3).map(x=>esc(x.text)).join(', ')}${openShop.length>3?'…':''}.`:'La lista è vuota: per ora non manca niente.'}</p>`;
- let a=[...s.shopping].sort((a,b)=>Number(a.done)-Number(b.done));
- shopList.innerHTML=a.length?a.map(x=>`<div class="shopRow ${x.done?'done':''}"><button data-buy="${x.id}">${x.done?'✅':'⬜️'}</button><div class="grow"><b>${esc(x.text)}</b><div class="meta">${esc(x.category)}${x.qty?' · '+esc(x.qty):''}${x.expectedPrice?` · Previsto ${euro(x.expectedPrice)}`:''}${x.actualPrice?` · Pagato ${euro(x.actualPrice)}`:''}</div></div>${x.url?`<a class="linkBtn" href="${esc(x.url)}" target="_blank" rel="noopener">🔗</a>`:''}<button class="editBtn" data-sedit="${x.id}">✎</button><button class="del" data-sdel="${x.id}">✕</button></div>`).join(''):'<div class="muted">Lista vuota.</div>';
+ if(document.getElementById('shopCategories'))shopCategories.innerHTML=SHOP_CATEGORIES.map(c=>{let n=s.shopping.filter(x=>!x.done&&x.category===c.id).length;return `<button type="button" class="shopCategoryBtn ${shopFilter===c.id?'active':''}" data-shop-category="${c.id}"><span><svg class="uiIcon"><use href="icons.svg#icon-${c.icon}"></use></svg></span><b>${c.label}</b><small>${n?n+' '+(n===1?'cosa':'cose'):'Vuota'}</small></button>`}).join('');
+ shopCategories?.querySelectorAll('[data-shop-category]').forEach(b=>b.onclick=()=>{shopFilter=b.dataset.shopCategory;renderShop()});
+ let visible=shopFilter==='Tutte'?s.shopping:s.shopping.filter(x=>x.category===shopFilter);
+ let visibleOpen=visible.filter(x=>!x.done);
+ if(document.getElementById('shopListTitle'))shopListTitle.textContent=shopFilter==='Tutte'?'Tutte le liste':shopFilter;
+ if(document.getElementById('shopShowAllBtn'))shopShowAllBtn.hidden=shopFilter==='Tutte';
+ if(document.getElementById('shopSummary'))shopSummary.innerHTML=`<div class="shopSummaryHuman"><div><b>${openShop.length?`${openShop.length} ${openShop.length===1?'cosa da comprare':'cose da comprare'}`:'Non manca niente'}</b><span>${shopFilter==='Tutte'?'In tutte le liste':`Nella lista ${shopFilter}`}</span></div><div><b>${expectedShop?euro(expectedShop):'—'}</b><span>previsti in totale</span></div></div>`;
+ let a=[...visible].sort((a,b)=>Number(a.done)-Number(b.done));
+ shopList.innerHTML=a.length?a.map(x=>`<div class="shopRow ${x.done?'done':''}"><button class="shopCheck" data-buy="${x.id}" aria-label="${x.done?'Riapri':'Segna comprato'}">${x.done?'✓':''}</button><div class="grow"><b>${esc(x.text)}</b><div class="meta">${esc(x.category)}${x.qty?' · '+esc(x.qty):''}${x.expectedPrice?` · previsto ${euro(x.expectedPrice)}`:''}${x.actualPrice?` · pagato ${euro(x.actualPrice)}`:''}</div></div>${x.url?`<a class="linkBtn" href="${esc(x.url)}" target="_blank" rel="noopener">Link</a>`:''}<button class="editBtn" data-sedit="${x.id}" aria-label="Modifica">✎</button><button class="del" data-sdel="${x.id}" aria-label="Elimina">✕</button></div>`).join(''):`<div class="friendlyEmpty"><b>${shopFilter==='Tutte'?'Le liste sono vuote':`Niente in ${shopFilter}`}</b><span>Quando serve qualcosa, aggiungilo con il pulsante in alto.</span><button type="button" class="primary compactPrimary" data-shop-empty-add>＋ Aggiungi</button></div>`;
+ shopList.querySelectorAll('[data-shop-empty-add]').forEach(b=>b.onclick=()=>openShopAdd(shopFilter));
  shopList.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{let x=s.shopping.find(i=>i.id===b.dataset.buy);if(x.done){x.done=false;x.actualPrice=0;save();renderShop();return}buyingShopId=x.id;boughtName.textContent=x.text;boughtPrice.value=x.expectedPrice||'';boughtDate.value=dateKey();boughtWho.value='';boughtDialog.showModal()});
- shopList.querySelectorAll('[data-sedit]').forEach(b=>b.onclick=()=>{let x=s.shopping.find(i=>i.id===b.dataset.sedit);editingShopId=x.id;shopEditText.value=x.text;shopEditQty.value=x.qty||'';shopEditCat.value=x.category||'Altro';shopEditUrl.value=x.url||'';shopEditExpected.value=x.expectedPrice||'';shopEditDialog.showModal()});
+ shopList.querySelectorAll('[data-sedit]').forEach(b=>b.onclick=()=>{let x=s.shopping.find(i=>i.id===b.dataset.sedit);editingShopId=x.id;shopEditText.value=x.text;shopEditQty.value=x.qty||'';shopEditCat.value=x.category||'Wishlist';shopEditUrl.value=x.url||'';shopEditExpected.value=x.expectedPrice||'';shopEditDialog.showModal()});
  shopList.querySelectorAll('[data-sdel]').forEach(b=>b.onclick=()=>{s.shopping=s.shopping.filter(x=>x.id!==b.dataset.sdel);save();renderShop()})
 }
 shopEditForm.onsubmit=e=>{e.preventDefault();let x=s.shopping.find(i=>i.id===editingShopId);if(!x)return;x.text=shopEditText.value.trim();x.qty=shopEditQty.value.trim();x.category=shopEditCat.value;x.url=shopEditUrl.value.trim();x.expectedPrice=Number(shopEditExpected.value||0);shopEditDialog.close();save();renderShop()};
-boughtForm.onsubmit=e=>{e.preventDefault();let x=s.shopping.find(i=>i.id===buyingShopId);if(!x)return;let price=Number(boughtPrice.value||0);x.done=true;x.actualPrice=price;x.boughtDate=boughtDate.value;if(price>0)s.expenses.push({id:crypto.randomUUID(),name:x.text,amount:price,category:x.category==='Alimentari'?'Spesa':x.category,person:boughtWho.value||null,month:monthKey(dateObj(boughtDate.value)),date:boughtDate.value,recurring:false,source:'shopping',sourceId:x.id});boughtDialog.close();save();renderShop()};
+boughtForm.onsubmit=e=>{e.preventDefault();let x=s.shopping.find(i=>i.id===buyingShopId);if(!x)return;let price=Number(boughtPrice.value||0);x.done=true;x.actualPrice=price;x.boughtDate=boughtDate.value;if(price>0){let category=({Alimentari:'Spesa',Bambini:'Bambini',Astro:'Astro',Casa:'Casa',Regali:'Svago',Wishlist:'Altro'})[x.category]||x.category;s.expenses.push({id:crypto.randomUUID(),name:x.text,amount:price,category,person:boughtWho.value||null,month:monthKey(dateObj(boughtDate.value)),date:boughtDate.value,recurring:false,source:'shopping',sourceId:x.id})}boughtDialog.close();save();renderShop()};
 function monthKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 function moneyDate(){return monthBase(moneyOffset)}
 function euro(v){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(v)||0)}
@@ -2014,6 +2054,7 @@ const MONEY_MACROS=[
  {id:'Spesa',icon:'',color:'#e1a34e'},
  {id:'Bollette',icon:'',color:'#7e8fb2'},
  {id:'Auto',icon:'',color:'#a77d5e'},
+ {id:'Astro',icon:'',color:'#7e927f'},
  {id:'Bambini',icon:'',color:'#e98e86'},
  {id:'Salute',icon:'',color:'#d86f6f'},
  {id:'Svago',icon:'',color:'#9a79b7'},
@@ -2028,7 +2069,8 @@ function macroForExpense(x){
  let source=String(x.source||'');
  if(source==='maintenance')return 'Casa';
  if(source==='autoExpense'||source==='autoDeadline')return 'Auto';
- if(source==='shopping'||source==='recipe'||source==='menu')return 'Spesa';
+ if(source==='recipe'||source==='menu')return 'Spesa';
+ if(source==='shopping'){if(c.includes('astro')||c.includes('cane'))return 'Astro';if(c.includes('bambin'))return 'Bambini';if(c.includes('casa'))return 'Casa';if(c.includes('regal'))return 'Svago';if(c.includes('aliment'))return 'Spesa';return 'Altro'}
  if(source==='subscription'){
   if(c.includes('trasport'))return 'Auto';
   if(c.includes('stream')||n.includes('netflix')||n.includes('disney')||n.includes('spotify'))return 'Svago';
@@ -2042,7 +2084,7 @@ function macroForExpense(x){
  if(c.includes('salut')||c.includes('farmac')||c.includes('medic'))return 'Salute';
  if(c.includes('svago')||c.includes('ristor')||c.includes('cinema')||c.includes('vacanz')||c.includes('stream'))return 'Svago';
  if(c.includes('personal')||c.includes('lavoro'))return 'Personali';
- if(c.includes('cane'))return 'Casa';
+ if(c.includes('astro')||c.includes('cane'))return 'Astro';
  return MONEY_MACROS.some(m=>m.id===x.category)?x.category:'Altro'
 }
 incomeForm.onsubmit=e=>{e.preventDefault();let d=moneyDate(),k=monthKey(d);s.incomes.push({id:crypto.randomUUID(),name:incomeName.value.trim(),amount:Number(incomeAmount.value),person:incomePerson.value,month:k,date:moneyOffset===0?dateKey():k+'-01'});incomeForm.reset();if(moneyIncomeDialog?.open)moneyIncomeDialog.close();save();renderMoney()};
@@ -2092,20 +2134,20 @@ function renderMoney(){
  const vp=s.savingsProjects?.vacation||DEFAULT.savingsProjects.vacation,cp=s.savingsProjects?.christmas||DEFAULT.savingsProjects.christmas;
  if(vacationActive){vacationActive.checked=!!vp.active;vacationTarget.value=vp.target||'';vacationSaved.value=vp.saved||'';vacationNote.value=vp.note||''}
  if(christmasActive){christmasActive.checked=!!cp.active;christmasTarget.value=cp.target||'';christmasSaved.value=cp.saved||'';christmasNote.value=cp.note||''}
- if(savingsProjectsPreview)savingsProjectsPreview.innerHTML=[vp,cp].map(p=>{let target=Number(p.target||0),savedP=Number(p.saved||0),pctP=target>0?Math.max(0,Math.min(100,savedP/target*100)):0;return `<div class="savingProjectSummary ${p.active?'active':''}"><div><span class="savingSprite">${uiIconMarkup(p.label==='Vacanze'?'sun':'tree')}</span><div><b>${p.label}</b><small>${p.active?'Attivo':'In pausa'}${p.note?' · '+esc(p.note):''}</small></div><strong>${euro(savedP)}${target>0?' / '+euro(target):''}</strong></div><div class="progressTrack"><i style="width:${pctP}%"></i></div></div>`}).join('');
+ if(savingsProjectsPreview)savingsProjectsPreview.innerHTML=[vp,cp].map(p=>{let target=Number(p.target||0),savedP=Number(p.saved||0),missingP=Math.max(0,target-savedP),pctP=target>0?Math.max(0,Math.min(100,savedP/target*100)):0;return `<div class="savingProjectSummary ${p.active?'active':''}"><div class="savingProjectSummaryHead"><span class="savingSprite">${uiIconMarkup(p.label==='Vacanze'?'sun':'tree')}</span><div><b>${p.label}</b><small>${p.active?'Salvadanaio attivo':'In pausa'}${p.note?' · '+esc(p.note):''}</small></div></div><div class="savingProjectPlainNumbers"><span><small>OBIETTIVO</small><b>${target?euro(target):'Da decidere'}</b></span><span><small>GIÀ MESSI</small><b>${euro(savedP)}</b></span><span><small>MANCANO</small><b>${target?euro(missingP):'—'}</b></span></div><div class="progressTrack"><i style="width:${pctP}%"></i></div></div>`}).join('');
  savingsResult.textContent=incomeTot>0?euro(saved):'—';
  if(bankExpenseTotal)bankExpenseTotal.textContent=euro(tot);
  if(bankGoalQuickText){
-  if(!incomeTot)bankGoalQuickText.textContent=goal?`Questo mese vogliamo risparmiare ${euro(goal)}`:'Decidi quanto vuoi risparmiare questo mese';
-  else if(goal<=0)bankGoalQuickText.textContent='Decidi quanto vuoi risparmiare questo mese';
-  else if(saved>=goal)bankGoalQuickText.textContent=`Volevamo risparmiare ${euro(goal)} · superato ✓`;
-  else bankGoalQuickText.textContent=`Vogliamo risparmiare ${euro(goal)} · mancano ${euro(Math.max(0,goal-saved))}`;
+  if(!incomeTot)bankGoalQuickText.textContent=goal?`Obiettivo del mese: mettere da parte ${euro(goal)}`:'Decidi quanto vuoi mettere da parte questo mese';
+  else if(goal<=0)bankGoalQuickText.textContent='Decidi quanto vuoi mettere da parte questo mese';
+  else if(saved>=goal)bankGoalQuickText.textContent=`Obiettivo del mese: ${euro(goal)} · raggiunto ✓`;
+  else bankGoalQuickText.textContent=`Obiettivo del mese: mettere da parte ${euro(goal)} · ${saved>=goal?'raggiunto':`mancano ${euro(Math.max(0,goal-saved))}`}`;
  }
  let pct=incomeTot>0&&goal>0?Math.max(0,Math.min(100,saved/goal*100)):0;savingsProgressBar.style.width=pct+'%';
- if(!incomeTot)savingsReportText.textContent='Aggiungi le entrate del mese per calcolare il risparmio reale.';
- else if(goal<=0)savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Decidi quanto vuoi risparmiare questo mese.`;
- else if(saved>=goal)savingsReportText.textContent=`Avete messo da parte ${euro(saved)}: ${euro(Math.max(0,saved-goal))} in più di quanto avevate deciso.`;
- else savingsReportText.textContent=`Avete messo da parte ${euro(saved)}. Mancano ${euro(Math.max(0,goal-saved))} per arrivare a ${euro(goal)}.`;
+ if(!incomeTot)savingsReportText.textContent='Aggiungi le entrate del mese: così vedrai quanto resta davvero dopo le spese.';
+ else if(goal<=0)savingsReportText.textContent=`Questo mese restano ${euro(saved)} dopo le spese. Se vuoi, imposta un obiettivo da mettere da parte.`;
+ else if(saved>=goal)savingsReportText.textContent=`Dopo le spese restano ${euro(saved)}: ${euro(Math.max(0,saved-goal))} oltre l'obiettivo del mese.`;
+ else savingsReportText.textContent=`Dopo le spese restano ${euro(saved)}. Per raggiungere l'obiettivo mancano ${euro(Math.max(0,goal-saved))}.`;
  let expenseDiff=tot-prevTot,saveDiff=(incomeTot&&prevIncome)?saved-prevSaved:null,currentByMacro={},prevByMacro={};
  MONEY_MACROS.forEach(m=>{currentByMacro[m.id]=0;prevByMacro[m.id]=0});
  all.forEach(x=>currentByMacro[macroForExpense(x)]+=Number(x.amount||0));
@@ -2138,7 +2180,7 @@ function renderMoney(){
  }
  if(bankJarsSummary){
   const activeProjects=[vp,cp].filter(p=>p.active);
-  bankJarsSummary.textContent=activeProjects.length?activeProjects.map(p=>`${p.label} ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}`).join(' · '):'Vacanze e Natale sono in pausa';
+  bankJarsSummary.textContent=activeProjects.length?activeProjects.map(p=>`${p.label}: ${euro(p.saved||0)} messi da parte${Number(p.target||0)>0?' su '+euro(p.target):''}`).join(' · '):'Vacanze e Natale: nessun salvadanaio attivo';
  }
  if(bankMovesSummary){
   const recent=[...incomeRows.map(x=>({...x,_kind:'in'})),...all.map(x=>({...x,_kind:'out'}))].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,2);
@@ -2204,11 +2246,20 @@ function renderSubscriptions(){
   bankBillsSummary.textContent=next?`${next.name} · ${birthLabel(next.dueDate)} · ${euro(next.amount)}`:'Nessuna bolletta in arrivo';
  }
  subscriptionStats.innerHTML=`<div class="stat"><span>ATTIVE</span><b>${a.length}</b></div><div class="stat"><span>ENTRO 7 GIORNI</span><b>${soon.length}</b></div>`;
- subscriptionList.innerHTML=a.length?a.map(x=>`<div class="row ${x.dueDate<dateKey()?'overdue':''}"><span>${x.category==='Trasporti'?'🚆':'💳'}</span><div class="grow"><b>${esc(x.name)}</b><div class="meta">${personName(x.owner)} · ${birthLabel(x.dueDate)} · ${esc(x.frequency)} · 🔔 ${x.reminderDays}g</div></div><b>${euro(x.amount)}</b><button class="primary smallBtn" data-subpay="${x.id}">Pagata</button><button class="del" data-subdel="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna scadenza registrata.</div>';
+ subscriptionList.innerHTML=a.length?a.map(x=>`<div class="row ${x.dueDate<dateKey()?'overdue':''}"><span class="rowSvgIcon">${uiIconMarkup(({Luce:'bolt',Gas:'flame',Acqua:'water',Internet:'wifi',Telefono:'phone',Trasporti:'car',Streaming:'device',Abbonamento:'card'})[x.category]||'card')}</span><div class="grow"><b>${esc(x.name)}</b><div class="meta">${personName(x.owner)} · ${birthLabel(x.dueDate)} · ${esc(x.frequency)} · 🔔 ${x.reminderDays}g</div></div><b>${euro(x.amount)}</b><button class="primary smallBtn" data-subpay="${x.id}">Pagata</button><button class="del" data-subdel="${x.id}">✕</button></div>`).join(''):'<div class="muted">Nessuna scadenza registrata.</div>';
  subscriptionList.querySelectorAll('[data-subpay]').forEach(b=>b.onclick=()=>{let x=s.subscriptions.find(v=>v.id===b.dataset.subpay);s.expenses.push({id:crypto.randomUUID(),name:x.name,amount:Number(x.amount),category:x.category,person:x.owner==='family'?null:x.owner,month:monthKey(new Date()),date:dateKey(),recurring:false,source:'subscription',sourceId:x.id});if(x.frequency==='once')s.subscriptions=s.subscriptions.filter(v=>v.id!==x.id);else{x.lastPaid=dateKey();x.dueDate=nextSubDate(x.dueDate,x.frequency)}save();renderMoney();renderSubscriptions()});
  subscriptionList.querySelectorAll('[data-subdel]').forEach(b=>b.onclick=()=>{s.subscriptions=s.subscriptions.filter(x=>x.id!==b.dataset.subdel);save();renderSubscriptions()})
 }
-addSubscriptionBtn.onclick=()=>{subDue.value=dateKey();subscriptionDialog.showModal()};
+function openSubscription(category=''){
+ subscriptionForm.reset();
+ subDue.value=dateKey();
+ if(category)subCategory.value=category;
+ if(document.getElementById('subscriptionDialogTitle'))subscriptionDialogTitle.textContent=category?`Aggiungi · ${category}`:'Aggiungi una scadenza';
+ openDialogSafe(subscriptionDialog);
+ setTimeout(()=>subName.focus(),50)
+}
+addSubscriptionBtn.onclick=()=>openSubscription();
+document.querySelectorAll('[data-sub-quick]').forEach(b=>b.onclick=()=>openSubscription(b.dataset.subQuick));
 subscriptionForm.onsubmit=e=>{e.preventDefault();s.subscriptions.push({id:crypto.randomUUID(),name:subName.value.trim(),amount:Number(subAmount.value),owner:subOwner.value,category:subCategory.value,dueDate:subDue.value,frequency:subFreq.value,reminderDays:Number(subReminder.value),notify:subNotify.value});subscriptionForm.reset();subscriptionDialog.close();save();renderMoney();renderSubscriptions()};
 recipeToShop.onclick=()=>{
  let r=recipeDetails(recipeDialog.dataset.recipe);

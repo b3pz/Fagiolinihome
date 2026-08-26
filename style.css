@@ -4827,316 +4827,112 @@ html.themeDark nav.mobileNav > button.navHomeCenter.active{
   background:#23333D!important;color:#D9E5EA!important;box-shadow:none!important;
 }
 
-/* =========================================================
-   FAGIOLINI V17.2 — ACCESSIBILITY & CONTRAST AUDIT
-   Global card contrast + slightly larger mobile typography.
-   ========================================================= */
-
-/* Light theme: authoritative contrast pass */
-:root{
-  --v172-ink:#182129;
-  --v172-muted:#56616A;
-  --v172-subtle:#707B84;
-  --v172-line:rgba(24,33,41,.12);
-  --v172-surface:#FAFAF8;
-  --v172-surface-strong:#F3F5F6;
-}
-
-html:not(.themeDark) body,
-html:not(.themeDark) .app{color:var(--v172-ink)!important}
-html:not(.themeDark) .muted,
-html:not(.themeDark) .meta,
-html:not(.themeDark) .tiny,
-html:not(.themeDark) p.muted{color:var(--v172-muted)!important}
-html:not(.themeDark) small{color:var(--v172-subtle)!important}
-
-/* Every important surface must stay distinct from the page background. */
-html:not(.themeDark) .card,
-html:not(.themeDark) .nativeSection,
-html:not(.themeDark) .profileCard,
-html:not(.themeDark) .stat,
-html:not(.themeDark) .menuDay,
-html:not(.themeDark) .bankMenuCard,
-html:not(.themeDark) .calendarDayCard,
-html:not(.themeDark) .organizeCard,
-html:not(.themeDark) .todayStory,
-html:not(.themeDark) .todayQuickGrid>button,
-html:not(.themeDark) .diaryHero,
-html:not(.themeDark) .nativeDisclosure,
-html:not(.themeDark) .workStatusCard,
-html:not(.themeDark) .adultCard,
-html:not(.themeDark) .houseRoutineCard,
-html:not(.themeDark) .houseDayPlan,
-html:not(.themeDark) .bankSimpleMenu,
-html:not(.themeDark) .recipeLibraryCard{
-  border-color:var(--v172-line)!important;
-}
-
-/* TODAY hero: hard contrast fix for the pale statistic boxes seen on iPhone. */
-html:not(.themeDark) #today > #todayHero.todayHeroCard,
-html:not(.themeDark) #todayHero.todayHeroCard,
-html:not(.themeDark) #todayHero{
-  background:linear-gradient(145deg,#425E6D 0%,#2C4350 58%,#22343E 100%)!important;
-  color:#FFFFFF!important;
-  border:1px solid rgba(255,255,255,.10)!important;
-  box-shadow:0 18px 44px rgba(35,51,61,.18)!important;
-}
-html:not(.themeDark) #todayHero *,
-html:not(.themeDark) #todayHero b,
-html:not(.themeDark) #todayHero strong{color:#FFFFFF!important}
-html:not(.themeDark) #todayHero .todayHeroNumbers>div{
-  background:rgba(255,255,255,.105)!important;
-  border:1px solid rgba(255,255,255,.15)!important;
-  box-shadow:none!important;
-}
-html:not(.themeDark) #todayHero .todayHeroNumbers b{color:#FFFFFF!important}
-html:not(.themeDark) #todayHero .todayHeroNumbers span{color:rgba(255,255,255,.82)!important}
-html:not(.themeDark) #todayHero p{color:rgba(255,255,255,.88)!important}
-
-/* Context cards: titles and secondary copy always readable. */
-html:not(.themeDark) .todayStory b,
-html:not(.themeDark) .todayStory h3,
-html:not(.themeDark) .dashboardCard b,
-html:not(.themeDark) .dashboardCard h3,
-html:not(.themeDark) .familyDashboardCard b,
-html:not(.themeDark) .familyDashboardCard h3,
-html:not(.themeDark) .nativeSection b,
-html:not(.themeDark) .nativeSection h3,
-html:not(.themeDark) .stat b,
-html:not(.themeDark) .organizeCard b,
-html:not(.themeDark) .bankMenuCard b{color:var(--v172-ink)!important}
-html:not(.themeDark) .todayStory small,
-html:not(.themeDark) .todayTimelineRow small,
-html:not(.themeDark) .dashboardNote,
-html:not(.themeDark) .dashboardCardHead small,
-html:not(.themeDark) .organizeCard small,
-html:not(.themeDark) .bankMenuCard small{color:var(--v172-muted)!important}
-
-/* Keep the special story cards readable too. */
-html:not(.themeDark) .todayStoryCelebration{background:#F0DDD3!important}
-html:not(.themeDark) .todayStoryMeals{background:#DFE8EE!important}
-html:not(.themeDark) .todayStoryCelebration small,
-html:not(.themeDark) .todayStoryMeals small{color:#5F6971!important}
-
-/* Controls and fields: stronger borders and copy. */
-html:not(.themeDark) button,
-html:not(.themeDark) input,
-html:not(.themeDark) select,
-html:not(.themeDark) textarea{color:var(--v172-ink)!important}
-html:not(.themeDark) input,
-html:not(.themeDark) select,
-html:not(.themeDark) textarea,
-html:not(.themeDark) .form input,
-html:not(.themeDark) .form select,
-html:not(.themeDark) .form textarea{
-  border-color:rgba(24,33,41,.16)!important;
-  background:#F8F9F8!important;
-}
-html:not(.themeDark) .primary{color:#fff!important}
-
-/* Dark theme: audit all major surfaces and secondary text. */
-html.themeDark .muted,
-html.themeDark .meta,
-html.themeDark .tiny,
-html.themeDark p.muted{color:#B5BBC0!important}
-html.themeDark small{color:#AEB5BA!important}
-html.themeDark .card,
-html.themeDark .nativeSection,
-html.themeDark .profileCard,
-html.themeDark .stat,
-html.themeDark .menuDay,
-html.themeDark .bankMenuCard,
-html.themeDark .calendarDayCard,
-html.themeDark .organizeCard,
-html.themeDark .todayStory,
-html.themeDark .todayQuickGrid>button,
-html.themeDark .diaryHero,
-html.themeDark .nativeDisclosure,
-html.themeDark .workStatusCard,
-html.themeDark .adultCard,
-html.themeDark .houseRoutineCard,
-html.themeDark .houseDayPlan{
-  border-color:rgba(255,255,255,.10)!important;
-}
-html.themeDark #today > #todayHero.todayHeroCard,
-html.themeDark #todayHero.todayHeroCard,
-html.themeDark #todayHero{
-  background:linear-gradient(145deg,#2A414E,#182731)!important;
-  color:#F8F8F5!important;
-  border-color:rgba(255,255,255,.10)!important;
-}
-html.themeDark #todayHero .todayHeroNumbers>div{
-  background:rgba(255,255,255,.075)!important;
-  border:1px solid rgba(255,255,255,.10)!important;
-}
-html.themeDark #todayHero .todayHeroNumbers b{color:#FFFFFF!important}
-html.themeDark #todayHero .todayHeroNumbers span{color:#D6DDE1!important}
-html.themeDark #todayHero p{color:#DCE1E4!important}
-html.themeDark .todayStoryCelebration{background:#38271F!important}
-html.themeDark .todayStoryMeals{background:#202F38!important}
-
-/* Slightly larger mobile presentation without inflating navigation. */
-@media (max-width:760px),(hover:none) and (pointer:coarse){
-  html,body{font-size:17px!important}
-  .app{padding-left:15px!important;padding-right:15px!important}
-
-  .pageIntro h2,.personPageHead h2,.sectionTitle.pageIntro h2{font-size:32px!important;line-height:1.06!important}
-  .pageIntro>div>small,.personPageHead small,.sectionTitle small{font-size:12.5px!important;letter-spacing:.13em!important}
-  .pageIntro p,.personPageHead p{font-size:16px!important;line-height:1.45!important}
-
-  .card,.nativeSection,.profileCard,.menuDay{padding:20px!important}
-  .sectionTitle h3,.todayStoryHead h3,.nativeSection h3{font-size:23px!important;line-height:1.12!important}
-  .sectionTitle button,.todayStoryHead button,.calendarHead button,.monthSwitch button,.daySwitch button{font-size:15px!important;min-height:46px!important}
-
-  #todayHero{padding:20px!important;border-radius:24px!important}
-  .todayHeroNumbers{gap:10px!important}
-  .todayHeroNumbers>div{min-height:82px!important;padding:13px 8px!important;border-radius:17px!important;display:grid!important;align-content:center!important;justify-items:center!important}
-  .todayHeroNumbers b{font-size:30px!important;line-height:1!important}
-  .todayHeroNumbers span{font-size:12.5px!important;font-weight:700!important;line-height:1.2!important;margin-top:5px!important}
-  #todayHero p{font-size:15.5px!important;line-height:1.45!important;margin-top:14px!important}
-
-  .todayStory{padding:18px!important;border-radius:22px!important}
-  .todayTimelineRow{min-height:64px!important;padding-top:10px!important;padding-bottom:10px!important}
-  .todayTimelineRow b{font-size:16.5px!important;line-height:1.3!important}
-  .todayTimelineRow small{font-size:12.5px!important;line-height:1.3!important;margin-top:3px!important}
-  .todayTimelineIcon{width:40px!important;height:40px!important;min-width:40px!important;border-radius:13px!important}
-  .todayTimelineIcon .uiIcon{width:20px!important;height:20px!important}
-
-  .stat{padding:17px!important;min-height:92px!important}
-  .stat span{font-size:12.5px!important;line-height:1.25!important}
-  .stat b{font-size:27px!important;line-height:1.05!important;margin-top:8px!important}
-
-  .dashboardCardHead h3{font-size:18px!important}
-  .dashboardCardHead small{font-size:10.5px!important}
-  .dashboardNote{font-size:13px!important;line-height:1.45!important}
-  .dashboardBigText b{font-size:24px!important;line-height:1.12!important}
-
-  .organizeCard{min-height:74px!important;padding-top:14px!important;padding-bottom:14px!important}
-  .organizeCard b{font-size:16px!important}
-  .organizeCard small{font-size:12px!important;line-height:1.35!important}
-
-  .bankMenuCard{min-height:76px!important}
-  .bankMenuCard b{font-size:16px!important}
-  .bankMenuCard small{font-size:12px!important}
-
-  .calendarDayCard{padding:18px!important}
-  .calDay{min-height:52px!important;font-size:15px!important}
-  .calDay .calNum{font-size:15px!important}
-  .weekdays{font-size:12px!important;font-weight:750!important}
-
-  .form input,.form select,.form textarea,input,select,textarea{font-size:16.5px!important;min-height:54px!important}
-  .fieldLabel{font-size:13px!important}
-  .primary{font-size:16px!important;min-height:54px!important}
-
-  /* Keep bottom navigation compact even after enlarging content. */
-  .mobileNav{min-height:74px!important}
-  .mobileNav button,.mobileNav button.navHomeTab,.mobileNav button.navHomeCenter{min-height:58px!important;padding:6px 3px!important}
-  .mobileNav .navIcon,.mobileNav .navIcon .uiIcon{width:23px!important;height:23px!important}
-  .mobileNav small{font-size:10.5px!important}
-}
 
 /* =========================================================
-   V17.3 — GLOBAL CONTRAST POLISH
-   Raise readability of every small/secondary label without
-   changing the V17.2 layout or navigation proportions.
+   V18 — FAMILY FIRST / READABLE / HUMAN
+   Desktop sizing preserved. Mobile Safari gets larger text.
+   Contrast targets: WCAG AA for normal text in both themes.
    ========================================================= */
 :root{
-  --v173-ink:#1D252B;
-  --v173-muted:#59656D;
-  --v173-soft:#6A747B;
-  --v173-line:rgba(29,37,43,.14);
+  --v18-bg:#ECEEF1;
+  --v18-surface:#FAFAF8;
+  --v18-surface-2:#F2F4F5;
+  --v18-ink:#17212A;
+  --v18-muted:#58636D;
+  --v18-line:rgba(23,33,42,.11);
+  --v18-blue:#496A7C;
+  --v18-blue-soft:#DDE8EE;
+  --v18-clay:#A96449;
+  --v18-clay-soft:#F0DDD3;
+  --v18-sage:#667E6D;
+  --v18-sage-soft:#E1E9E3;
 }
 
-html:not(.themeDark) body{color:var(--v173-ink)!important}
-html:not(.themeDark) .eyebrow,
-html:not(.themeDark) .kicker,
-html:not(.themeDark) .sectionKicker,
-html:not(.themeDark) .sectionTitle>small,
-html:not(.themeDark) .pageIntro small,
-html:not(.themeDark) .personPageHead small,
-html:not(.themeDark) .dashboardCardHead small,
-html:not(.themeDark) .fieldLabel,
-html:not(.themeDark) label,
-html:not(.themeDark) .meta,
-html:not(.themeDark) .tiny{
-  color:var(--v173-muted)!important;
-  opacity:1!important;
-}
-html:not(.themeDark) .muted,
-html:not(.themeDark) p.muted,
-html:not(.themeDark) .dashboardNote,
-html:not(.themeDark) .todayTimelineRow small,
-html:not(.themeDark) .organizeCard small,
-html:not(.themeDark) .bankMenuCard small,
-html:not(.themeDark) .profileCard small,
-html:not(.themeDark) .nativeSection small{
-  color:var(--v173-soft)!important;
-  opacity:1!important;
-}
+/* SVG icons are only useful if they are visible. */
+.rowSvgIcon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--v18-blue-soft);color:var(--v18-blue);flex:0 0 auto}
+.rowSvgIcon .uiIcon{width:23px;height:23px}
 
-/* Stats / hero counters: never allow white-on-pale combinations. */
-html:not(.themeDark) #todayHero .todayHeroNumbers>div{
-  background:rgba(255,255,255,.14)!important;
-  border-color:rgba(255,255,255,.22)!important;
+/* TODAY: fix the unreadable top counters in light mode. */
+#today #todayHero.todayHeroCard{
+  background:linear-gradient(145deg,#344D5B,#213640)!important;
+  color:#F9FAF8!important;
+  border:0!important;
 }
-html:not(.themeDark) #todayHero .todayHeroNumbers b{color:#FFFFFF!important;text-shadow:0 1px 1px rgba(0,0,0,.12)!important}
-html:not(.themeDark) #todayHero .todayHeroNumbers span{color:rgba(255,255,255,.94)!important}
-html:not(.themeDark) #todayHero p{color:rgba(255,255,255,.94)!important}
+#today #todayHero.todayHeroCard .todayHeroNumbers>div{background:rgba(255,255,255,.09)!important;border:1px solid rgba(255,255,255,.08)!important}
+#today #todayHero.todayHeroCard .todayHeroNumbers b{color:#FFFFFF!important}
+#today #todayHero.todayHeroCard .todayHeroNumbers span,#today #todayHero.todayHeroCard p{color:#E1E8EB!important}
 
-/* Cards: make boundaries and captions visible on the stone background. */
-html:not(.themeDark) .card,
-html:not(.themeDark) .nativeSection,
-html:not(.themeDark) .todayStory,
-html:not(.themeDark) .organizeCard,
-html:not(.themeDark) .bankMenuCard,
-html:not(.themeDark) .calendarDayCard,
-html:not(.themeDark) .profileCard,
-html:not(.themeDark) .stat{
-  border-color:var(--v173-line)!important;
-}
+/* BANK — explain what each number means. */
+.bankHeroExplain{display:block;color:rgba(255,255,255,.76)!important;font-size:13px;margin-top:4px}
+.bankRemaining{text-align:right;display:grid;gap:2px}.bankRemaining small{color:rgba(255,255,255,.72)!important}.bankRemaining strong{line-height:1}
+.bankSavingsExplainer{display:grid;grid-template-columns:46px 1fr;gap:13px;align-items:start;padding:16px;border-radius:18px;background:#EAF0F3;color:#20303A;margin:8px 0 18px}
+.bankSavingsExplainer>.uiIcon{width:28px;height:28px;color:#4A6B7D;margin:6px auto}.bankSavingsExplainer p{margin:4px 0 0;line-height:1.45;color:#3F505B}
+.savingProjectSummary{padding:16px!important}.savingProjectSummaryHead{display:grid!important;grid-template-columns:auto 1fr;gap:10px;align-items:center}.savingProjectPlainNumbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}.savingProjectPlainNumbers span{background:#F1F3F4;border-radius:13px;padding:10px}.savingProjectPlainNumbers small{display:block;font-size:10px!important;color:#66727A!important}.savingProjectPlainNumbers b{display:block;margin-top:3px;color:#1D2931!important;font-size:15px}
 
-/* Top utility buttons / status chips. */
-html:not(.themeDark) header button,
-html:not(.themeDark) .topActions button,
-html:not(.themeDark) .headerActions button,
-html:not(.themeDark) .syncChip,
-html:not(.themeDark) .statusChip{
-  color:#334751!important;
-}
-html:not(.themeDark) header .uiIcon,
-html:not(.themeDark) .topActions .uiIcon,
-html:not(.themeDark) .headerActions .uiIcon{color:#496775!important}
+/* SHOP — category first, not a management form. */
+.shopCategoryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 16px}.shopCategoryBtn{min-height:118px;border:1px solid var(--v18-line);background:var(--v18-surface);border-radius:22px;padding:15px;display:grid;align-content:center;text-align:left;gap:5px;box-shadow:0 10px 28px rgba(24,35,43,.06)}.shopCategoryBtn>span{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--v18-blue-soft);color:var(--v18-blue)}.shopCategoryBtn .uiIcon{width:23px;height:23px}.shopCategoryBtn b{font-size:17px;color:var(--v18-ink)}.shopCategoryBtn small{letter-spacing:0!important;font-size:12px;color:var(--v18-muted)}.shopCategoryBtn.active{background:#DCE8EE;border-color:rgba(73,106,124,.24);box-shadow:inset 0 0 0 1px rgba(73,106,124,.08)}
+.shopSummaryHuman{display:flex;justify-content:space-between;gap:20px;align-items:end}.shopSummaryHuman>div{display:grid;gap:3px}.shopSummaryHuman>div:last-child{text-align:right}.shopSummaryHuman b{font-size:20px}.shopSummaryHuman span{color:var(--v18-muted);font-size:13px}.shopListCard{padding-top:17px!important}.shopCheck{width:34px;height:34px;border-radius:11px;border:2px solid #83919A;background:transparent;color:#fff;font-weight:900}.shopRow.done .shopCheck{background:#647B6B;border-color:#647B6B}.compactPrimary{min-height:44px!important;padding:10px 14px!important}
 
-/* Dark theme: readable secondary copy on charcoal surfaces. */
-html.themeDark .eyebrow,
-html.themeDark .kicker,
-html.themeDark .sectionKicker,
-html.themeDark .sectionTitle>small,
-html.themeDark .pageIntro small,
-html.themeDark .personPageHead small,
-html.themeDark .dashboardCardHead small,
-html.themeDark .fieldLabel,
-html.themeDark label,
-html.themeDark .meta,
-html.themeDark .tiny{color:#C3CBD0!important;opacity:1!important}
-html.themeDark .muted,
-html.themeDark p.muted,
-html.themeDark .dashboardNote,
-html.themeDark .todayTimelineRow small,
-html.themeDark .organizeCard small,
-html.themeDark .bankMenuCard small,
-html.themeDark .profileCard small,
-html.themeDark .nativeSection small{color:#B8C0C5!important;opacity:1!important}
-html.themeDark #todayHero .todayHeroNumbers>div{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.16)!important}
-html.themeDark #todayHero .todayHeroNumbers span{color:#EEF2F4!important}
-html.themeDark #todayHero p{color:#E4E9EC!important}
+/* AUTO — obvious categories. */
+.autoCategoryGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:13px}.autoCategoryGrid button{min-height:118px;border:1px solid var(--v18-line);background:var(--v18-surface);border-radius:22px;padding:14px;display:grid;place-items:center;align-content:center;gap:8px;color:var(--v18-ink);box-shadow:0 10px 28px rgba(24,35,43,.06)}.autoCategoryGrid button>span{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--v18-blue-soft);color:var(--v18-blue)}.autoCategoryGrid button:nth-child(2)>span,.autoCategoryGrid button:nth-child(4)>span{background:var(--v18-clay-soft);color:var(--v18-clay)}.autoCategoryGrid button:nth-child(n+5)>span{background:var(--v18-sage-soft);color:var(--v18-sage)}.autoCategoryGrid .uiIcon{width:27px;height:27px}.autoCategoryGrid b{font-size:15px}.autoSecondaryActions{display:flex;gap:10px;margin:0 0 16px}.autoSecondaryActions button{border:1px solid var(--v18-line);background:var(--v18-surface-2);border-radius:14px;padding:11px 14px;font-weight:800;color:var(--v18-ink)}
 
+/* HOUSE & WORKS — three clear destinations + quick technician types. */
+.homeServiceGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 16px}.homeServiceGrid button{border:1px solid var(--v18-line);background:var(--v18-surface);border-radius:22px;padding:17px;text-align:left;min-height:128px;box-shadow:0 10px 28px rgba(24,35,43,.06)}.homeServiceGrid button>span{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;background:var(--v18-blue-soft);color:var(--v18-blue);margin-bottom:11px}.homeServiceGrid button:nth-child(2)>span{background:var(--v18-clay-soft);color:var(--v18-clay)}.homeServiceGrid button:nth-child(3)>span{background:var(--v18-sage-soft);color:var(--v18-sage)}.homeServiceGrid .uiIcon{width:25px;height:25px}.homeServiceGrid b{display:block;font-size:18px;color:var(--v18-ink)}.homeServiceGrid small{display:block;letter-spacing:0!important;margin-top:4px;font-size:12px;color:var(--v18-muted);line-height:1.35}.maintenanceQuickGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:0 0 16px}.maintenanceQuickGrid button{min-height:76px;border:1px solid var(--v18-line);background:var(--v18-surface-2);border-radius:16px;display:grid;place-items:center;gap:5px;color:var(--v18-ink)}.maintenanceQuickGrid .uiIcon{width:22px;height:22px;color:var(--v18-blue)}.maintenanceQuickGrid b{font-size:12px}
+
+/* Waste: use a recognizable bin icon plus text; no mystery color squares. */
+.wasteBinIcon,.wasteRowIcon{color:#344B58!important}.wasteBinIcon .uiIcon{width:33px;height:33px}.wasteRowIcon .uiIcon{width:28px;height:28px}.wasteWeekRow{position:relative;overflow:hidden}.wasteWeekRow:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:#8A725A}.wasteWeekRow.waste-packaging:before{background:#D19B22}.wasteWeekRow.waste-paper:before{background:#4E79A7}.wasteWeekRow.waste-residual:before{background:#6E7378}.wasteWeekRow.waste-organic:before{background:#8A725A}
+
+/* Calendar action copy needs to be readable and button-sized. */
+#calendarDetails button[data-cal-open],.calendarSheetItem button[data-day-open]{min-height:42px;border-radius:12px;padding:9px 12px!important;font-weight:800;background:#E5EDF1!important;color:#263D4A!important;border:1px solid rgba(73,106,124,.15)!important;white-space:nowrap}
+
+/* DARK MODE — independent high-contrast palette, not inverted light mode. */
+html.themeDark body,html.themeDark .app{background:#0B0F12!important;color:#F4F6F6!important}
+html.themeDark .card,html.themeDark .dashboardCard,html.themeDark .homeQuickCapture,html.themeDark .nativeSection,html.themeDark .organizeCard,html.themeDark .bankMenuCard,html.themeDark .profileCard,html.themeDark .menuDay,html.themeDark .calendar.card,html.themeDark .calendarHead.card,html.themeDark .calendarDayCard{background:#151B20!important;border-color:rgba(255,255,255,.10)!important;color:#F4F6F6!important}
+html.themeDark .muted,html.themeDark .meta,html.themeDark .tiny,html.themeDark small{color:#B8C1C7!important}
+html.themeDark input,html.themeDark select,html.themeDark textarea{background:#1D252B!important;color:#F6F7F7!important;border-color:rgba(255,255,255,.14)!important}
+html.themeDark input::placeholder,html.themeDark textarea::placeholder{color:#88949C!important}
+html.themeDark .bankSavingsExplainer{background:#1E2B33!important;color:#F1F4F5!important}.themeDark .bankSavingsExplainer p{color:#C5CDD2!important}.themeDark .bankSavingsExplainer>.uiIcon{color:#A8C1CF!important}
+html.themeDark .savingProjectPlainNumbers span{background:#20282E!important}.themeDark .savingProjectPlainNumbers small{color:#AEB8BE!important}.themeDark .savingProjectPlainNumbers b{color:#F3F5F5!important}
+html.themeDark .shopCategoryBtn,html.themeDark .autoCategoryGrid button,html.themeDark .homeServiceGrid button{background:#151B20!important;border-color:rgba(255,255,255,.10)!important;box-shadow:none!important}.themeDark .shopCategoryBtn b,.themeDark .autoCategoryGrid b,.themeDark .homeServiceGrid b{color:#F3F5F5!important}.themeDark .shopCategoryBtn small,.themeDark .homeServiceGrid small{color:#B5BEC4!important}.themeDark .shopCategoryBtn.active{background:#20313B!important;border-color:rgba(167,195,209,.25)!important}.themeDark .maintenanceQuickGrid button,.themeDark .autoSecondaryActions button{background:#1C242A!important;color:#EEF1F2!important;border-color:rgba(255,255,255,.10)!important}
+html.themeDark .wasteHeroCard{background:#182026!important;border-color:rgba(255,255,255,.10)!important;color:#F3F5F5!important}.themeDark .wasteHeroCard h3{color:#F5F7F7!important}.themeDark .wasteHeroCard p,.themeDark .wasteHeroCard>span{color:#C3CBD0!important}.themeDark .wasteBinIcon{background:#222C33!important;color:#C7D5DC!important}.themeDark .wasteValidPill{background:#202A30!important;color:#D2DCE1!important}.themeDark .wasteWeekRow{background:#171E23!important;border-color:rgba(255,255,255,.10)!important}.themeDark .wasteDayBadge{background:#20282E!important;color:#F2F4F4!important}.themeDark .wasteWeekRow .grow b{color:#F5F6F6!important}.themeDark .wasteWeekRow .grow small{color:#B8C1C7!important}.themeDark .wasteRowIcon{color:#D5DEE2!important}.themeDark .wasteInfoCard{background:#151B20!important}.themeDark .wasteInfoCard b{color:#F4F6F6!important}.themeDark .wasteInfoCard p{color:#B8C1C7!important}
+html.themeDark .bankAction.income{background:#1C2C24!important;color:#E8F4EC!important}.themeDark .bankAction.expense{background:#32221D!important;color:#F5E9E4!important}.themeDark .bankAction.bill{background:#1D2931!important;color:#E8F1F5!important}.themeDark .bankActionIcon{background:rgba(255,255,255,.08)!important;color:inherit!important}.themeDark .bankMenuCard{border-color:rgba(255,255,255,.10)!important}.themeDark .bankMenuCard b{color:#F4F6F6!important}.themeDark .bankMenuCard small{color:#B7C0C6!important}
+html.themeDark #calendarDetails button[data-cal-open],html.themeDark .calendarSheetItem button[data-day-open]{background:#243640!important;color:#EEF5F7!important;border-color:rgba(167,195,209,.20)!important}
+html.themeDark #today #todayHero.todayHeroCard{background:linear-gradient(145deg,#243844,#172830)!important}.themeDark #today #todayHero.todayHeroCard .todayHeroNumbers>div{background:rgba(255,255,255,.07)!important}.themeDark #today #todayHero.todayHeroCard .todayHeroNumbers b{color:#FFFFFF!important}.themeDark #today #todayHero.todayHeroCard .todayHeroNumbers span,.themeDark #today #todayHero.todayHeroCard p{color:#D7E0E4!important}
+
+/* Mobile Safari readability: desktop stays as-is. */
 @media (max-width:760px),(hover:none) and (pointer:coarse){
-  /* Slightly stronger mobile typography, without growing the nav. */
-  .eyebrow,.kicker,.sectionKicker,.sectionTitle>small,.pageIntro small,.personPageHead small{font-size:13px!important;font-weight:800!important;letter-spacing:.14em!important}
-  .muted,.meta,.dashboardNote{font-size:14px!important;line-height:1.45!important}
-  .todayTimelineRow small,.organizeCard small,.bankMenuCard small,.profileCard small,.nativeSection small{font-size:13px!important;line-height:1.35!important}
-  .todayTimelineRow b,.organizeCard b,.bankMenuCard b{font-size:17px!important}
-  .todayStoryHead h3,.nativeSection h3,.sectionTitle h3{font-size:24px!important}
-  .fieldLabel,label{font-size:13.5px!important;font-weight:750!important}
+  html{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+  body{font-size:18px!important}
+  main{padding-bottom:calc(138px + env(safe-area-inset-bottom))!important}
+  .pageIntro h2{font-size:34px!important;line-height:1.05!important}.pageIntro p,.muted{font-size:16px!important;line-height:1.45!important}.sectionTitle h3{font-size:22px!important}.sectionTitle small{font-size:11px!important}
+  .card{padding:20px!important}.row{padding:16px 0!important}.row b{font-size:17px!important}.meta{font-size:14.5px!important;line-height:1.4!important}
+  button,input,select,textarea{font-size:16px!important}input,select,textarea{min-height:52px!important}.fieldLabel{font-size:15px!important;line-height:1.35!important}
+  .homeQuickCaptureGrid button{min-height:100px!important}.homeQuickCaptureGrid b{font-size:16px!important}.quickCaptureIcon{width:48px!important;height:48px!important}.quickCaptureIcon .uiIcon{width:27px!important;height:27px!important}
+  .dashboardCardHead h3{font-size:20px!important}.dashboardNote{font-size:15px!important;line-height:1.4!important}.dashboardBigText{font-size:18px!important}
+  .todayHeroNumbers b{font-size:30px!important}.todayHeroNumbers span{font-size:13px!important}.todayStory b{font-size:17px!important}.todayStory small{font-size:12px!important}
+  .shopCategoryGrid{grid-template-columns:1fr 1fr!important}.shopCategoryBtn{min-height:106px!important}.shopCategoryBtn b{font-size:17px!important}.shopCategoryBtn small{font-size:13px!important}
+  .autoCategoryGrid{grid-template-columns:1fr 1fr!important}.autoCategoryGrid button{min-height:108px!important}.autoCategoryGrid b{font-size:16px!important}.autoSecondaryActions{display:grid;grid-template-columns:1fr 1fr}.autoSecondaryActions button{font-size:14px!important}
+  .homeServiceGrid{grid-template-columns:1fr!important}.homeServiceGrid button{min-height:104px!important;display:grid;grid-template-columns:52px 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center}.homeServiceGrid button>span{grid-row:1/3;margin:0}.homeServiceGrid b{font-size:19px!important}.homeServiceGrid small{font-size:14px!important}
+  .maintenanceQuickGrid{grid-template-columns:repeat(3,1fr)!important}.maintenanceQuickGrid button{min-height:82px!important}.maintenanceQuickGrid b{font-size:13px!important}
+  .savingProjectPlainNumbers{grid-template-columns:1fr!important}.savingProjectPlainNumbers span{display:flex;justify-content:space-between;align-items:center}.savingProjectPlainNumbers small{font-size:11px!important}.savingProjectPlainNumbers b{font-size:16px!important}
+  .bankSimpleHeroTop{align-items:start!important}.bankHeroExplain{font-size:14px!important}.bankRemaining strong{font-size:34px!important}
+  .bankAction{font-size:17px!important;min-height:68px!important}.bankMenuCard b{font-size:17px!important}.bankMenuCard small{font-size:13px!important;line-height:1.35!important}
+  .wasteHeroCard{padding:20px!important}.wasteHeroCard h3{font-size:23px!important}.wasteHeroCard p{font-size:16px!important}.wasteWeekRow{grid-template-columns:62px 44px 1fr!important}.wasteWeekRow .grow b{font-size:18px!important}.wasteWeekRow .grow small{font-size:14px!important}.wasteValidPill{font-size:12px!important}
+  #calendarDetails .row{display:grid!important;grid-template-columns:auto 1fr;gap:10px!important}#calendarDetails .row>button{grid-column:2;justify-self:start;font-size:14px!important}.calendarSheetItem{grid-template-columns:auto 1fr!important}.calendarSheetItem>button{grid-column:2;justify-self:start;margin-top:6px;font-size:14px!important}
+  .mobileNav{height:calc(76px + env(safe-area-inset-bottom))!important;padding-bottom:calc(7px + env(safe-area-inset-bottom))!important}.mobileNav button{min-height:58px!important}.mobileNav button small{font-size:12px!important}.mobileNav .uiIcon{width:25px!important;height:25px!important}
+}
+
+
+/* V18 bills: category-first, readable like the other household hubs. */
+.billQuickGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:8px 0 18px}.billQuickGrid button{min-height:94px;border:1px solid var(--v18-line);border-radius:18px;background:var(--v18-surface-2);color:var(--v18-ink);display:grid;place-items:center;gap:7px;padding:12px;font-weight:800}.billQuickGrid button>span{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--v18-blue-soft);color:var(--v18-blue)}.billQuickGrid .uiIcon{width:24px;height:24px}.billQuickGrid b{font-size:14px}.themeDark .billQuickGrid button{background:#151B20!important;border-color:rgba(255,255,255,.10)!important;color:#F4F6F6!important}.themeDark .billQuickGrid button>span{background:#20313B!important;color:#C8D9E1!important}.themeDark .billsV18 .stats .stat{background:#1C242A!important;border-color:rgba(255,255,255,.10)!important}.themeDark .billsV18 .stats .stat span{color:#B8C1C7!important}.themeDark .billsV18 .stats .stat b{color:#F4F6F6!important}
+@media (max-width:760px),(hover:none) and (pointer:coarse){.billQuickGrid{grid-template-columns:repeat(2,1fr)!important;gap:10px!important}.billQuickGrid button{min-height:102px!important}.billQuickGrid b{font-size:16px!important}}
+
+/* V18 final mobile readability pass: Safari must not require pinch-to-zoom. */
+@media (max-width:760px),(hover:none) and (pointer:coarse){
+  .view p,.view li{font-size:16px!important;line-height:1.48!important}
+  .view .meta,.view .tiny,.view .dashboardNote{font-size:15px!important;line-height:1.42!important}
+  .view .row small,.view .bankMenuCard small,.view .organizeCard small{font-size:14px!important;line-height:1.4!important}
+  .view .sectionTitle>div>small,.view .pageIntro>div>small{font-size:12px!important;letter-spacing:.13em!important}
+  .view button:not(.calDay):not(.shopCheck):not(.todayChevron){min-height:48px}
+  .view a.linkBtn{min-height:44px;display:inline-flex;align-items:center}
 }
