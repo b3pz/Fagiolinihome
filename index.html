@@ -16,7 +16,7 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=14.0.0">
+<link rel="stylesheet" href="style.css?v=15.0.0">
 </head>
 <body data-page="home">
 
@@ -441,7 +441,7 @@
   </details>
 </section>
 <section id="calendar" class="view">
-  <div class="sectionTitle"><div><small>TUTTO INSIEME</small><h2>📅 Calendario</h2></div><div class="inlineBtns"><button data-go="reminders">🔔 Promemoria</button><button data-go="home">← Home</button></div></div>
+  <div class="sectionTitle pageIntro calendarPageIntro"><div><small>TUTTO INSIEME</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><span>Calendario</span></h2><p class="muted">Tocca un giorno per vedere o aggiungere qualcosa.</p></div><div class="inlineBtns"><button data-go="reminders"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg> Promemoria</button><button data-go="home">← Home</button></div></div>
   <div class="calendarHead card">
     <button id="calPrev">←</button><h3 id="calMonth"></h3><button id="calNext">→</button>
   </div>
@@ -719,15 +719,28 @@
 
 <dialog id="calendarAddDialog"><div class="dialogBox calendarAddSheet">
   <div class="sectionTitle compact"><div><small id="calendarAddDateLabel">GIORNO</small><h3>Cosa vuoi aggiungere?</h3></div><button type="button" data-close="calendarAddDialog">✕</button></div>
-  <div class="calendarAddGrid">
-    <button data-calendar-add="appointment"><span>📅</span><b>Appuntamento</b></button>
-    <button data-calendar-add="calcetto"><span>⚽</span><b>Calcetto JJ</b></button>
-    <button data-calendar-add="birthday"><span>🎂</span><b>Compleanno</b></button>
-    <button data-calendar-add="reminder"><span>🔔</span><b>Promemoria</b></button>
-    <button data-calendar-add="work"><span>💼</span><b>Lavoro / ferie</b></button>
-    <button data-calendar-add="health"><span>❤️</span><b>Salute</b></button>
-    <button data-calendar-add="house"><span>🧹</span><b>Faccenda</b></button>
-    <button data-calendar-add="event"><span>✨</span><b>Altro</b></button>
+  <div class="calendarAddGrid elegantActionGrid">
+    <button data-calendar-add="appointment"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-calendar"></use></svg></span><b>Appuntamento</b></button>
+    <button data-calendar-add="childDiary"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-family"></use></svg></span><b>Diario bimbi</b></button>
+    <button data-calendar-add="reminder"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-bell"></use></svg></span><b>Promemoria</b></button>
+    <button data-calendar-add="birthday"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-gift"></use></svg></span><b>Compleanno</b></button>
+    <button data-calendar-add="work"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-card"></use></svg></span><b>Lavoro / ferie</b></button>
+    <button data-calendar-add="health"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-health"></use></svg></span><b>Salute</b></button>
+    <button data-calendar-add="house"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-housework"></use></svg></span><b>Faccenda</b></button>
+    <button data-calendar-add="calcetto"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-calendar"></use></svg></span><b>Calcetto JJ</b></button>
+    <button data-calendar-add="event"><span class="calendarChoiceIcon"><svg class="uiIcon"><use href="icons.svg#icon-plus"></use></svg></span><b>Altro</b></button>
+  </div>
+</div></dialog>
+
+<dialog id="calendarChildDiaryDialog" class="nativeDialog"><div class="dialogBox nativeSheet calendarChildDiarySheet">
+  <div class="sheetGrabber" aria-hidden="true"></div>
+  <div class="sectionTitle compact"><div><small id="calendarChildDiaryDateLabel">DIARIO</small><h3>Cosa vuoi segnare?</h3></div><button type="button" data-close="calendarChildDiaryDialog">✕</button></div>
+  <p class="muted">Scegli la registrazione. Subito dopo scegli Caty, Kiko o, per la cacca, anche Astro.</p>
+  <div class="calendarChildDiaryGrid">
+    <button type="button" data-calendar-child-type="pappa"><svg class="uiIcon"><use href="icons.svg#icon-bottle"></use></svg><b>Pappa / latte</b></button>
+    <button type="button" data-calendar-child-type="cacca"><svg class="uiIcon"><use href="icons.svg#icon-poop"></use></svg><b>Cacca</b></button>
+    <button type="button" data-calendar-child-type="nanna"><svg class="uiIcon"><use href="icons.svg#icon-sleep"></use></svg><b>Sonno</b></button>
+    <button type="button" data-calendar-child-type="pannolino"><svg class="uiIcon"><use href="icons.svg#icon-diaper"></use></svg><b>Pannolino</b></button>
   </div>
 </div></dialog>
 
@@ -904,6 +917,9 @@
       <option value="farmaco">Medicina</option>
       <option value="crescita">Crescita</option>
       <option value="nota">Nota</option>
+      <option value="traversina">Traversina</option>
+      <option value="pipi">Pipì</option>
+      <option value="toeletta">Toeletta</option>
     </select>
   </label>
   <div class="diaryDateGrid">
@@ -929,5 +945,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=14.0.0"></script>
+<script src="app.js?v=15.0.0"></script>
 </body></html>

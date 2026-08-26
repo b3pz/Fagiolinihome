@@ -943,7 +943,7 @@ function renderOrganize(){
 }
 function openPerson(id){current=id;dayOffset=0;go('person');renderPerson()}
 function personActionKeys(c){return c.type==='dog'?['pappa','traversina','cacca','pipi','farmaco','toeletta']:['pappa','pannolino','cacca','nanna','bagnetto','farmaco','crescita','nota']}
-function childIconId(type){return ({pappa:'icon-bottle',pannolino:'icon-diaper',cacca:'icon-poop',nanna:'icon-sleep',bagnetto:'icon-bath',farmaco:'icon-medicine',crescita:'icon-growth',nota:'icon-note'})[type]||'icon-note'}
+function childIconId(type){return ({pappa:'icon-bottle',pannolino:'icon-diaper',cacca:'icon-poop',nanna:'icon-sleep',bagnetto:'icon-bath',farmaco:'icon-medicine',crescita:'icon-growth',nota:'icon-note',traversina:'icon-diaper',pipi:'icon-note',toeletta:'icon-bath'})[type]||'icon-note'}
 function childIconSvg(type){return `<svg class="uiIcon diaryIcon" aria-hidden="true"><use href="icons.svg#${childIconId(type)}"></use></svg>`}
 function actionIcon(type,person){if(person==='astro')return META[type]?.[0]||'•';return childIconSvg(type)}
 function countRange(person,type,days){let vals=[];for(let i=days-1;i>=0;i--){let d=offsetDate(-i),n=count(person,type,d);vals.push({date:d,count:n})}return vals}
@@ -979,12 +979,12 @@ let editingDiaryEventId=null;
 function currentLocalTime(){let n=new Date();return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`}
 function localEventIso(k,t){let [y,m,d]=k.split('-').map(Number),[hh,mm]=(t||'00:00').split(':').map(Number);return new Date(y,m-1,d,hh||0,mm||0,0,0).toISOString()}
 function setDiaryConditional(){let t=childDiaryType.value;childDiarySleepFields.hidden=t!=='nanna';childDiaryPoopFields.hidden=t!=='cacca';childDiaryGrowthFields.hidden=t!=='crescita'}
-function openChildDiary(id=null,presetType='pappa'){
- let c=s.children.find(x=>x.id===current);if(!c||c.type==='dog'){if(presetType)handleAction(current,presetType);return}
+function openChildDiary(id=null,presetType='pappa',presetDate=null){
+ let c=s.children.find(x=>x.id===current);if(!c)return;
  editingDiaryEventId=id;let e=id?s.events.find(x=>x.id===id):null;
  childDiaryDialogTitle.textContent=e?'Modifica registrazione':`Aggiungi al diario di ${c.name}`;
  childDiaryType.value=e?.type||presetType||'pappa';
- let at=e?new Date(e.at):new Date();childDiaryDate.value=dateKey(at);childDiaryTime.value=`${String(at.getHours()).padStart(2,'0')}:${String(at.getMinutes()).padStart(2,'0')}`;
+ let at=e?new Date(e.at):new Date();childDiaryDate.value=e?dateKey(at):(presetDate||dateKey(at));childDiaryTime.value=`${String(at.getHours()).padStart(2,'0')}:${String(at.getMinutes()).padStart(2,'0')}`;
  childDiaryEndTime.value=e?.endAt?timeLabel(e.endAt):'';
  let note=e?.note||'';childDiaryPoopType.value='Normale';
  if(e?.type==='cacca'&&note){let bits=note.split(' · ');if(['Normale','Dura','Morbida','Liquida'].includes(bits[0])){childDiaryPoopType.value=bits.shift();note=bits.join(' · ')}}
@@ -993,7 +993,7 @@ function openChildDiary(id=null,presetType='pappa'){
  childDiaryNote.value=note;childDiaryDeleteBtn.hidden=!e;setDiaryConditional();childDiaryDialog.showModal()
 }
 function handleAction(person,type){
- let c=s.children.find(x=>x.id===person);if(c&&c.type!=='dog'){pendingPerson=person;openChildDiary(null,type);return}
+ let c=s.children.find(x=>x.id===person);if(c){pendingPerson=person;current=person;openChildDiary(null,type);return}
  if(type==='cacca'){pendingPerson=person;poopType.value='Normale';poopNote.value='';poopDialog.showModal();return}
  if(type==='nanna'){pendingPerson=person;let a=sleepActive(person);sleepMessage.textContent=a?'La nanna è in corso. Segno il risveglio adesso?':'Segno l’inizio della nanna adesso?';sleepDialog.showModal();return}
  s.events.push({id:crypto.randomUUID(),childId:person,type,at:new Date().toISOString(),note:''});save()
@@ -1632,7 +1632,10 @@ function renderCalendarDayDialog(){
  calendarDayDialogList.querySelectorAll('[data-day-open]').forEach(b=>b.onclick=()=>{calendarDayDialog.close();openSourceItem(b.dataset.dayOpen,b.dataset.dayId)})
 }
 function openCalendarDay(k){
- selectedDate=k;calendarAddDate=k;renderCalendar();renderCalendarDayDialog();
+ selectedDate=k;calendarAddDate=k;renderCalendar();
+ const entries=dayData(k);
+ if(!entries.length){openCalendarAdd(k);return}
+ renderCalendarDayDialog();
  if(!calendarDayDialog.open)calendarDayDialog.showModal()
 }
 function openCalendarAdd(k=selectedDate){
@@ -1647,6 +1650,13 @@ document.querySelectorAll('[data-calendar-add]').forEach(b=>b.onclick=()=>{
  const kind=b.dataset.calendarAdd;
  calendarAddDialog.close();
  if(kind==='birthday'){openBirthday(null,calendarAddDate);return}
+ if(kind==='childDiary'){
+   const dlg=document.getElementById('calendarChildDiaryDialog');
+   const lab=document.getElementById('calendarChildDiaryDateLabel');
+   if(lab)lab.textContent=longDate(dateObj(calendarAddDate)).toUpperCase();
+   if(dlg&&!dlg.open)openDialogSafe(dlg);
+   return
+ }
  if(kind==='work'){openWorkStatus('jj',calendarAddDate);return}
  if(kind==='health'){go('health');visitDate.value=calendarAddDate;visitTitle.focus();return}
  if(kind==='house'){openHouseTask(null,calendarAddDate);return}
@@ -2213,23 +2223,25 @@ resetBtn.onclick=()=>{if(confirm('Vuoi davvero azzerare i dati di Fagiolini? Se 
 
 
 /* V13 — FAMILY FIRST QUICK CAPTURE */
-let homeQuickPresetType='pappa';
+let homeQuickPresetType='pappa',homeQuickPresetDate=null;
 function homeQuickLabel(type){return ({pappa:'Pappa / latte',cacca:'Cacca',nanna:'Sonno',pannolino:'Pannolino',bagnetto:'Bagnetto',farmaco:'Medicina',crescita:'Crescita',nota:'Nota'})[type]||'Diario'}
-function openHomeChildPicker(type){
- homeQuickPresetType=type||'pappa';
+function openHomeChildPicker(type,presetDate=null){
+ homeQuickPresetType=type||'pappa';homeQuickPresetDate=presetDate||null;
  const dlg=document.getElementById('homeChildPickerDialog'),list=document.getElementById('homeChildPickerPeople'),title=document.getElementById('homeChildPickerTitle');
  if(!dlg||!list)return;
  if(title)title.textContent=`${homeQuickLabel(homeQuickPresetType)} · per chi?`;
- const kids=s.children.filter(c=>c.type!=='dog');
- list.innerHTML=kids.map(c=>`<button type="button" data-home-child="${c.id}"><img src="${avatarFor(c.id)}" alt="${esc(c.name)}"><span><b>${esc(c.name)}</b><small>${ageFromBirth(c.birthDate)}</small></span><em>›</em></button>`).join('');
+ const people=s.children.filter(c=>homeQuickPresetType==='cacca'||c.type!=='dog');
+ list.innerHTML=people.map(c=>`<button type="button" data-home-child="${c.id}"><img src="${avatarFor(c.id)}" alt="${esc(c.name)}"><span><b>${esc(c.name)}</b><small>${ageFromBirth(c.birthDate)}</small></span><em>›</em></button>`).join('');
  list.querySelectorAll('[data-home-child]').forEach(btn=>btn.onclick=()=>{
    dlg.close();
    current=btn.dataset.homeChild;
-   openChildDiary(null,homeQuickPresetType);
+   openChildDiary(null,homeQuickPresetType,homeQuickPresetDate);
+   homeQuickPresetDate=null;
  });
  if(!dlg.open)openDialogSafe(dlg);
 }
 document.querySelectorAll('[data-home-child-quick]').forEach(btn=>btn.onclick=()=>openHomeChildPicker(btn.dataset.homeChildQuick));
+document.querySelectorAll('[data-calendar-child-type]').forEach(btn=>btn.onclick=()=>{const dlg=document.getElementById('calendarChildDiaryDialog');if(dlg?.open)dlg.close();openHomeChildPicker(btn.dataset.calendarChildType,calendarAddDate)});
 const homeQuickMoreEl=document.getElementById('homeQuickMore');if(homeQuickMoreEl)homeQuickMoreEl.onclick=openQuick;
 const homeAddAppointmentEl=document.getElementById('homeAddAppointment');if(homeAddAppointmentEl)homeAddAppointmentEl.onclick=()=>openReminder(null,{kind:'appointment',person:'family',date:dateKey(),reminderDays:0,notify:'both'});
 

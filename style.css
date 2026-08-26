@@ -2811,3 +2811,95 @@ html.themeDark body{background:var(--v14-bg)!important}
   html.themeDark .tiny,
   html.themeDark .meta{color:var(--v14-secondary)!important}
 }
+
+/* =========================================================
+   FAGIOLINI V15 — ELEGANT NATIVE / FAMILY FIRST
+   Fewer boxes, larger actions, refined calendar, calm surfaces.
+   ========================================================= */
+:root{
+  --v15-bg:#f2f3f0;
+  --v15-surface:#ffffff;
+  --v15-surface-soft:#f7f8f5;
+  --v15-ink:#173c2b;
+  --v15-muted:#68766e;
+  --v15-accent:#356b4d;
+  --v15-accent-soft:#e7f0e9;
+  --v15-weekend:#f1f4ef;
+  --v15-line:rgba(23,60,43,.08);
+  --v15-shadow:0 12px 34px rgba(23,45,33,.07);
+}
+body{background:var(--v15-bg)!important;color:var(--v15-ink)!important}
+.card,.dashboardCard,.homeQuickCapture,.familyDashboardCard,.savingsHomeCard,.wasteHomeCard,.nativeSection,.profileCard{
+  background:var(--v15-surface)!important;border:1px solid var(--v15-line)!important;box-shadow:var(--v15-shadow)!important
+}
+.homeWelcome small,.sectionTitle small,.dashboardCardHead small{letter-spacing:.12em!important;color:var(--v15-muted)!important}
+.homeQuickCapture{box-shadow:0 14px 36px rgba(23,45,33,.08)!important}
+.quickCaptureIcon{background:var(--v15-accent-soft)!important;color:var(--v15-accent)!important}
+.homeQuickMore{background:var(--v15-accent-soft)!important;color:var(--v15-accent)!important;border:0!important}
+
+/* Calendar: a real monthly surface instead of numbers floating in a box. */
+#calendar.on{max-width:1180px!important}
+#calendar .calendar.card{padding:16px!important;border-radius:30px!important;background:var(--v15-surface)!important}
+#calendar .calendarHead{border:0!important;background:transparent!important;box-shadow:none!important;padding:4px 4px 14px!important}
+#calendar .weekdays{gap:5px!important;padding:0 2px 7px!important}
+#calendar .weekdays span{padding:10px 0!important;border-radius:13px!important;color:var(--v15-muted)!important;font-weight:800!important}
+#calendar .weekdays span:nth-child(6),#calendar .weekdays span:nth-child(7){background:var(--v15-weekend)!important;color:var(--v15-accent)!important}
+#calendar .calGrid{gap:5px!important;padding:0!important;background:transparent!important}
+#calendar .calDay{min-height:92px!important;border-radius:18px!important;background:var(--v15-surface-soft)!important;border:1px solid transparent!important;padding:11px 6px 8px!important;transition:transform .12s ease,background .12s ease,border-color .12s ease!important}
+#calendar .calDay.weekend{background:var(--v15-weekend)!important}
+#calendar .calDay.sunday{background:#ebf0ea!important}
+#calendar .calDay.other{opacity:.32!important}
+#calendar .calDay.selected{outline:0!important;border-color:rgba(53,107,77,.34)!important;background:#edf4ee!important;box-shadow:0 7px 18px rgba(36,78,52,.08)!important}
+#calendar .calDay.today{outline:0!important;background:var(--v15-surface-soft)!important}
+#calendar .calDay.today .calNum{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--v15-accent)!important;color:#fff!important;box-shadow:0 5px 12px rgba(53,107,77,.22)}
+#calendar .calNum{font-size:18px!important;font-weight:850!important;color:var(--v15-ink)!important}
+#calendar .dots{gap:4px!important;padding-top:9px!important}
+#calendar .dot{width:6px!important;height:6px!important;background:#6a9a78!important}
+.calendarDayCard{border-radius:28px!important}
+
+/* Elegant add sheets */
+dialog::backdrop{background:rgba(16,25,20,.34)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+.calendarAddSheet,.calendarChildDiarySheet,.homeChildPickerSheet,.nativeSheet{border-radius:30px!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 28px 80px rgba(13,30,20,.22)!important}
+.elegantActionGrid,.calendarChildDiaryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.elegantActionGrid button,.calendarChildDiaryGrid button{border:0!important;border-radius:22px!important;background:var(--v15-surface-soft)!important;min-height:96px!important;padding:16px!important;text-align:left!important;color:var(--v15-ink)!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;gap:10px!important}
+.elegantActionGrid button:active,.calendarChildDiaryGrid button:active{background:var(--v15-accent-soft)!important;transform:scale(.985)}
+.calendarChoiceIcon,.calendarChildDiaryGrid .uiIcon{width:42px!important;height:42px!important;border-radius:14px!important;background:var(--v15-accent-soft)!important;color:var(--v15-accent)!important;display:grid!important;place-items:center!important}
+.calendarChoiceIcon .uiIcon{width:23px!important;height:23px!important}
+.calendarChildDiaryGrid .uiIcon{padding:9px!important}
+.elegantActionGrid b,.calendarChildDiaryGrid b{font-size:17px!important}
+
+/* Mobile: actions first, no cramped two-column dashboard. Navigation stays compact. */
+@media (max-width:900px), (hover:none) and (pointer:coarse){
+  .app{padding-bottom:calc(138px + env(safe-area-inset-bottom))!important}
+  .homeQuickCapture{padding:20px!important;border-radius:30px!important}
+  .homeQuickCaptureGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+  .homeQuickCaptureGrid button{min-height:92px!important;border-radius:22px!important;background:var(--v15-surface-soft)!important;padding:12px 8px!important}
+  .quickCaptureIcon{width:54px!important;height:54px!important;border-radius:18px!important}
+  .quickCaptureIcon .uiIcon{width:28px!important;height:28px!important}
+  .homeQuickCaptureGrid b{font-size:17px!important}
+  #home .homeDashboardGrid{grid-template-columns:1fr!important;gap:14px!important}
+  #home .dashboardCard,#home .familyDashboardCard,#home .savingsHomeCard,#home .wasteHomeCard{border-radius:30px!important;padding:21px!important}
+  #home .dashboardCardHead h3{font-size:25px!important}
+  #home .dashboardNote{font-size:17px!important}
+  .familyStripHome{padding-bottom:5px!important}
+  #calendar .calendar.card{padding:9px!important;border-radius:24px!important}
+  #calendar .weekdays span{font-size:13px!important;padding:7px 0!important}
+  #calendar .calGrid{gap:3px!important}
+  #calendar .calDay{min-height:62px!important;border-radius:13px!important;padding:7px 2px 5px!important}
+  #calendar .calNum{font-size:16px!important}
+  #calendar .calDay.today .calNum{width:30px!important;height:30px!important;font-size:16px!important}
+  #calendar .dot{width:5px!important;height:5px!important}
+  .calendarAddSheet,.calendarChildDiarySheet,.homeChildPickerSheet,.nativeSheet{width:min(94vw,560px)!important;max-height:82dvh!important;border-radius:28px!important}
+  .elegantActionGrid,.calendarChildDiaryGrid{gap:10px!important}
+  .elegantActionGrid button,.calendarChildDiaryGrid button{min-height:88px!important;padding:14px!important;border-radius:20px!important}
+  .elegantActionGrid b,.calendarChildDiaryGrid b{font-size:16px!important}
+}
+
+html.themeDark{
+  --v15-bg:#0f1511;--v15-surface:#18211b;--v15-surface-soft:#202b24;--v15-ink:#f3f7f4;--v15-muted:#b2beb6;--v15-accent:#78ad89;--v15-accent-soft:#273b2f;--v15-weekend:#202c24;--v15-line:rgba(255,255,255,.08);--v15-shadow:0 16px 38px rgba(0,0,0,.25)
+}
+html.themeDark body{background:var(--v15-bg)!important}
+html.themeDark .card,html.themeDark .dashboardCard,html.themeDark .homeQuickCapture,html.themeDark .familyDashboardCard,html.themeDark .savingsHomeCard,html.themeDark .wasteHomeCard,html.themeDark .nativeSection,html.themeDark .profileCard{background:var(--v15-surface)!important;color:var(--v15-ink)!important;border-color:var(--v15-line)!important}
+html.themeDark #calendar .calDay{background:var(--v15-surface-soft)!important;color:var(--v15-ink)!important}
+html.themeDark #calendar .calDay.weekend{background:#253129!important}html.themeDark #calendar .calDay.sunday{background:#29362d!important}
+html.themeDark .elegantActionGrid button,html.themeDark .calendarChildDiaryGrid button{background:var(--v15-surface-soft)!important;color:var(--v15-ink)!important}
