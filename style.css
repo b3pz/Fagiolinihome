@@ -5034,3 +5034,109 @@ html.themeDark .todayStoryMeals{background:#202F38!important}
   .mobileNav .navIcon,.mobileNav .navIcon .uiIcon{width:23px!important;height:23px!important}
   .mobileNav small{font-size:10.5px!important}
 }
+
+/* =========================================================
+   V17.3 — GLOBAL CONTRAST POLISH
+   Raise readability of every small/secondary label without
+   changing the V17.2 layout or navigation proportions.
+   ========================================================= */
+:root{
+  --v173-ink:#1D252B;
+  --v173-muted:#59656D;
+  --v173-soft:#6A747B;
+  --v173-line:rgba(29,37,43,.14);
+}
+
+html:not(.themeDark) body{color:var(--v173-ink)!important}
+html:not(.themeDark) .eyebrow,
+html:not(.themeDark) .kicker,
+html:not(.themeDark) .sectionKicker,
+html:not(.themeDark) .sectionTitle>small,
+html:not(.themeDark) .pageIntro small,
+html:not(.themeDark) .personPageHead small,
+html:not(.themeDark) .dashboardCardHead small,
+html:not(.themeDark) .fieldLabel,
+html:not(.themeDark) label,
+html:not(.themeDark) .meta,
+html:not(.themeDark) .tiny{
+  color:var(--v173-muted)!important;
+  opacity:1!important;
+}
+html:not(.themeDark) .muted,
+html:not(.themeDark) p.muted,
+html:not(.themeDark) .dashboardNote,
+html:not(.themeDark) .todayTimelineRow small,
+html:not(.themeDark) .organizeCard small,
+html:not(.themeDark) .bankMenuCard small,
+html:not(.themeDark) .profileCard small,
+html:not(.themeDark) .nativeSection small{
+  color:var(--v173-soft)!important;
+  opacity:1!important;
+}
+
+/* Stats / hero counters: never allow white-on-pale combinations. */
+html:not(.themeDark) #todayHero .todayHeroNumbers>div{
+  background:rgba(255,255,255,.14)!important;
+  border-color:rgba(255,255,255,.22)!important;
+}
+html:not(.themeDark) #todayHero .todayHeroNumbers b{color:#FFFFFF!important;text-shadow:0 1px 1px rgba(0,0,0,.12)!important}
+html:not(.themeDark) #todayHero .todayHeroNumbers span{color:rgba(255,255,255,.94)!important}
+html:not(.themeDark) #todayHero p{color:rgba(255,255,255,.94)!important}
+
+/* Cards: make boundaries and captions visible on the stone background. */
+html:not(.themeDark) .card,
+html:not(.themeDark) .nativeSection,
+html:not(.themeDark) .todayStory,
+html:not(.themeDark) .organizeCard,
+html:not(.themeDark) .bankMenuCard,
+html:not(.themeDark) .calendarDayCard,
+html:not(.themeDark) .profileCard,
+html:not(.themeDark) .stat{
+  border-color:var(--v173-line)!important;
+}
+
+/* Top utility buttons / status chips. */
+html:not(.themeDark) header button,
+html:not(.themeDark) .topActions button,
+html:not(.themeDark) .headerActions button,
+html:not(.themeDark) .syncChip,
+html:not(.themeDark) .statusChip{
+  color:#334751!important;
+}
+html:not(.themeDark) header .uiIcon,
+html:not(.themeDark) .topActions .uiIcon,
+html:not(.themeDark) .headerActions .uiIcon{color:#496775!important}
+
+/* Dark theme: readable secondary copy on charcoal surfaces. */
+html.themeDark .eyebrow,
+html.themeDark .kicker,
+html.themeDark .sectionKicker,
+html.themeDark .sectionTitle>small,
+html.themeDark .pageIntro small,
+html.themeDark .personPageHead small,
+html.themeDark .dashboardCardHead small,
+html.themeDark .fieldLabel,
+html.themeDark label,
+html.themeDark .meta,
+html.themeDark .tiny{color:#C3CBD0!important;opacity:1!important}
+html.themeDark .muted,
+html.themeDark p.muted,
+html.themeDark .dashboardNote,
+html.themeDark .todayTimelineRow small,
+html.themeDark .organizeCard small,
+html.themeDark .bankMenuCard small,
+html.themeDark .profileCard small,
+html.themeDark .nativeSection small{color:#B8C0C5!important;opacity:1!important}
+html.themeDark #todayHero .todayHeroNumbers>div{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.16)!important}
+html.themeDark #todayHero .todayHeroNumbers span{color:#EEF2F4!important}
+html.themeDark #todayHero p{color:#E4E9EC!important}
+
+@media (max-width:760px),(hover:none) and (pointer:coarse){
+  /* Slightly stronger mobile typography, without growing the nav. */
+  .eyebrow,.kicker,.sectionKicker,.sectionTitle>small,.pageIntro small,.personPageHead small{font-size:13px!important;font-weight:800!important;letter-spacing:.14em!important}
+  .muted,.meta,.dashboardNote{font-size:14px!important;line-height:1.45!important}
+  .todayTimelineRow small,.organizeCard small,.bankMenuCard small,.profileCard small,.nativeSection small{font-size:13px!important;line-height:1.35!important}
+  .todayTimelineRow b,.organizeCard b,.bankMenuCard b{font-size:17px!important}
+  .todayStoryHead h3,.nativeSection h3,.sectionTitle h3{font-size:24px!important}
+  .fieldLabel,label{font-size:13.5px!important;font-weight:750!important}
+}
