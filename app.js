@@ -919,12 +919,31 @@ function renderToday(){
  const k=dateKey(),items=dayData(k),pending=s.houseTasks.filter(x=>x.date===k&&x.status==='pending'),done=s.houseTasks.filter(x=>x.date===k&&x.status==='done').length;
  todayPageDate.textContent=longDate();
  const appointments=s.health.filter(x=>x.date===k).length;
- todayHero.innerHTML=`<div class="todayHeroNumbers"><div><b>${pending.length}</b><span>da fare</span></div><div><b>${appointments}</b><span>${appointments===1?'appuntamento':'appuntamenti'}</span></div><div><b>${done}</b><span>fatte</span></div></div><p>${items.length?'Qui trovi tutto quello che riguarda oggi, senza cercarlo nelle altre sezioni.':'Giornata tranquilla: non c’è niente di urgente.'}</p>`;
+ todayHero.innerHTML=`<div class="todayHeroNumbers"><div><b>${pending.length}</b><span>da fare</span></div><div><b>${appointments}</b><span>${appointments===1?'appuntamento':'appuntamenti'}</span></div><div><b>${done}</b><span>fatte</span></div></div><p>${items.length?'Una vista semplice della giornata, senza dover cercare nelle altre sezioni.':'Giornata tranquilla: non c’è niente di urgente.'}</p>`;
  const order={familyBirthday:0,birthday:1,health:2,manual:3,work:4,houseTask:5,maintenance:6,auto:7,subscription:8,event:9,menu:10,house:11};
- const sorted=[...items].sort((a,b)=>(order[a.source]||99)-(order[b.source]||99));
- todayAgenda.innerHTML=sorted.length?sorted.map(x=>`<div class="agendaItem"><span>${x.icon}</span><div class="grow"><b>${esc(cleanAgendaText(x.text))}</b><small>${({familyBirthday:'Compleanno',birthday:'Compleanno',health:'Salute',manual:'Agenda',houseTask:'Casa',work:'Lavoro',maintenance:'Casa & lavori',auto:'Auto',subscription:'Scadenza',event:'Famiglia',menu:'Pasti',house:'Casa'})[x.source]||'Oggi'}</small></div>${['health','maintenance','auto','manual','houseTask','menu','birthday'].includes(x.source)?`<button data-today-open="${x.source}" data-today-id="${x.id||''}">Apri</button>`:''}</div>`).join(''):'<div class="friendlyEmpty"><b>Tutto tranquillo ✨</b><span>Non c’è niente da fare o ricordare oggi.</span></div>';
+ const sorted=[...items].sort((a,b)=>(order[a.source]??99)-(order[b.source]??99));
+ if(!sorted.length){todayAgenda.innerHTML='<div class="friendlyEmpty"><b>Tutto tranquillo</b><span>Non c’è niente da fare o ricordare oggi.</span></div>';return}
+ const birthdays=sorted.filter(x=>['familyBirthday','birthday'].includes(x.source));
+ const work=sorted.filter(x=>x.source==='work');
+ const house=sorted.filter(x=>['houseTask','house'].includes(x.source));
+ const meals=sorted.filter(x=>x.source==='menu');
+ const rest=sorted.filter(x=>!['familyBirthday','birthday','work','houseTask','house','menu'].includes(x.source));
+ const row=(x,compact=false)=>{
+  const canOpen=['health','maintenance','auto','manual','houseTask','birthday','menu'].includes(x.source);
+  const type=({familyBirthday:'Compleanno',birthday:'Compleanno',health:'Salute',manual:'Promemoria',work:'Lavoro',houseTask:'Casa',maintenance:'Casa & lavori',auto:'Auto',subscription:'Scadenza',event:'Famiglia',menu:'Pasti',house:'Casa'})[x.source]||'Oggi';
+  return `<div class="todayTimelineRow ${compact?'compact':''}"><span class="todayTimelineIcon">${x.icon||'•'}</span><div class="grow"><b>${esc(cleanAgendaText(x.text))}</b><small>${type}</small></div>${canOpen?`<button class="todayChevron" aria-label="Apri" data-today-open="${x.source}" data-today-id="${x.id||''}">›</button>`:''}</div>`
+ };
+ let html='';
+ if(birthdays.length)html+=`<section class="todayStory todayStoryCelebration"><small>OGGI FESTEGGIAMO</small>${birthdays.map(x=>row(x,true)).join('')}</section>`;
+ if(work.length)html+=`<section class="todayStory"><small>FAMIGLIA</small>${work.map(x=>row(x,true)).join('')}</section>`;
+ if(house.length)html+=`<section class="todayStory"><div class="todayStoryHead"><div><small>CASA</small><h3>Da fare oggi</h3></div><button data-go="house">Vedi casa</button></div>${house.map(x=>row(x)).join('')}</section>`;
+ if(meals.length)html+=`<section class="todayStory todayStoryMeals"><div class="todayStoryHead"><div><small>PASTI</small><h3>Oggi mangiamo</h3></div><button data-today-open="menu" data-today-id="">Modifica</button></div>${meals.map(x=>row(x,true)).join('')}</section>`;
+ if(rest.length)html+=`<section class="todayStory"><small>DA RICORDARE</small>${rest.map(x=>row(x)).join('')}</section>`;
+ todayAgenda.innerHTML=html;
  todayAgenda.querySelectorAll('[data-today-open]').forEach(b=>b.onclick=()=>openSourceItem(b.dataset.todayOpen,b.dataset.todayId));
+ todayAgenda.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 }
+
 function renderOrganize(){
  const pendingShop=s.shopping.filter(x=>!x.done).length,month=monthKey(new Date()),monthSpend=s.expenses.filter(x=>x.month===month).reduce((a,x)=>a+Number(x.amount||0),0);
  organizeShopText.textContent=pendingShop?`${pendingShop} ${pendingShop===1?'cosa':'cose'} da comprare`:'Lista vuota';

@@ -2903,3 +2903,296 @@ html.themeDark .card,html.themeDark .dashboardCard,html.themeDark .homeQuickCapt
 html.themeDark #calendar .calDay{background:var(--v15-surface-soft)!important;color:var(--v15-ink)!important}
 html.themeDark #calendar .calDay.weekend{background:#253129!important}html.themeDark #calendar .calDay.sunday{background:#29362d!important}
 html.themeDark .elegantActionGrid button,html.themeDark .calendarChildDiaryGrid button{background:var(--v15-surface-soft)!important;color:var(--v15-ink)!important}
+
+/* =========================================================
+   V16 — SOFT LAYERED PREMIUM FAMILY UI
+   Art direction: warm, calm, tactile, readable, layered.
+   ========================================================= */
+:root{
+  --v16-bg:#f5f3ee;
+  --v16-surface:#fffdf9;
+  --v16-surface-2:#f0ece5;
+  --v16-ink:#1f2a24;
+  --v16-muted:#6b756f;
+  --v16-line:rgba(51,65,57,.10);
+  --v16-accent:#5e8a6b;
+  --v16-accent-strong:#3f6a51;
+  --v16-accent-soft:#e7efe9;
+  --v16-celebrate:#f5e7d5;
+  --v16-info:#eef3f7;
+  --v16-shadow:0 18px 55px rgba(55,48,39,.08),0 2px 10px rgba(55,48,39,.035);
+  --v16-shadow-soft:0 8px 28px rgba(55,48,39,.06);
+}
+html,body{
+  background:var(--v16-bg)!important;
+  color:var(--v16-ink)!important;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif!important;
+}
+body{letter-spacing:-.01em}
+.app{background:transparent!important}
+header h1,.homeWelcome h2,.pageIntro h2,.personIdentity h2,.dashboardBigText b,.bankSimpleHeroTop>strong,
+.familyTitle h2,.birthdayCelebration h2{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif!important;
+  color:var(--v16-ink)!important;
+  letter-spacing:-.045em!important;
+  font-weight:760!important;
+}
+.brand,.homeWelcome small,.pageIntro small,.sectionTitle small,.dashboardCardHead small{
+  color:var(--v16-muted)!important;
+  letter-spacing:.16em!important;
+  font-weight:760!important;
+}
+.muted,.meta,.tiny,small{color:var(--v16-muted)!important}
+
+.card,.dashboardCard,.homeQuickCapture,.familyDashboardCard,.savingsHomeCard,.wasteHomeCard,.nativeSection,.profileCard,
+.stat,.menuDay,.calendar.card,.calendarDayCard,.bankSimpleHero,.bankSimpleMenu,.recipeLibraryCard,.menuTodayOverview,.menuWeekCard{
+  background:var(--v16-surface)!important;
+  border:1px solid var(--v16-line)!important;
+  box-shadow:var(--v16-shadow-soft)!important;
+}
+.card,.dashboardCard,.homeQuickCapture,.nativeSection,.profileCard{border-radius:28px!important}
+
+/* Header / chrome */
+.cloudStatus,.round,.homeProfileButton{
+  background:rgba(255,253,249,.82)!important;
+  border:1px solid rgba(51,65,57,.09)!important;
+  box-shadow:var(--v16-shadow-soft)!important;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
+}
+.round{color:var(--v16-accent-strong)!important}
+
+/* Home hierarchy */
+.homeWelcome{padding:10px 4px 8px!important}
+.homeWelcome h2{font-size:clamp(34px,5vw,50px)!important;line-height:1!important}
+.homeQuickCapture{
+  background:linear-gradient(145deg,rgba(255,253,249,.98),rgba(248,246,240,.94))!important;
+  padding:20px!important;
+  border-radius:32px!important;
+  box-shadow:var(--v16-shadow)!important;
+}
+.homeQuickCaptureHead h3{font-size:24px!important;letter-spacing:-.025em!important}
+.quickCaptureGrid{gap:12px!important}
+.quickCaptureGrid button{
+  background:transparent!important;
+  border:0!important;
+  border-radius:22px!important;
+  min-height:92px!important;
+  transition:transform .16s ease,background .16s ease!important;
+}
+.quickCaptureGrid button:active{transform:scale(.97);background:var(--v16-surface-2)!important}
+.quickCaptureIcon{
+  background:var(--v16-accent-soft)!important;
+  color:var(--v16-accent-strong)!important;
+  box-shadow:none!important;
+  border-radius:18px!important;
+}
+.quickCaptureGrid b{color:var(--v16-ink)!important;font-weight:720!important}
+.dashboardCard{
+  background:linear-gradient(155deg,#fffdf9 0%,#fbfaf6 100%)!important;
+  border-color:transparent!important;
+  box-shadow:var(--v16-shadow)!important;
+}
+.dashboardIcon{
+  background:var(--v16-accent-soft)!important;
+  color:var(--v16-accent-strong)!important;
+  box-shadow:none!important;
+}
+.dashboardCardHead em{color:var(--v16-muted)!important;opacity:.45!important}
+.dashboardNote{color:var(--v16-muted)!important}
+.familyMemberCard{
+  background:rgba(255,253,249,.72)!important;
+  border:1px solid var(--v16-line)!important;
+  box-shadow:none!important;
+}
+.familyMemberCard img{background:var(--v16-surface-2)!important}
+.savingsHomeCard{background:linear-gradient(145deg,#fffdf9,#f2f6f0)!important}
+.wasteHomeCard{background:linear-gradient(145deg,#fffdf9,#f5f1e8)!important}
+
+/* OGGI — elegant timeline / story rather than admin list */
+#todayHero{
+  background:linear-gradient(145deg,#eaf1eb,#f8f6f0)!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.todayHeroNumbers{gap:12px!important}
+.todayHeroNumbers>div{
+  background:rgba(255,255,255,.58)!important;
+  border:1px solid rgba(63,106,81,.08)!important;
+  border-radius:22px!important;
+  padding:18px 12px!important;
+}
+.todayHeroNumbers b{color:var(--v16-ink)!important;font-size:32px!important}
+.todayHeroNumbers span{color:var(--v16-muted)!important}
+#todayAgenda{display:grid;gap:16px!important}
+.todayStory{
+  background:var(--v16-surface)!important;
+  border:1px solid var(--v16-line)!important;
+  border-radius:28px!important;
+  padding:20px!important;
+  box-shadow:var(--v16-shadow-soft)!important;
+}
+.todayStory>small,.todayStoryHead small{font-size:12px!important;letter-spacing:.14em!important;font-weight:800!important;color:var(--v16-muted)!important}
+.todayStoryCelebration{background:linear-gradient(145deg,#fbf1e5,#fffaf3)!important;border-color:rgba(198,146,84,.12)!important}
+.todayStoryMeals{background:linear-gradient(145deg,#fffdf9,#f3f6f1)!important}
+.todayStoryHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.todayStoryHead h3{margin:3px 0 0!important;font-size:23px!important;letter-spacing:-.03em!important}
+.todayStoryHead button{
+  border:0!important;background:var(--v16-surface-2)!important;color:var(--v16-accent-strong)!important;
+  border-radius:999px!important;padding:9px 13px!important;font-weight:750!important
+}
+.todayTimelineRow{
+  display:grid;grid-template-columns:40px minmax(0,1fr) 36px;gap:12px;align-items:center;
+  min-height:68px;padding:12px 0;border-bottom:1px solid var(--v16-line)!important
+}
+.todayTimelineRow:last-child{border-bottom:0!important}
+.todayTimelineRow.compact{min-height:60px}
+.todayTimelineIcon{width:40px;height:40px;display:grid;place-items:center;border-radius:14px;background:var(--v16-accent-soft);font-size:21px}
+.todayTimelineRow b{font-size:18px!important;line-height:1.25!important;color:var(--v16-ink)!important}
+.todayTimelineRow small{display:block;margin-top:3px;font-size:13px!important;letter-spacing:0!important;color:var(--v16-muted)!important}
+.todayChevron{border:0!important;background:transparent!important;color:var(--v16-accent-strong)!important;font-size:28px!important;padding:2px!important}
+
+/* Calendar — visual rhythm and weekend identity */
+.calendarHead.card{box-shadow:none!important;background:transparent!important;border:0!important;padding-left:8px!important;padding-right:8px!important}
+.calendar.card{padding:12px!important;background:var(--v16-surface)!important;border-radius:32px!important;box-shadow:var(--v16-shadow)!important}
+.weekdays{gap:0!important;padding:0 4px 8px!important}
+.weekdays span{font-size:13px!important;font-weight:800!important;color:var(--v16-muted)!important;padding:10px 0!important}
+.weekdays span:nth-child(6),.weekdays span:nth-child(7){color:var(--v16-accent-strong)!important}
+.calGrid{gap:5px!important;background:transparent!important}
+.calDay{
+  min-height:82px!important;border-radius:20px!important;background:transparent!important;color:var(--v16-ink)!important;
+  font-weight:700!important;transition:background .15s ease,transform .15s ease!important
+}
+.calDay.weekend{background:#f2efe8!important}
+.calDay.sunday{background:#f5ece7!important}
+.calDay.other{opacity:.28!important}
+.calDay.today{background:var(--v16-accent-soft)!important;color:var(--v16-accent-strong)!important;outline:0!important;box-shadow:inset 0 0 0 1.5px rgba(63,106,81,.22)!important}
+.calDay.selected{background:#e0ebe3!important;outline:0!important;box-shadow:inset 0 0 0 2px var(--v16-accent)!important;transform:translateY(-1px)}
+.dot{background:var(--v16-accent)!important;width:6px!important;height:6px!important}
+.calendarDayCard{box-shadow:var(--v16-shadow-soft)!important}
+
+/* Dialogs / sheets — quieter and more tactile */
+dialog{
+  background:transparent!important;border-radius:34px!important;box-shadow:0 34px 90px rgba(25,31,27,.28)!important
+}
+dialog::backdrop{background:rgba(30,36,32,.38)!important;backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}
+.dialogBox,.nativeSheet,.calendarAddSheet,.calendarDaySheet{
+  background:var(--v16-surface)!important;border:1px solid rgba(255,255,255,.72)!important;border-radius:32px!important;padding:24px!important
+}
+.dialogBox input,.dialogBox select,.dialogBox textarea{
+  background:#f7f5f0!important;border:1px solid var(--v16-line)!important;border-radius:18px!important;min-height:54px!important;color:var(--v16-ink)!important
+}
+.calendarAddGrid button,.elegantActionGrid button,.calendarChildDiaryGrid button{
+  background:var(--v16-surface-2)!important;border:0!important;border-radius:24px!important;box-shadow:none!important
+}
+.calendarChoiceIcon{background:rgba(255,255,255,.62)!important;border-radius:17px!important;color:var(--v16-accent-strong)!important}
+
+/* Buttons / fields */
+.primary{
+  background:var(--v16-accent-strong)!important;color:#fff!important;border-radius:18px!important;box-shadow:0 8px 22px rgba(63,106,81,.16)!important
+}
+button,input,select,textarea{accent-color:var(--v16-accent-strong)}
+.form input,.form select,.profileGrid input,.profileGrid select,.profileCard textarea,.mealEdit input{
+  background:#f8f6f1!important;border:1px solid var(--v16-line)!important;color:var(--v16-ink)!important
+}
+
+/* Bottom nav: compact, calm, never oversized */
+.mobileNav{
+  background:rgba(255,253,249,.90)!important;
+  border:1px solid rgba(51,65,57,.08)!important;
+  box-shadow:0 -4px 24px rgba(42,48,44,.08)!important;
+  backdrop-filter:blur(24px)!important;-webkit-backdrop-filter:blur(24px)!important
+}
+.mobileNav button{border-radius:16px!important;color:var(--v16-muted)!important}
+.mobileNav button.active{background:var(--v16-accent-soft)!important;color:var(--v16-accent-strong)!important}
+.mobileNav .navIcon,.mobileNav .navIcon .uiIcon{width:25px!important;height:25px!important}
+.mobileNav small{font-size:11px!important;font-weight:720!important}
+
+/* Dark mode — not inversion, a dedicated premium palette */
+html.themeDark{
+  --v16-bg:#111713;
+  --v16-surface:#1a231d;
+  --v16-surface-2:#222d25;
+  --v16-ink:#f1f4f2;
+  --v16-muted:#a9b4ad;
+  --v16-line:rgba(255,255,255,.09);
+  --v16-accent:#7da88a;
+  --v16-accent-strong:#9bc2a5;
+  --v16-accent-soft:#26372c;
+  --v16-celebrate:#3a3024;
+  --v16-shadow:0 18px 55px rgba(0,0,0,.24),0 2px 8px rgba(0,0,0,.18);
+  --v16-shadow-soft:0 8px 28px rgba(0,0,0,.18)
+}
+html.themeDark,html.themeDark body{background:var(--v16-bg)!important;color:var(--v16-ink)!important}
+html.themeDark .card,html.themeDark .dashboardCard,html.themeDark .homeQuickCapture,html.themeDark .familyDashboardCard,
+html.themeDark .savingsHomeCard,html.themeDark .wasteHomeCard,html.themeDark .nativeSection,html.themeDark .profileCard,
+html.themeDark .calendar.card,html.themeDark .calendarDayCard,html.themeDark .todayStory,html.themeDark .dialogBox,
+html.themeDark .nativeSheet{background:var(--v16-surface)!important;color:var(--v16-ink)!important;border-color:var(--v16-line)!important}
+html.themeDark .homeQuickCapture{background:linear-gradient(145deg,#1a231d,#172019)!important}
+html.themeDark .todayStoryCelebration{background:linear-gradient(145deg,#31291f,#211f19)!important}
+html.themeDark .todayStoryMeals{background:linear-gradient(145deg,#1a231d,#18241c)!important}
+html.themeDark #todayHero{background:linear-gradient(145deg,#1f3025,#182019)!important}
+html.themeDark .todayHeroNumbers>div{background:rgba(255,255,255,.035)!important;border-color:var(--v16-line)!important}
+html.themeDark .calDay{color:var(--v16-ink)!important}
+html.themeDark .calDay.weekend{background:#202b24!important}
+html.themeDark .calDay.sunday{background:#292923!important}
+html.themeDark .calDay.today{background:#284031!important}
+html.themeDark .calDay.selected{background:#31513c!important}
+html.themeDark .quickCaptureIcon,html.themeDark .dashboardIcon,html.themeDark .todayTimelineIcon{background:var(--v16-accent-soft)!important;color:var(--v16-accent-strong)!important}
+html.themeDark .form input,html.themeDark .form select,html.themeDark .profileGrid input,html.themeDark .profileGrid select,
+html.themeDark .profileCard textarea,html.themeDark .mealEdit input,html.themeDark .dialogBox input,html.themeDark .dialogBox select,
+html.themeDark .dialogBox textarea{background:#202b24!important;color:var(--v16-ink)!important;border-color:var(--v16-line)!important}
+html.themeDark .mobileNav{background:rgba(20,28,23,.92)!important;border-color:var(--v16-line)!important}
+
+/* Mobile readability: large content, compact nav */
+@media (max-width:699px),(hover:none) and (pointer:coarse){
+  html,body{font-size:18px!important}
+  .app{padding-left:16px!important;padding-right:16px!important;padding-bottom:calc(98px + env(safe-area-inset-bottom))!important}
+  header h1,.homeWelcome h2{font-size:38px!important;line-height:1.02!important}
+  .homeWelcome p,#todayLabel{font-size:18px!important}
+  .homeQuickCapture{padding:18px!important;border-radius:30px!important}
+  .quickCaptureGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+  .quickCaptureGrid button{min-height:106px!important;padding:12px 8px!important}
+  .quickCaptureIcon{width:60px!important;height:60px!important;border-radius:20px!important}
+  .quickCaptureIcon .uiIcon{width:30px!important;height:30px!important}
+  .quickCaptureGrid b{font-size:16px!important;margin-top:8px!important}
+  #home .homeDashboardGrid{grid-template-columns:1fr!important;gap:16px!important}
+  #home .dashboardCard,#home .familyDashboardCard,#home .savingsHomeCard,#home .wasteHomeCard{padding:22px!important;border-radius:30px!important}
+  #home .dashboardCardHead h3{font-size:25px!important}
+  #home .dashboardBigText b{font-size:34px!important}
+  #home .dashboardNote{font-size:18px!important;line-height:1.45!important}
+  .familyStripHome{display:flex!important;overflow-x:auto!important;gap:10px!important;padding:2px 2px 8px!important;scrollbar-width:none}
+  .familyStripHome::-webkit-scrollbar{display:none}
+  .familyStripHome .familyMemberCard{flex:0 0 86px!important;min-width:86px!important}
+  .familyStripHome .familyMemberCard b{font-size:14px!important}
+  .pageIntro h2{font-size:34px!important}
+  .pageIntro p{font-size:17px!important}
+  .card{padding:21px!important;border-radius:28px!important}
+  .todayStory{padding:18px!important;border-radius:26px!important}
+  .todayTimelineRow b{font-size:17px!important}
+  .calDay{min-height:68px!important;border-radius:17px!important;font-size:17px!important}
+  .calendar.card{padding:8px!important;border-radius:28px!important}
+  dialog{width:calc(100% - 22px)!important;max-height:88dvh!important;margin:auto auto max(12px,env(safe-area-inset-bottom))!important}
+  .dialogBox,.nativeSheet,.calendarAddSheet,.calendarDaySheet{padding:22px!important;border-radius:30px!important}
+  .calendarAddGrid{grid-template-columns:1fr 1fr!important;gap:11px!important}
+  .calendarAddGrid button{min-height:112px!important}
+  .mobileNav{height:auto!important;min-height:72px!important;padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important}
+  .mobileNav button{min-height:58px!important;padding:6px 3px!important}
+}
+
+/* Desktop: broad, deliberate landscape canvas */
+@media (min-width:900px) and (hover:hover){
+  .app{max-width:1480px!important;padding-left:34px!important;padding-right:34px!important}
+  header{max-width:1480px!important;margin:auto!important}
+  #home{grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:18px!important}
+  #home .homeWelcome,#home .birthdayCelebration,#home .homeQuickCapture{grid-column:1/-1!important}
+  #home .dashboardHero{grid-column:1/8!important}
+  #home .homeDashboardGrid{grid-column:8/13!important;display:grid!important;grid-template-columns:1fr!important;gap:16px!important}
+  #home .familyDashboardCard{grid-column:1/8!important}
+  #home .savingsHomeCard{grid-column:8/13!important}
+  #home .wasteHomeCard{grid-column:8/13!important}
+  .desktopNav{background:rgba(255,253,249,.82)!important;border:1px solid var(--v16-line)!important;box-shadow:var(--v16-shadow-soft)!important;backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important}
+  .calendar.card{padding:20px!important}
+  .calDay{min-height:100px!important;font-size:19px!important}
+  #todayAgenda{grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:start!important}
+  #todayAgenda .todayStory:first-child{grid-column:1/-1!important}
+}

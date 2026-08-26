@@ -1,27 +1,39 @@
-# Fagiolini V15 — Elegant Native / Family First
+# Fagiolini V16 — Soft Layered Premium
 
-Partenza: V14 stabile.
+## Mini art direction
+La V16 mantiene la logica stabile della V15 e cambia soprattutto il linguaggio visivo.
 
-## Obiettivo
-Ridurre i percorsi per Kiki e rendere Fagiolini più elegante, semplice e naturale da usare, senza modificare login, Supabase, Telegram o la logica stabile.
+### Palette
+- Background: `#F5F3EE`
+- Surface principale: `#FFFDF9`
+- Surface secondaria: `#F0ECE5`
+- Testo: `#1F2A24`
+- Testo secondario: `#6B756F`
+- Verde principale: `#5E8A6B`
+- Verde attivo: `#3F6A51`
+- Verde soft: `#E7EFE9`
+- Celebrazioni: `#F5E7D5`
 
-## Novità principali
-- Home: azioni rapide più grandi e leggibili; su mobile 2 colonne invece di mini icone compresse.
-- Cacca rapida: tornano **Caty, Kiko e Astro**.
-- Diario di Astro: le registrazioni possono usare data/ora e quindi essere anche retroattive; aggiunte traversina, pipì e toeletta al diario.
-- Calendario: toccando un giorno vuoto si apre **direttamente Aggiungi**.
-- Calendario: nuova voce **Diario bimbi** con Pappa, Cacca, Sonno e Pannolino; la data del giorno selezionato è già compilata.
-- Calendario: grafica rifinita, weekend evidenziati, oggi con indicatore circolare, eventi con dot più puliti.
-- Modali: look più morbido/elegante con blur e superfici meno da gestionale.
-- Home mobile: Casa e Pasti non sono più compressi in due mini-card affiancate; vengono mostrati in una colonna più leggibile.
-- Bottom navigation: mantenuta compatta; nessun ritorno alle icone giganti.
+### Principi UI
+- meno bordi e box identici
+- più gerarchia, profondità e spazio
+- quick actions grandi e tattili
+- Home leggibile, con una sola colonna su iPhone
+- bottom navigation compatta
+- calendario con weekend distinti e selezione più elegante
+- dialog/sheet più morbidi e leggibili
+- dark mode dedicata, non semplice inversione
+- desktop realmente landscape
 
-## Invariato
-- Login e sessione.
-- Supabase e sincronizzazione.
-- Telegram/Cron e promemoria automatici.
-- Fagiolini Bank.
-- Piano Casa e dipendenze.
-- Pasti/ricettario.
-- Rifiuti.
-- Auto, Salute e Manutenzioni.
+## Oggi
+La pagina Oggi è stata trasformata da lista gestionale a timeline/sezioni:
+- compleanni e ricorrenze
+- famiglia/lavoro
+- casa
+- pasti
+- altre cose da ricordare
+
+Le azioni sono contestuali e i vecchi grandi pulsanti “Apri” non dominano più la pagina.
+
+## Funzioni preservate
+Login, Supabase, sincronizzazione, Telegram/Cron, Casa, Bank, Pasti, Auto, Salute, Rifiuti, calendario interattivo e Diario famiglia rimangono sulla logica stabile della V15.
