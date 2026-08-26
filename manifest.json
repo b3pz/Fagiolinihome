@@ -3,7 +3,7 @@
   "short_name": "Fagiolini",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f4f6fa",
-  "theme_color":"#fbf7f0",
-  "description": "Routine familiare, menu, calendario, salute e bilancio."
+  "background_color": "#ECEDEA",
+  "theme_color": "#2D4655",
+  "description": "Fagiolini: diario famiglia, calendario, casa, pasti, salute e Fagiolini Bank."
 }

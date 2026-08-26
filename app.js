@@ -880,8 +880,8 @@ function renderHome(){
  const urgentRem=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x)));
  const healthToday=s.health.filter(h=>h.date===today);
  const totalToday=new Set(items.filter(x=>x.source!=='menu').map((x,i)=>x.source+'-'+(x.id||i))).size;
- homeTodayBrief.innerHTML=totalToday?`<b>${totalToday} ${totalToday===1?'cosa':'cose'} da seguire oggi</b>`:'<b>Giornata tranquilla ✨</b>';
- homeTodayList.innerHTML=items.filter(x=>x.source!=='menu').slice(0,3).map(x=>`<span><i>${x.icon}</i>${esc(String(x.text).replace(/ · JJ \+ Kiki| · ⏳ Da fare/g,''))}</span>`).join('')||'<span><i>✓</i>Niente di urgente.</span>';
+ homeTodayBrief.innerHTML=totalToday?`<b>${totalToday} ${totalToday===1?'cosa':'cose'} da seguire oggi</b>`:'<b>Giornata tranquilla</b>';
+ homeTodayList.innerHTML=items.filter(x=>x.source!=='menu').slice(0,3).map(x=>`<span><i>${sourceUiIcon(x.source)}</i>${esc(String(x.text).replace(/ · JJ \+ Kiki| · ⏳ Da fare/g,''))}</span>`).join('')||`<span><i>${sourceUiIcon('event')}</i>Niente di urgente.</span>`;
 
  const doneHouse=s.houseTasks.filter(t=>t.date===today&&t.status==='done').length,totalHouse=s.houseTasks.filter(t=>t.date===today&&t.status!=='cancelled').length;
  homeHouseBrief.innerHTML=totalHouse?`<b>${doneHouse} / ${totalHouse} fatte</b>`:'<b>Niente programmato</b>';
@@ -892,12 +892,12 @@ function renderHome(){
 
  const familyBits=[];
  const workToday=(s.workStatus||[]).filter(w=>today>=w.startDate&&today<=w.endDate);
- workToday.forEach(w=>familyBits.push(`${workStatusIcon(w.type)} ${personName(w.person)} · ${workStatusLabel(w.type)}`));
- s.health.filter(h=>h.date===today).slice(0,2).forEach(h=>familyBits.push(`${h.kind==='visit'?'🩺':'💊'} ${personName(h.person)} · ${h.title}${h.time?' '+h.time:''}`));
- s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,today)).forEach(b=>familyBits.push(`🎂 Oggi è il compleanno di ${b.name}`));
+ workToday.forEach(w=>familyBits.push(`${personName(w.person)} · ${workStatusLabel(w.type)}`));
+ s.health.filter(h=>h.date===today).slice(0,2).forEach(h=>familyBits.push(`${personName(h.person)} · ${h.title}${h.time?' '+h.time:''}`));
+ s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,today)).forEach(b=>familyBits.push(`Compleanno di ${b.name}`));
  if(!s.birthdays.some(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,today))){
   let nextB=s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)).map(b=>({...b,next:nextBirthdayDate(b,now)})).sort((a,b)=>a.next.localeCompare(b.next))[0];
-  if(nextB){let days=Math.round((dateObj(nextB.next)-dateObj(today))/86400000);if(days>0&&days<=7)familyBits.push(`🎂 ${nextB.name} tra ${days} ${days===1?'giorno':'giorni'}`)}
+  if(nextB){let days=Math.round((dateObj(nextB.next)-dateObj(today))/86400000);if(days>0&&days<=7)familyBits.push(`${nextB.name} tra ${days} ${days===1?'giorno':'giorni'}`)}
  }
  homeFamilyBrief.innerHTML=familyBits.length?familyBits.map(x=>`<span>${esc(x)}</span>`).join(''):'<span>Oggi tutto tranquillo per la famiglia.</span>';
 
@@ -905,13 +905,19 @@ function renderHome(){
  if(income>0){homeSavingsBrief.innerHTML=`<b>${euro(saved)} risparmiati</b>`;let pct=goal>0?Math.max(0,Math.min(100,saved/goal*100)):0;homeSavingsProgress.style.width=pct+'%';homeSavingsText.textContent=goal>0?(saved>=goal?`Obiettivo di ${euro(goal)} raggiunto ✓`:`Mancano ${euro(Math.max(0,goal-saved))} all’obiettivo.`):'Imposta un obiettivo mensile.'}
  else{homeSavingsBrief.innerHTML=`<b>${euro(expenses)} spesi</b>`;homeSavingsProgress.style.width='0%';homeSavingsText.textContent='Aggiungi le entrate per vedere il risparmio reale.'}
  const activeProjects=Object.values(s.savingsProjects||{}).filter(p=>p.active);
- if(homeSavingsProjects)homeSavingsProjects.innerHTML=activeProjects.length?activeProjects.map(p=>`<span>${p.icon} ${esc(p.label)} · ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}</span>`).join(''):'<span>🏖️ Vacanze e 🎄 Natale pronti quando servono.</span>';
+ if(homeSavingsProjects)homeSavingsProjects.innerHTML=activeProjects.length?activeProjects.map(p=>`<span>${esc(p.label)} · ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}</span>`).join(''):'<span>Vacanze e Natale pronti quando servono.</span>';
 
  const wasteToday=wasteForDate(now),wasteNext=nextWaste(now,false);
  if(wasteToday){homeWasteText.innerHTML=`<b>Oggi: ${esc(wasteToday.short)}</b>`;homeWasteNextText.textContent=wasteNext?`Domani / prossimo: ${wasteNext.info.short} · ${wasteDayName(wasteNext.date)}`:'Apri per vedere la settimana.'}
  else{homeWasteText.innerHTML='<b>Oggi niente ritiro</b>';homeWasteNextText.textContent=wasteNext?`Prossimo: ${wasteNext.info.short} · ${wasteDayName(wasteNext.date)}`:'Nessun turno disponibile.'}
 
  const bell=document.querySelector('.reminderBell .bellDot');if(bell)bell.classList.toggle('show',urgentRem.length>0);
+}
+
+function sourceUiIcon(source){
+ const map={familyBirthday:'icon-gift',birthday:'icon-gift',health:'icon-health',manual:'icon-bell',work:'icon-calendar',houseTask:'icon-housework',house:'icon-housework',maintenance:'icon-tools',auto:'icon-car',subscription:'icon-card',event:'icon-calendar',menu:'icon-meal'};
+ const id=map[source]||'icon-note';
+ return `<svg class="uiIcon" aria-hidden="true"><use href="icons.svg#${id}"></use></svg>`;
 }
 
 function cleanAgendaText(x){return String(x||'').replace(/ · JJ \+ Kiki/g,'').replace(/ · ⏳ Da fare/g,'').replace(/ · ✅ Completata/g,' · Fatto')}
@@ -931,7 +937,7 @@ function renderToday(){
  const row=(x,compact=false)=>{
   const canOpen=['health','maintenance','auto','manual','houseTask','birthday','menu'].includes(x.source);
   const type=({familyBirthday:'Compleanno',birthday:'Compleanno',health:'Salute',manual:'Promemoria',work:'Lavoro',houseTask:'Casa',maintenance:'Casa & lavori',auto:'Auto',subscription:'Scadenza',event:'Famiglia',menu:'Pasti',house:'Casa'})[x.source]||'Oggi';
-  return `<div class="todayTimelineRow ${compact?'compact':''}"><span class="todayTimelineIcon">${x.icon||'•'}</span><div class="grow"><b>${esc(cleanAgendaText(x.text))}</b><small>${type}</small></div>${canOpen?`<button class="todayChevron" aria-label="Apri" data-today-open="${x.source}" data-today-id="${x.id||''}">›</button>`:''}</div>`
+  return `<div class="todayTimelineRow ${compact?'compact':''}"><span class="todayTimelineIcon">${sourceUiIcon(x.source)}</span><div class="grow"><b>${esc(cleanAgendaText(x.text))}</b><small>${type}</small></div>${canOpen?`<button class="todayChevron" aria-label="Apri" data-today-open="${x.source}" data-today-id="${x.id||''}">›</button>`:''}</div>`
  };
  let html='';
  if(birthdays.length)html+=`<section class="todayStory todayStoryCelebration"><small>OGGI FESTEGGIAMO</small>${birthdays.map(x=>row(x,true)).join('')}</section>`;
@@ -2232,7 +2238,7 @@ syncNowBtn.onclick=async()=>{
  await pullCloudState(false);
  await uploadCloudState(true);
  syncNowBtn.disabled=false;
- syncNowBtn.textContent='🔄 Sincronizza adesso';
+ syncNowBtn.textContent='Sincronizza adesso';
 };
 window.addEventListener('online',()=>{setCloudStatus('syncing','Online…');if(cloudSession)initializeCloud()});
 window.addEventListener('offline',()=>setCloudStatus('error','Offline'));

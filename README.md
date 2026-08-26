@@ -1,39 +1,25 @@
-# Fagiolini V16 — Soft Layered Premium
+# Fagiolini V17 — Editorial Family UI
 
-## Mini art direction
-La V16 mantiene la logica stabile della V15 e cambia soprattutto il linguaggio visivo.
+V17 è un visual reset completo costruito sopra la logica stabile della V16.
 
-### Palette
-- Background: `#F5F3EE`
-- Surface principale: `#FFFDF9`
-- Surface secondaria: `#F0ECE5`
-- Testo: `#1F2A24`
-- Testo secondario: `#6B756F`
-- Verde principale: `#5E8A6B`
-- Verde attivo: `#3F6A51`
-- Verde soft: `#E7EFE9`
-- Celebrazioni: `#F5E7D5`
+## Direzione grafica
+- nuova palette **Ink / Porcelain / Clay / Sage**: niente più verde-crema dominante;
+- tipografia di sistema, niente serif da dashboard;
+- Home con gerarchia reale: Oggi è il focus, Casa/Pasti sono riepiloghi tonali, Bank e Rifiuti hanno identità distinte;
+- quick action mobile in griglia 3×2 compatta;
+- calendario ridisegnato come mese minimale, con oggi e selezione chiari;
+- pagina Oggi trasformata in feed di sezioni, non elenco gestionale;
+- Organizza in gruppi/lista su iPhone e griglia su desktop;
+- Fagiolini Bank con hero scuro dedicato;
+- modali mobile come bottom sheet;
+- login ridisegnato;
+- emoji decorative rimosse dai principali controlli e sostituite con sprite SVG coerenti.
 
-### Principi UI
-- meno bordi e box identici
-- più gerarchia, profondità e spazio
-- quick actions grandi e tattili
-- Home leggibile, con una sola colonna su iPhone
-- bottom navigation compatta
-- calendario con weekend distinti e selezione più elegante
-- dialog/sheet più morbidi e leggibili
-- dark mode dedicata, non semplice inversione
-- desktop realmente landscape
-
-## Oggi
-La pagina Oggi è stata trasformata da lista gestionale a timeline/sezioni:
-- compleanni e ricorrenze
-- famiglia/lavoro
-- casa
-- pasti
-- altre cose da ricordare
-
-Le azioni sono contestuali e i vecchi grandi pulsanti “Apri” non dominano più la pagina.
+## Dark mode
+Tema scuro dedicato charcoal/ink, non inversione del tema chiaro. Superfici, input, calendario, modali, navigation e Bank hanno colori specifici.
 
 ## Funzioni preservate
-Login, Supabase, sincronizzazione, Telegram/Cron, Casa, Bank, Pasti, Auto, Salute, Rifiuti, calendario interattivo e Diario famiglia rimangono sulla logica stabile della V15.
+Nessuna modifica intenzionale a Supabase, autenticazione, timeout sessione, sincronizzazione, Telegram/Cron, reminder, dati, Bank, calendario o dipendenze delle faccende.
+
+## Deploy GitHub Pages
+Caricare **tutti i file direttamente nella root** del repository. `index.html` usa cache busting `17.0.0` e carica `v17.css` dopo lo stylesheet storico.

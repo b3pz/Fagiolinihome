@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#f4f6fa">
+<meta name="theme-color" content="#eceeea">
 <script>
 (function(){
   const saved=localStorage.getItem('fagioliniTheme')||'system';
@@ -16,7 +16,8 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=16.0.0">
+<link rel="stylesheet" href="style.css?v=17.0.0">
+<link rel="stylesheet" href="v17.css?v=17.0.0">
 </head>
 <body data-page="home">
 
@@ -63,7 +64,7 @@
     <div id="cloudStatus" class="cloudStatus offline"><span>●</span><small>Locale</small></div>
     <button id="themeQuickBtn" class="round themeQuickBtn" title="Cambia tema" aria-label="Cambia tema"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-sun"></use></svg></button>
     <button class="round reminderBell" data-go="reminders" title="Promemoria"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg><span class="bellDot"></span></button>
-    <button id="accountBtn" class="round accountBtn" title="Account">👤</button>
+    <button id="accountBtn" class="round accountBtn" title="Account" aria-label="Account"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-family"></use></svg></button>
     <button id="resetBtn" class="round resetBtn" title="Reset dati">↻</button>
   </div>
 </header>
@@ -73,7 +74,7 @@
   <div class="homeWelcome">
     <div>
       <small>LA NOSTRA FAMIGLIA</small>
-      <h2 id="homeGreeting">Buongiorno 🌿</h2>
+      <h2 id="homeGreeting">Buongiorno</h2>
       <p id="homeDateText" class="muted"></p>
     </div>
     <button class="homeProfileButton" data-go="organize" aria-label="Apri Organizza">☰</button>
@@ -148,10 +149,10 @@
     <div id="todayAgenda"></div>
   </div>
   <div class="todayQuickGrid">
-    <button data-go="house"><span>🧹</span><b>Faccende</b><small>Casa di oggi</small></button>
-    <button data-go="menu"><span>🍽️</span><b>Pasti</b><small>Pranzo e cena</small></button>
-    <button data-go="reminders"><span>🔔</span><b>Promemoria</b><small>Quelli in arrivo</small></button>
-    <button data-go="calendar"><span>📆</span><b>Calendario</b><small>Vista completa</small></button>
+    <button data-go="house"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-housework"></use></svg></span><b>Faccende</b><small>Casa di oggi</small></button>
+    <button data-go="menu"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg></span><b>Pasti</b><small>Pranzo e cena</small></button>
+    <button data-go="reminders"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg></span><b>Promemoria</b><small>Quelli in arrivo</small></button>
+    <button data-go="calendar"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><b>Calendario</b><small>Vista completa</small></button>
   </div>
 </section>
 
@@ -204,18 +205,18 @@
   <div class="card">
     <h3>Azioni rapide</h3>
     <div class="adultActions">
-      <button id="adultVisit">🩺<b>Visita</b></button>
-      <button id="adultMedicine">💊<b>Medicina</b></button>
-      <button data-go="calendar">📅<b>Calendario</b></button>
-      <button data-go="profiles">🍝<b>Alimentazione</b></button>
-      <button id="adultWorkStatus">💼<b>Lavoro</b></button>
-      <button id="adultCalcetto">⚽<b>Calcetto</b></button>
+      <button id="adultVisit"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-health"></use></svg><b>Visita</b></button>
+      <button id="adultMedicine"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-medicine"></use></svg><b>Medicina</b></button>
+      <button data-go="calendar"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><b>Calendario</b></button>
+      <button data-go="profiles"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg><b>Alimentazione</b></button>
+      <button id="adultWorkStatus"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><b>Lavoro</b></button>
+      <button id="adultCalcetto"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-plus"></use></svg><b>Calcetto</b></button>
     </div>
   </div>
 
   <div class="card workStatusCard">
     <div class="sectionTitle compact">
-      <div><small>LAVORO & ASSENZE</small><h3>💼 Come lavoro</h3></div>
+      <div><small>LAVORO & ASSENZE</small><h3>Come lavoro</h3></div>
       <button id="adultWorkAdd">＋ Segna</button>
     </div>
     <p class="muted">Ferie, smart working e malattia finiscono automaticamente in Oggi e nel Calendario.</p>
@@ -224,7 +225,7 @@
 
   <div class="card">
     <div class="sectionTitle compact">
-      <div><small>SPESE PERSONALI</small><h3>💳 Questo mese</h3></div>
+      <div><small>SPESE PERSONALI</small><h3>Questo mese</h3></div>
       <strong id="adultExpenseTotal">0,00 €</strong>
     </div>
     <form id="adultExpenseForm" class="form personalExpenseForm">
@@ -292,7 +293,7 @@
 </section>
 
 <section id="profiles" class="view">
-  <div class="sectionTitle"><div><small>PERSONALIZZAZIONE</small><h2>⚙️ Profili alimentari</h2></div><button data-go="menu">← Menu</button></div>
+  <div class="sectionTitle"><div><small>PERSONALIZZAZIONE</small><h2>Profili alimentari</h2></div><button data-go="menu">← Menu</button></div>
   <div id="profileForms"></div>
 </section>
 
@@ -304,16 +305,16 @@
     <h3>Nuova visita / appuntamento</h3>
     <select id="visitPerson"></select>
     <input id="visitTitle" placeholder="Es. Pediatra, dentista..." required>
-    <label class="fieldLabel">📅 Data appuntamento<input id="visitDate" type="date" required></label>
-    <label class="fieldLabel">🕒 Ora appuntamento<input id="visitTime" type="time"></label>
-    <label class="fieldLabel">📍 Luogo / indirizzo
+    <label class="fieldLabel">Data appuntamento<input id="visitDate" type="date" required></label>
+    <label class="fieldLabel">Ora appuntamento<input id="visitTime" type="time"></label>
+    <label class="fieldLabel">Luogo / indirizzo
       <input id="visitLocation" placeholder="Es. Ospedale Santa Maria Nuova, Firenze">
     </label>
-    <label class="fieldLabel">🔗 Link mappa opzionale
+    <label class="fieldLabel">Link mappa opzionale
       <input id="visitMapUrl" type="url" placeholder="Incolla link Apple Maps o Google Maps">
     </label>
     <input id="visitNote" placeholder="Nota facoltativa">
-    <label class="fieldLabel">🔔 Promemoria
+    <label class="fieldLabel">Promemoria
       <select id="visitReminder">
         <option value="0">Il giorno stesso</option>
         <option value="1" selected>1 giorno prima</option>
@@ -321,7 +322,7 @@
         <option value="7">7 giorni prima</option>
       </select>
     </label>
-    <label class="fieldLabel">👥 Avvisa
+    <label class="fieldLabel">Avvisa
       <select id="visitNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
     </label>
     <button class="primary">Salva visita</button>
@@ -332,17 +333,17 @@
     <select id="medPerson"></select>
     <input id="medName" placeholder="Nome medicina" required>
     <input id="medDose" placeholder="Dose / indicazione">
-    <label class="fieldLabel">📅 Data<input id="medDate" type="date" required></label>
-    <label class="fieldLabel">🕒 Ora<input id="medTime" type="time"></label>
+    <label class="fieldLabel">Data<input id="medDate" type="date" required></label>
+    <label class="fieldLabel">Ora<input id="medTime" type="time"></label>
     <input id="medNote" placeholder="Nota facoltativa">
-    <label class="fieldLabel">🔔 Promemoria
+    <label class="fieldLabel">Promemoria
       <select id="medReminder">
         <option value="0" selected>Il giorno stesso</option>
         <option value="1">1 giorno prima</option>
         <option value="3">3 giorni prima</option>
       </select>
     </label>
-    <label class="fieldLabel">👥 Avvisa
+    <label class="fieldLabel">Avvisa
       <select id="medNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
     </label>
     <button class="primary">Salva medicina</button>
@@ -363,8 +364,8 @@
   </div>
 
   <div class="wasteInfoGrid">
-    <div class="card wasteInfoCard"><span>🍾</span><div><b>Vetro</b><p>Va conferito nei contenitori stradali: non fa parte del normale ritiro porta a porta.</p></div></div>
-    <div class="card wasteInfoCard"><span>🧷</span><div><b>Supporti igienici</b><p>È un servizio separato, disponibile solo se attivato. Non lo contiamo nel calendario standard.</p></div></div>
+    <div class="card wasteInfoCard"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-recycle"></use></svg></span><div><b>Vetro</b><p>Va conferito nei contenitori stradali: non fa parte del normale ritiro porta a porta.</p></div></div>
+    <div class="card wasteInfoCard"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-note"></use></svg></span><div><b>Supporti igienici</b><p>È un servizio separato, disponibile solo se attivato. Non lo contiamo nel calendario standard.</p></div></div>
   </div>
 </section>
 
@@ -484,7 +485,7 @@
     <div id="manualReminderList"></div>
   </div>
 
-  <p class="tiny card">✈️ Telegram è collegato: i promemoria automatici vengono controllati ogni 5 minuti.</p>
+  <p class="tiny card">Telegram è collegato: i promemoria automatici vengono controllati ogni 5 minuti.</p>
 </section>
 
 <section id="house" class="view">
@@ -495,7 +496,7 @@
     <div id="houseTodayTasks"></div>
     <div class="housePrimaryActions">
       <button id="addHouseTaskBtn" class="primary">＋ Aggiungi faccenda</button>
-      <button id="generateHouseWeek">✨ Organizza settimana</button>
+      <button id="generateHouseWeek">Organizza settimana</button>
     </div>
   </div>
 
@@ -687,10 +688,10 @@
 </form></dialog>
 
 <dialog id="reminderDialog"><form id="reminderForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>📅 Evento / promemoria</h3><button type="button" data-close="reminderDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Evento / promemoria</h3><button type="button" data-close="reminderDialog">✕</button></div>
   <div class="twoCols">
     <label class="fieldLabel">Tipo
-      <select id="reminderKind"><option value="reminder">🔔 Promemoria</option><option value="appointment">📅 Appuntamento</option><option value="calcetto">⚽ Calcetto</option><option value="event">✨ Evento</option></select>
+      <select id="reminderKind"><option value="reminder">Promemoria</option><option value="appointment">Appuntamento</option><option value="calcetto">Calcetto</option><option value="event">Evento</option></select>
     </label>
     <label class="fieldLabel">Per chi
       <select id="reminderPerson"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option><option value="caty">Caty</option><option value="kiko">Kiko</option><option value="astro">Astro</option></select>
@@ -698,16 +699,16 @@
   </div>
   <label class="fieldLabel">Titolo<input id="reminderTitle" placeholder="Es. Dentista, calcetto, telefonare..." required></label>
   <div class="twoCols">
-    <label class="fieldLabel">📅 Data<input id="reminderDate" type="date" required></label>
-    <label class="fieldLabel">🕒 Ora<input id="reminderTime" type="time"></label>
+    <label class="fieldLabel">Data<input id="reminderDate" type="date" required></label>
+    <label class="fieldLabel">Ora<input id="reminderTime" type="time"></label>
   </div>
-  <label class="fieldLabel">🔔 Avvisami
+  <label class="fieldLabel">Avvisami
     <select id="reminderDays"><option value="0">Il giorno stesso</option><option value="1" selected>1 giorno prima</option><option value="3">3 giorni prima</option><option value="7">7 giorni prima</option><option value="30">30 giorni prima</option></select>
   </label>
-  <label class="fieldLabel">👥 Destinatario
+  <label class="fieldLabel">Destinatario
     <select id="reminderNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
   </label>
-  <label class="fieldLabel">📝 Nota<input id="reminderNote" placeholder="Nota facoltativa"></label>
+  <label class="fieldLabel">Nota<input id="reminderNote" placeholder="Nota facoltativa"></label>
   <button class="primary">Salva</button>
 </form></dialog>
 
@@ -745,7 +746,7 @@
 </div></dialog>
 
 <dialog id="birthdayDialog"><form id="birthdayForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>🎂 Compleanno</h3><button type="button" data-close="birthdayDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Compleanno</h3><button type="button" data-close="birthdayDialog">✕</button></div>
   <label class="fieldLabel">Nome<input id="birthdayName" placeholder="Es. Mario" required></label>
   <label class="fieldLabel">Data del compleanno <small class="fieldHint">Conta giorno e mese; l’anno non è importante.</small><input id="birthdayDate" type="date" required></label>
   <label class="fieldLabel">Chi è?<select id="birthdayRelation"><option>Famiglia</option><option>Parente</option><option>Amico/a</option><option>Altro</option></select></label>
@@ -756,7 +757,7 @@
 <dialog id="accountDialog"><div class="dialogBox">
       <div class="sectionTitle compact"><h3>Account Fagiolini</h3><button data-close="accountDialog">✕</button></div>
       <div id="accountInfo" class="accountInfo"></div>
-      <button id="syncNowBtn" class="primary fullBtn">🔄 Sincronizza adesso</button>
+      <button id="syncNowBtn" class="primary fullBtn">Sincronizza adesso</button>
       <button id="logoutBtn" class="secondaryFull">Esci dall'account</button>
     </div></dialog>
 
@@ -789,7 +790,7 @@
 </form></dialog>
 
 <dialog id="boughtDialog"><form id="boughtForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>✅ Prodotto comprato</h3><button type="button" data-close="boughtDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Prodotto comprato</h3><button type="button" data-close="boughtDialog">✕</button></div>
   <p id="boughtName"></p>
   <input id="boughtPrice" type="number" min="0" step="0.01" placeholder="Prezzo realmente pagato €">
   <select id="boughtWho"><option value="">Spesa famiglia</option><option value="jj">Pagato da JJ</option><option value="kiki">Pagato da Kiki</option></select>
@@ -798,7 +799,7 @@
 </form></dialog>
 
 <dialog id="subscriptionDialog"><form id="subscriptionForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>⏰ Bolletta / abbonamento</h3><button type="button" data-close="subscriptionDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Bolletta / abbonamento</h3><button type="button" data-close="subscriptionDialog">✕</button></div>
   <input id="subName" placeholder="Es. Abbonamento treno" required>
   <input id="subAmount" type="number" min="0" step="0.01" placeholder="Costo €" required>
   <select id="subOwner"><option value="family">Famiglia</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
@@ -813,12 +814,12 @@
 <dialog id="recipeDialog"><div class="dialogBox">
   <div class="sectionTitle compact"><div><small>RICETTA</small><h3 id="recipeTitle"></h3></div><button data-close="recipeDialog">✕</button></div>
   <div id="recipeBody"></div>
-  <button id="recipeToShop" class="primary fullBtn">🛒 Aggiungi ingredienti alla spesa</button>
+  <button id="recipeToShop" class="primary fullBtn">Aggiungi ingredienti alla spesa</button>
 </div></dialog>
 
 
 <dialog id="maintenanceDialog"><form id="maintenanceForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>🧰 Manutenzione casa</h3><button type="button" data-close="maintenanceDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Manutenzione casa</h3><button type="button" data-close="maintenanceDialog">✕</button></div>
   <select id="maintType">
     <option>Caldaia</option><option>Climatizzatore</option><option>Idraulico</option>
     <option>Elettricista</option><option>Elettrodomestico</option><option>Manutenzione generica</option><option>Altro</option>
@@ -832,14 +833,14 @@
     <option value="semiannual">Semestrale</option><option value="monthly">Mensile</option>
   </select>
   <select id="maintStatus"><option value="planned">Programmata / da fare</option><option value="done">Completata</option></select>
-  <select id="maintReminder"><option value="0">🔔 Giorno stesso</option><option value="1">🔔 1 giorno prima</option><option value="3">🔔 3 giorni prima</option><option value="7" selected>🔔 7 giorni prima</option></select>
+  <select id="maintReminder"><option value="0">Giorno stesso</option><option value="1">1 giorno prima</option><option value="3">3 giorni prima</option><option value="7" selected>7 giorni prima</option></select>
   <select id="maintNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
   <input id="maintNote" placeholder="Tecnico / telefono / note">
   <button class="primary">Salva</button>
 </form></dialog>
 
 <dialog id="autoDeadlineDialog"><form id="autoDeadlineForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>🚗 Scadenza Auto</h3><button type="button" data-close="autoDeadlineDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Scadenza Auto</h3><button type="button" data-close="autoDeadlineDialog">✕</button></div>
   <select id="autoDeadlineType">
     <option>Assicurazione</option><option>Bollo</option><option>Revisione</option>
     <option>Tagliando</option><option>Gomme</option><option>Manutenzione</option><option>Altro</option>
@@ -853,43 +854,43 @@
     <option value="semiannual">Semestrale</option><option value="biennial">Ogni 2 anni</option>
   </select>
   <select id="autoDeadlineStatus"><option value="planned">Da fare / da pagare</option><option value="done">Completata / pagata</option></select>
-  <select id="autoDeadlineReminder"><option value="0">🔔 Giorno stesso</option><option value="1">🔔 1 giorno prima</option><option value="3">🔔 3 giorni prima</option><option value="7" selected>🔔 7 giorni prima</option><option value="30">🔔 30 giorni prima</option></select>
+  <select id="autoDeadlineReminder"><option value="0">Giorno stesso</option><option value="1">1 giorno prima</option><option value="3">3 giorni prima</option><option value="7" selected>7 giorni prima</option><option value="30">30 giorni prima</option></select>
   <select id="autoDeadlineNotify"><option value="both">JJ + Kiki</option><option value="jj">Solo JJ</option><option value="kiki">Solo Kiki</option></select>
   <input id="autoDeadlineNote" placeholder="Compagnia / officina / note">
   <button class="primary">Salva</button>
 </form></dialog>
 
 <dialog id="houseTaskDialog"><form id="houseTaskForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>🏠 Task Casa</h3><button type="button" data-close="houseTaskDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Faccenda di casa</h3><button type="button" data-close="houseTaskDialog">✕</button></div>
   <label class="fieldLabel">Faccenda
     <select id="houseTaskRoutine">
-      <option value="sweep">🧹 Spazzare</option>
-      <option value="mop">🧽 Lavare pavimenti / mocio</option>
-      <option value="washer">🧺 Lavatrice</option>
-      <option value="dryer">♨️ Asciugatrice</option>
-      <option value="sheets">🛏️ Cambio lenzuola</option>
-      <option value="towels">🚿 Cambio asciugamani</option>
-      <option value="custom">✏️ Altro</option>
+      <option value="sweep">Spazzare</option>
+      <option value="mop">Lavare pavimenti / mocio</option>
+      <option value="washer">Lavatrice</option>
+      <option value="dryer">Asciugatrice</option>
+      <option value="sheets">Cambio lenzuola</option>
+      <option value="towels">Cambio asciugamani</option>
+      <option value="custom">Altro</option>
     </select>
   </label>
   <label class="fieldLabel">Titolo<input id="houseTaskTitle" placeholder="Es. Pulire frigorifero" required></label>
   <div class="twoCols">
-    <label class="fieldLabel">📅 Data<input id="houseTaskDate" type="date" required></label>
-    <label class="fieldLabel">👥 Chi
+    <label class="fieldLabel">Data<input id="houseTaskDate" type="date" required></label>
+    <label class="fieldLabel">Chi
       <select id="houseTaskWho"><option value="family">JJ + Kiki</option><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
     </label>
   </div>
-  <label class="fieldLabel">📝 Nota<input id="houseTaskNote" placeholder="Facoltativa"></label>
+  <label class="fieldLabel">Nota<input id="houseTaskNote" placeholder="Facoltativa"></label>
   <button class="primary">Salva task</button>
 </form></dialog>
 
 <dialog id="workStatusDialog"><form id="workStatusForm" class="dialogBox">
-  <div class="sectionTitle compact"><h3>💼 Lavoro & assenze</h3><button type="button" data-close="workStatusDialog">✕</button></div>
+  <div class="sectionTitle compact"><h3>Lavoro & assenze</h3><button type="button" data-close="workStatusDialog">✕</button></div>
   <label class="fieldLabel">Chi
     <select id="workPerson"><option value="jj">JJ</option><option value="kiki">Kiki</option></select>
   </label>
   <label class="fieldLabel">Cosa segniamo?
-    <select id="workType"><option value="smart">🏠 Smart working</option><option value="vacation">🌴 Ferie</option><option value="sick">🤒 Malattia</option></select>
+    <select id="workType"><option value="smart">Smart working</option><option value="vacation">Ferie</option><option value="sick">Malattia</option></select>
   </label>
   <div class="twoCols"><label class="fieldLabel">Dal<input id="workStartDate" type="date" required></label><label class="fieldLabel">Al<input id="workEndDate" type="date" required></label></div>
   <label class="fieldLabel">Nota<input id="workNote" placeholder="Facoltativa"></label>
@@ -941,8 +942,8 @@
   <p class="tiny">Puoi registrare anche ieri o un giorno passato: data e ora restano sempre modificabili.</p>
 </form></dialog>
 
-<dialog id="poopDialog"><form id="poopForm" class="dialogBox"><h3>💩 Cacca</h3><select id="poopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select><input id="poopNote" placeholder="Nota facoltativa"><button class="primary">Salva</button><button type="button" data-close="poopDialog">Annulla</button></form></dialog>
-<dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>😴 Nanna</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
+<dialog id="poopDialog"><form id="poopForm" class="dialogBox"><h3>Cacca</h3><select id="poopType"><option>Normale</option><option>Dura</option><option>Morbida</option><option>Liquida</option></select><input id="poopNote" placeholder="Nota facoltativa"><button class="primary">Salva</button><button type="button" data-close="poopDialog">Annulla</button></form></dialog>
+<dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>Sonno</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js?v=16.0.0"></script>
