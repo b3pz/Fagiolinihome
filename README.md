@@ -1,25 +1,27 @@
-# Fagiolini V17 — Editorial Family UI
+# Fagiolini V17.1 — Hard Visual Reset
 
-V17 è un visual reset completo costruito sopra la logica stabile della V16.
+Correzione della V17: la palette nuova era contenuta in un foglio CSS separato e, se quel file non veniva caricato/pubblicato correttamente, l'app ricadeva visivamente sul vecchio verde/crema.
 
-## Direzione grafica
-- nuova palette **Ink / Porcelain / Clay / Sage**: niente più verde-crema dominante;
-- tipografia di sistema, niente serif da dashboard;
-- Home con gerarchia reale: Oggi è il focus, Casa/Pasti sono riepiloghi tonali, Bank e Rifiuti hanno identità distinte;
-- quick action mobile in griglia 3×2 compatta;
-- calendario ridisegnato come mese minimale, con oggi e selezione chiari;
-- pagina Oggi trasformata in feed di sezioni, non elenco gestionale;
-- Organizza in gruppi/lista su iPhone e griglia su desktop;
-- Fagiolini Bank con hero scuro dedicato;
-- modali mobile come bottom sheet;
-- login ridisegnato;
-- emoji decorative rimosse dai principali controlli e sostituite con sprite SVG coerenti.
+In V17.1 il visual reset è **fuso direttamente in `style.css`**, quindi non dipende più da un secondo stylesheet.
 
-## Dark mode
-Tema scuro dedicato charcoal/ink, non inversione del tema chiaro. Superfici, input, calendario, modali, navigation e Bank hanno colori specifici.
+## Identità chiara
+- background Stone freddo
+- superfici Porcelain
+- testo Ink / grafite
+- accent principale Slate Blue
+- Terracotta per Bank e ricorrenze
+- Sage solo secondario
+- Home con hero Oggi scura e pannelli chiaramente differenziati
 
-## Funzioni preservate
-Nessuna modifica intenzionale a Supabase, autenticazione, timeout sessione, sincronizzazione, Telegram/Cron, reminder, dati, Bank, calendario o dipendenze delle faccende.
+## Dark mode rifatta
+- charcoal quasi nero
+- superfici graphite
+- testo avorio
+- slate + terracotta + sage come accenti
+- niente verde-nero dominante
+- calendario, modali, input e bottom nav dedicati
 
-## Deploy GitHub Pages
-Caricare **tutti i file direttamente nella root** del repository. `index.html` usa cache busting `17.0.0` e carica `v17.css` dopo lo stylesheet storico.
+## Funzioni
+Nessuna modifica intenzionale a Supabase, login, sincronizzazione, Telegram, Cron, reminder, Bank, Diario, Casa o dati.
+
+Cache busting: 17.1.0

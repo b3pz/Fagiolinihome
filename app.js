@@ -156,7 +156,7 @@ function applyTheme(pref=localStorage.getItem(THEME_KEY)||'system',persist=true)
  if(persist)localStorage.setItem(THEME_KEY,pref);
  document.documentElement.dataset.theme=pref;
  document.documentElement.classList.toggle('themeDark',resolvedTheme(pref)==='dark');
- const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolvedTheme(pref)==='dark'?'#101713':'#f4f1e9';
+ const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolvedTheme(pref)==='dark'?'#0D1013':'#E6E8EB';
  document.querySelectorAll('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===pref));
  const quick=document.getElementById('themeQuickBtn');if(quick){quick.innerHTML=`<svg class="uiIcon" aria-hidden="true"><use href="icons.svg#${resolvedTheme(pref)==='dark'?'icon-moon':'icon-sun'}"></use></svg>`}
 }

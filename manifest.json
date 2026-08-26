@@ -1,9 +1,1 @@
-{
-  "name": "Fagiolini",
-  "short_name": "Fagiolini",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#ECEDEA",
-  "theme_color": "#2D4655",
-  "description": "Fagiolini: diario famiglia, calendario, casa, pasti, salute e Fagiolini Bank."
-}
+{"name":"Fagiolini","short_name":"Fagiolini","start_url":"./","display":"standalone","background_color":"#E6E8EB","theme_color":"#556F7E","description":"Fagiolini: diario famiglia, calendario, casa, pasti, salute e Fagiolini Bank."}
