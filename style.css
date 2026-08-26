@@ -2436,3 +2436,165 @@ html.themeDark .calDay.weekend{background:#202b24!important}.themeDark .calDay.s
   html.themeDark nav.mobileNav > button.active{background:#293a30!important;color:#fff!important}
   html.themeDark nav.mobileNav > button.navHomeTab.active{background:#4f8a64!important;color:#fff!important}
 }
+
+/* =========================================================
+   FAGIOLINI V13.2 — REAL MOBILE DEVICE FIX
+   iPhone Safari can sometimes expose a wider layout viewport.
+   We therefore key the native mobile UI both to viewport width
+   AND to coarse-pointer/touch devices.
+   ========================================================= */
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  :root{--mobile-nav-h:74px!important}
+
+  .desktopNav{display:none!important}
+  .mobileNav{display:grid!important}
+
+  .app{
+    width:100%!important;
+    max-width:none!important;
+    padding-left:14px!important;
+    padding-right:14px!important;
+    padding-bottom:calc(92px + env(safe-area-inset-bottom))!important;
+  }
+
+  /* Home quick actions: never desktop 6-up on a phone */
+  .homeQuickCapture{
+    grid-template-columns:1fr!important;
+    padding:16px 10px 12px!important;
+    border-radius:24px!important;
+  }
+  .homeQuickCaptureGrid{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px 4px!important;
+    max-width:none!important;
+    width:100%!important;
+  }
+  .homeQuickCaptureGrid button{
+    min-width:0!important;
+    min-height:72px!important;
+    padding:6px 2px!important;
+  }
+
+  /* Absolute final nav reset. No legacy nav sizing may leak in. */
+  nav.mobileNav{
+    position:fixed!important;
+    left:12px!important;
+    right:12px!important;
+    bottom:8px!important;
+    z-index:99999!important;
+    width:auto!important;
+    max-width:none!important;
+    height:74px!important;
+    min-height:74px!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:center!important;
+    gap:3px!important;
+    padding:6px 7px calc(6px + env(safe-area-inset-bottom))!important;
+    margin:0!important;
+    border-radius:24px!important;
+    border:1px solid rgba(33,74,52,.08)!important;
+    background:rgba(252,250,246,.96)!important;
+    box-shadow:0 10px 35px rgba(29,48,37,.12)!important;
+    backdrop-filter:blur(22px)!important;
+    -webkit-backdrop-filter:blur(22px)!important;
+    overflow:hidden!important;
+    transform:none!important;
+  }
+
+  nav.mobileNav > button,
+  nav.mobileNav > button.navHomeTab,
+  nav.mobileNav > button.navHomeCenter{
+    all:unset!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    height:58px!important;
+    min-width:0!important;
+    min-height:58px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    padding:4px 2px!important;
+    margin:0!important;
+    border-radius:17px!important;
+    color:#536b5e!important;
+    font-family:inherit!important;
+    text-align:center!important;
+  }
+
+  nav.mobileNav > button .navIcon,
+  nav.mobileNav > button.navHomeTab .navIcon,
+  nav.mobileNav > button.navHomeCenter .navIcon,
+  nav.mobileNav > button.active .navIcon{
+    box-sizing:border-box!important;
+    display:grid!important;
+    place-items:center!important;
+    width:25px!important;
+    height:25px!important;
+    min-width:25px!important;
+    min-height:25px!important;
+    max-width:25px!important;
+    max-height:25px!important;
+    padding:0!important;
+    margin:0!important;
+    background:transparent!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    transform:none!important;
+    overflow:hidden!important;
+    color:currentColor!important;
+  }
+
+  nav.mobileNav > button .navIcon svg,
+  nav.mobileNav > button.navHomeTab .navIcon svg,
+  nav.mobileNav > button.navHomeCenter .navIcon svg,
+  nav.mobileNav > button.active .navIcon svg{
+    display:block!important;
+    width:25px!important;
+    height:25px!important;
+    min-width:25px!important;
+    min-height:25px!important;
+    max-width:25px!important;
+    max-height:25px!important;
+    margin:0!important;
+    padding:0!important;
+    transform:none!important;
+  }
+
+  nav.mobileNav > button small,
+  nav.mobileNav > button.navHomeTab small,
+  nav.mobileNav > button.navHomeCenter small{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:11.5px!important;
+    line-height:1!important;
+    font-weight:800!important;
+    letter-spacing:0!important;
+    color:currentColor!important;
+  }
+
+  nav.mobileNav > button.active{
+    background:#e4eee5!important;
+    color:#1e5739!important;
+    box-shadow:inset 0 0 0 1px rgba(42,94,62,.10)!important;
+  }
+  nav.mobileNav > button.navHomeTab.active,
+  nav.mobileNav > button.navHomeCenter.active{
+    background:#2f6c49!important;
+    color:#fff!important;
+  }
+
+  html.themeDark nav.mobileNav{
+    background:rgba(18,25,21,.97)!important;
+    border-color:rgba(255,255,255,.08)!important;
+  }
+  html.themeDark nav.mobileNav > button{color:#b8c6bd!important}
+  html.themeDark nav.mobileNav > button.active{background:#293a30!important;color:#fff!important}
+  html.themeDark nav.mobileNav > button.navHomeTab.active,
+  html.themeDark nav.mobileNav > button.navHomeCenter.active{background:#4f8a64!important;color:#fff!important}
+}

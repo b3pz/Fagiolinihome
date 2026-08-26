@@ -1,20 +1,17 @@
-# Fagiolini V13.1 — Mobile Native Polish
+# Fagiolini V13.2 — Real Mobile Device Fix
 
-Patch costruita sulla V13 stabile.
+Patch mirata alla resa iPhone/Safari.
 
-## Obiettivo
-Preservare il layout desktop V13 (che è già nella direzione giusta) e correggere definitivamente il comportamento iPhone.
+## Problema individuato
+La V13.1 conteneva il CSS corretto, ma sul dispositivo mobile alcune regole `@media (max-width:699px)` non risultavano applicate: lo si vedeva sia dalla bottom bar gigante sia da “Segna al volo” disposto su 6 colonne invece di 3.
 
-## Modifiche
-- Bottom navigation mobile riscritta con override finale dedicato.
-- Icone mobile fissate a 25px: nessuna vecchia regola XL può più ingrandirle.
-- Home centrale senza cerchi/floating: è una tab normale, evidenziata da una pillola verde quando attiva.
-- Barra mobile più bassa, arrotondata e con blur leggero in stile app nativa.
-- Spazio sotto ai contenuti corretto per evitare sovrapposizioni.
-- Superfici Home leggermente alleggerite su iPhone per allinearsi al linguaggio desktop V13.
-- Dark mode adattata alla nuova barra.
-- Desktop V13 lasciato invariato.
-- Cache busting aggiornato a 13.1.0.
+## Fix
+- mobile rilevato anche tramite `hover:none` + `pointer:coarse`, non solo tramite larghezza viewport;
+- quick actions forzate a 3 colonne su touch/mobile;
+- bottom nav completamente resettata e ridimensionata;
+- icone 25×25 px reali;
+- Home come tab/pill, senza elemento floating;
+- desktop nav nascosta su dispositivo touch/mobile;
+- cache busting `13.2.0`.
 
-## Logica
-Nessuna modifica a Supabase, Telegram, dati, Casa, Pasti, Calendario, Diario o Fagiolini Bank.
+Nessuna modifica alla logica Supabase/Telegram/dati.
