@@ -1,17 +1,20 @@
-# Fagiolini V13.2 — Real Mobile Device Fix
+# Fagiolini V14 — Apple-inspired + Large Readability
 
-Patch mirata alla resa iPhone/Safari.
+Base: V13.2 stabile.
 
-## Problema individuato
-La V13.1 conteneva il CSS corretto, ma sul dispositivo mobile alcune regole `@media (max-width:699px)` non risultavano applicate: lo si vedeva sia dalla bottom bar gigante sia da “Segna al volo” disposto su 6 colonne invece di 3.
+## Obiettivo
+Rendere l'app molto più leggibile su iPhone senza tornare alla barra di navigazione gigante.
 
-## Fix
-- mobile rilevato anche tramite `hover:none` + `pointer:coarse`, non solo tramite larghezza viewport;
-- quick actions forzate a 3 colonne su touch/mobile;
-- bottom nav completamente resettata e ridimensionata;
-- icone 25×25 px reali;
-- Home come tab/pill, senza elemento floating;
-- desktop nav nascosta su dispositivo touch/mobile;
-- cache busting `13.2.0`.
+## Modifiche
+- contenuti mobile ingranditi: titoli, testi, numeri, card, quick actions, form e avatar;
+- bottom bar mantenuta compatta e con le dimensioni della V13.2;
+- quick actions Pappa/Cacca/Sonno/Pannolino/Calendario/Evento più grandi e facili da toccare;
+- superfici più morbide e leggere, stile iOS/Apple-inspired;
+- card Home più ariose e con gerarchia tipografica più forte;
+- Famiglia più leggibile con avatar più grandi e scroll orizzontale;
+- Pasti, Diario, Calendario e form con touch target più grandi;
+- dark mode adattata alle nuove superfici;
+- desktop landscape e logica applicativa invariati.
 
-Nessuna modifica alla logica Supabase/Telegram/dati.
+## Backend/logica
+Nessuna modifica a login, Supabase, Telegram, Cron, Casa, Bank o dati.
