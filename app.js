@@ -15,7 +15,7 @@ let realtimeChannel=null;
 let lastCloudUpdatedAt=null;
 
 
-const SESSION_TIMEOUT_MS=30*24*60*60*1000;
+const SESSION_TIMEOUT_MS=3*24*60*60*1000;
 const SESSION_ACTIVITY_KEY='fagioliniSessionActivityV1';
 let sessionExpiryTimer=null;
 let lastActivityWrite=0;
@@ -29,6 +29,7 @@ function scheduleSessionExpiry(){
 }
 function markSessionActivity(){
  if(!cloudSession||!loginScreen.classList.contains('hidden'))return;
+ if(sessionIsExpired()){checkSessionExpiry();return;}
  let now=Date.now();
  if(now-lastActivityWrite<30000)return;
  lastActivityWrite=now;localStorage.setItem(SESSION_ACTIVITY_KEY,String(now));scheduleSessionExpiry()
@@ -39,7 +40,7 @@ async function checkSessionExpiry(force=false){
   if(sessionExpiryTimer)clearTimeout(sessionExpiryTimer);
   localStorage.removeItem(SESSION_ACTIVITY_KEY);
   await cloudLogout();
-  loginMessage.textContent='È passato un mese dall’ultimo accesso. Richiedi un nuovo link via email.';
+  loginMessage.textContent='Sono passati 3 giorni senza usare il sito. Accedi di nuovo con email e password.';
   return true
  }
  if(force)scheduleSessionExpiry();
@@ -620,25 +621,34 @@ function normalizeRemoteState(data){
  return out
 }
 
-async function cloudLogin(email){
+async function cloudLogin(email,password){
  loginMessage.textContent='';
  loginButton.disabled=true;
- loginButton.textContent='Invio del link…';
+ loginButton.textContent='Accesso...';
+
  try{
-  const redirect=new URL(window.location.href);
-  redirect.search='';redirect.hash='';
-  const {error}=await sb.auth.signInWithOtp({
-   email,
-   options:{shouldCreateUser:false,emailRedirectTo:redirect.href}
-  });
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
   if(error)throw error;
-  loginMessage.textContent='Se questa email appartiene alla famiglia, riceverai un link per entrare. Aprilo su questo telefono. Se non arriva, controlla anche lo spam.';
+  if(!data?.session)throw new Error('Sessione Supabase non ricevuta');
+
+  cloudSession=data.session;
+  localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
+  scheduleSessionExpiry();
+
+  // Da qui il login è riuscito: entra subito.
+  loginScreen.classList.add('hidden');
+  renderAll();
+
+  // La sincronizzazione è separata.
+  await initializeCloud();
+
  }catch(err){
   console.error('Auth error:',err);
-  loginMessage.textContent='Non riesco a inviare il link. Controlla la connessione e riprova tra un minuto.';
+  loginScreen.classList.remove('hidden');
+  loginMessage.textContent='Accesso non riuscito: '+(err.message||'controlla email e password.');
  }finally{
   loginButton.disabled=false;
-  loginButton.textContent='Mandami il link';
+  loginButton.textContent='Accedi';
  }
 }
 
@@ -805,7 +815,7 @@ async function bootCloud(){
    cloudSession=null;
    localStorage.removeItem(SESSION_ACTIVITY_KEY);
    loginScreen.classList.remove('hidden');
-   loginMessage.textContent='È passato un mese dall’ultimo accesso. Richiedi un nuovo link via email.';
+   loginMessage.textContent='Sono passati 3 giorni senza usare il sito. Accedi di nuovo con email e password.';
   }else{
    if(!last)localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
    scheduleSessionExpiry();
@@ -2278,7 +2288,7 @@ recipeToShop.onclick=()=>{
 };
 loginForm.onsubmit=e=>{
  e.preventDefault();
- cloudLogin(loginEmail.value.trim())
+ cloudLogin(loginEmail.value.trim(),loginPassword.value)
 };
 accountBtn.onclick=()=>{updateAccountInfo();accountDialog.showModal()};
 logoutBtn.onclick=cloudLogout;

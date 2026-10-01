@@ -1,4 +1,4 @@
-# Fagiolini — V19.1
+# Fagiolini — V19.2
 
 Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
@@ -25,10 +25,10 @@ Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un 
 
 ## Pubblicazione
 
-File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.1.0`. Il service worker resta inattivo.
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.2.0`. Il service worker resta inattivo.
 
-## Accesso senza password
+## Accesso e durata della sessione
 
-Gli account famiglia esistenti entrano tramite un link inviato alla propria email. Non vengono creati nuovi account dal modulo. La sessione locale dura fino a 30 giorni di inattività, salvo revoca o scadenze configurate su Supabase.
+Accesso con email e password degli account famiglia esistenti su Supabase. Il sito richiede un nuovo accesso dopo 3 giorni di inattività; usare il sito rinnova il periodo. Le credenziali possono essere compilate dal gestore password del telefono.
 
-In Supabase → Authentication → URL Configuration, autorizzare l’URL del sito pubblicato (`https://b3pz.github.io/Fagiolinihome/`, se si usa GitHub Pages) fra i redirect consentiti. Verificare che il provider Email e l’invio dei magic link siano attivi. Queste impostazioni richiedono accesso al progetto Supabase e non sono verificabili dal repository.
+La durata locale non sostituisce revoche o limiti configurati su Supabase. Non vengono inviati link email dal modulo di accesso.
