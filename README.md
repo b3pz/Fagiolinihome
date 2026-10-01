@@ -1,18 +1,18 @@
-# Fagiolini — V20.1
+# Fagiolini — V21
 
 Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
-## Organizzazione della giornata
+## Una pagina, uno scopo
 
-- Oggi: primi tre impegni dei prossimi sette giorni, diario selezionabile di Caty/Kiko/Astro e pasti di oggi.
-- Agenda: grandi caselle giornaliere con appuntamenti e faccende. Sul telefono si scorrono i giorni in orizzontale; da ogni casella si aggiungono scopa, bucato e lenzuola e si spuntano le attività. Il mese resta apribile, con icone delle faccende.
-- Diari: tutti i diari con ultime registrazioni e pulsanti di inserimento già associati alla persona.
-- Pasti: pianificazione esistente e lista della spesa raggiungibile dalla home.
-- Altro: acquisti, salute, rifiuti e casa; spese, auto e scadenze raccolte in una sezione richiudibile.
+- Inizio: quattro collegamenti ad Agenda, Diari, Pasti e Spesa. Nessun contenuto operativo duplicato.
+- Agenda: appuntamenti e faccende con caselle giornaliere grandi; i dati dei diari e del menu rimangono nelle loro pagine.
+- Diari: scelta di Caty, Kiko o Astro, poi registrazione e lettura nel diario individuale. Riepiloghi e grafici sono richiudibili.
+- Pasti: giorno selezionato e pianificazione del menu, senza ripetere il riepilogo di oggi.
+- Ricette: pagina dedicata al ricettario, raggiungibile da Pasti.
+- Spesa: aggiunta e spunta degli acquisti.
+- Altre sezioni: salute, rifiuti, soldi, scadenze e impostazioni, raggiungibili dal pulsante nell’intestazione.
 
-Ogni diario mostra data e ora dell’ultima pappa, cacca e sonno; per Astro, pipì al posto del sonno e cure al posto del pannolino. L’assenza di registrazioni è esplicita. I moduli propongono i tipi adatti al bambino o al cane.
-
-`friendly.css` definisce l’interfaccia dopo gli stili storici. Modello dei dati, sincronizzazione Supabase e notifiche sono preservati.
+Le vecchie destinazioni Oggi e Casa rimandano all’agenda, che contiene già il piano delle faccende. Login, modello dei dati e sincronizzazione restano invariati.
 
 ## Avvio locale
 
@@ -24,7 +24,7 @@ Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un 
 
 ## Pubblicazione
 
-File statici nella root, compatibili con GitHub Pages. Versione degli asset: `20.1.0`. Il service worker resta inattivo.
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `21.0.0`. Il service worker resta inattivo.
 
 ## Accesso e durata della sessione
 
