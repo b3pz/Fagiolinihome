@@ -2356,3 +2356,27 @@ document.querySelectorAll('[data-close-organize-panel]').forEach(btn=>{
 // Calendar-first home: reuse the existing appointment flow.
 const homeCalendarAdd=document.getElementById('homeCalendarAdd');
 if(homeCalendarAdd)homeCalendarAdd.onclick=()=>openReminder(null,{kind:'appointment',person:'family',date:dateKey(),reminderDays:0,notify:'both'});
+
+// Installation is offered only when the browser supports a native prompt.
+let appInstallPrompt=null;
+const installAppButton=document.getElementById('installAppButton');
+const installAppStatus=document.getElementById('installAppStatus');
+window.addEventListener('beforeinstallprompt',event=>{
+ event.preventDefault();appInstallPrompt=event;installAppButton.hidden=false;
+});
+installAppButton.onclick=async()=>{
+ if(!appInstallPrompt)return;
+ const prompt=appInstallPrompt;appInstallPrompt=null;installAppButton.hidden=true;
+ try{
+  await prompt.prompt();
+  const choice=await prompt.userChoice;
+  installAppStatus.textContent=choice.outcome==='accepted'?'Installazione richiesta. Apri Fagiolini dalla schermata Home.':'Puoi aggiungere Fagiolini più tardi dal menu del browser.';
+ }catch{installAppStatus.textContent='Per aggiungere Fagiolini, usa il menu del browser.';}
+};
+window.addEventListener('appinstalled',()=>{
+ appInstallPrompt=null;installAppButton.hidden=true;
+ installAppStatus.textContent='Fagiolini è installata. La trovi nella schermata Home.';
+});
+if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone){
+ document.getElementById('installAppGuide').hidden=true;
+}

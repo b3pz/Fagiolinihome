@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#f7f8f2">
+<meta name="theme-color" content="#28563a">
+<meta name="apple-mobile-web-app-title" content="Fagiolini">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>
 (function(){
   const saved=localStorage.getItem('fagioliniTheme')||'system';
@@ -16,8 +18,8 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=19.2.0">
-<link rel="stylesheet" href="friendly.css?v=19.2.0">
+<link rel="stylesheet" href="style.css?v=19.3.0">
+<link rel="stylesheet" href="friendly.css?v=19.3.0">
 </head>
 <body data-page="home">
 
@@ -397,6 +399,15 @@
     <button class="organizeCard" data-go="calendar"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
     <button class="organizeCard" data-go="waste"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg></span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
   </div>
+
+  <details id="installAppGuide" class="card installAppGuide">
+    <summary><b>Fagiolini sul tuo telefono</b><span>Aprila come un’app dalla schermata Home</span></summary>
+    <p>Una volta aggiunta, apri Fagiolini dalla sua icona.</p>
+    <button id="installAppButton" class="primary" type="button" hidden>Installa Fagiolini</button>
+    <p><b>iPhone:</b> apri Fagiolini in Safari, tocca Condividi e scegli “Aggiungi alla schermata Home”.</p>
+    <p><b>Android:</b> apri Fagiolini in Chrome, poi scegli “Installa app” oppure “Aggiungi alla schermata Home” dal menu.</p>
+    <p id="installAppStatus" role="status" aria-live="polite"></p>
+  </details>
 
   <div class="organizeGrid organizeGridSecondary">
     <button class="organizeCard" data-organize-panel="birthdays"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-gift"></use></svg></span><div><b>Compleanni</b><small>Amici e parenti da ricordare</small></div><em>›</em></button>
@@ -979,5 +990,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>Sonno</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=19.2.0"></script>
+<script src="app.js?v=19.3.0"></script>
 </body></html>

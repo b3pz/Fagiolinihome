@@ -1,4 +1,4 @@
-# Fagiolini — V19.2
+# Fagiolini — V19.3
 
 Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
@@ -25,10 +25,22 @@ Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un 
 
 ## Pubblicazione
 
-File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.2.0`. Il service worker resta inattivo.
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.3.0`. Il service worker resta inattivo.
 
 ## Accesso e durata della sessione
 
 Accesso con email e password degli account famiglia esistenti su Supabase. Il sito richiede un nuovo accesso dopo 3 giorni di inattività; usare il sito rinnova il periodo. Le credenziali possono essere compilate dal gestore password del telefono.
 
 La durata locale non sostituisce revoche o limiti configurati su Supabase. Non vengono inviati link email dal modulo di accesso.
+
+## App sul telefono
+
+Manifest configurato per l’apertura standalone. Le istruzioni sono in Altro → Fagiolini sul tuo telefono. Il pulsante di installazione appare quando il browser lo rende disponibile. Non è una pubblicazione su App Store o Play Store.
+
+Per completare le icone con il logo originale, salvarlo nella cartella del progetto e usare su macOS:
+
+```sh
+python3 scripts/build-icons.py logo-fagiolini.png
+```
+
+Il comando crea favicon PNG 32 px, apple-touch-icon 180 px e icone app 192/512 px; aggiorna manifest e HTML. Finché il logo non è disponibile, non vengono introdotti collegamenti a immagini mancanti.
