@@ -43,4 +43,4 @@ Per completare le icone con il logo originale, salvarlo nella cartella del proge
 python3 scripts/build-icons.py logo-fagiolini.png
 ```
 
-Il comando crea favicon PNG 32 px, apple-touch-icon 180 px e icone app 192/512 px; aggiorna manifest e HTML. Finché il logo non è disponibile, non vengono introdotti collegamenti a immagini mancanti.
+Il comando crea favicon PNG 32 px, apple-touch-icon 180 px e icone app 192/512 px; aggiorna manifest e HTML. Il logo originale è disponibile in `logo-fagiolini.png`; favicon e icone generate sono in `assets/icons/` e collegate a HTML e manifest.
