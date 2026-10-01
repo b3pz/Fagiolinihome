@@ -16,8 +16,8 @@
 </script>
 <title>Fagiolini</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=19.0.0">
-<link rel="stylesheet" href="friendly.css?v=19.0.0">
+<link rel="stylesheet" href="style.css?v=19.1.0">
+<link rel="stylesheet" href="friendly.css?v=19.1.0">
 </head>
 <body data-page="home">
 
@@ -28,19 +28,15 @@
     <b class="brand loginBrand">FAGIOLINI</b>
     <h1>Entra in famiglia</h1>
     <div class="loginHeart">♥</div>
-    <p class="loginLead">Accedi con l’account JJ o Kiki<br>per sincronizzare tutti i dati.</p>
+    <p class="loginLead">Inserisci la tua email e apri il link che ricevi.<br>Sul tuo telefono resterai collegata.</p>
     <form id="loginForm" class="form loginForm">
       <label class="loginInput">
         <span>✉</span>
-        <input id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
+        <input id="loginEmail" type="email" autocomplete="email" placeholder="La tua email" aria-label="Email dell’account famiglia" required>
       </label>
-      <label class="loginInput">
-        <span>🔒</span>
-        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
-      </label>
-      <button id="loginButton" class="primary loginButton">Accedi</button>
+      <button id="loginButton" class="primary loginButton">Mandami il link</button>
     </form>
-    <div id="loginMessage" class="loginMessage"></div>
+    <div id="loginMessage" class="loginMessage" role="status" aria-live="polite"></div>
     <div class="loginPrivacy"><span>✓</span><p>I dati restano sul dispositivo<br>e si sincronizzano quando sei online.</p></div>
     <div class="loginSprout">♧</div>
   </div>
@@ -979,5 +975,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>Sonno</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=19.0.0"></script>
+<script src="app.js?v=19.1.0"></script>
 </body></html>

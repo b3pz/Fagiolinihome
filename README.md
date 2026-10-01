@@ -1,4 +1,4 @@
-# Fagiolini — V19
+# Fagiolini — V19.1
 
 Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
@@ -13,7 +13,7 @@ Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 - Focus visibile, indicazione della pagina corrente e rispetto delle preferenze di movimento ridotto.
 - Tema chiaro e scuro; account e notifiche disponibili nell’intestazione.
 
-`friendly.css` definisce la nuova interfaccia dopo gli stili storici. Gli ID dei moduli e i flussi di registrazione esistenti sono preservati. Login, modello dei dati, sincronizzazione Supabase e notifiche non sono stati modificati.
+`friendly.css` definisce la nuova interfaccia dopo gli stili storici. Gli ID dei moduli e i flussi di registrazione esistenti sono preservati. Modello dei dati, sincronizzazione Supabase e notifiche sono preservati.
 
 ## Avvio locale
 
@@ -25,4 +25,10 @@ Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un 
 
 ## Pubblicazione
 
-File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.0.0`. Il service worker resta inattivo.
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.1.0`. Il service worker resta inattivo.
+
+## Accesso senza password
+
+Gli account famiglia esistenti entrano tramite un link inviato alla propria email. Non vengono creati nuovi account dal modulo. La sessione locale dura fino a 30 giorni di inattività, salvo revoca o scadenze configurate su Supabase.
+
+In Supabase → Authentication → URL Configuration, autorizzare l’URL del sito pubblicato (`https://b3pz.github.io/Fagiolinihome/`, se si usa GitHub Pages) fra i redirect consentiti. Verificare che il provider Email e l’invio dei magic link siano attivi. Queste impostazioni richiedono accesso al progetto Supabase e non sono verificabili dal repository.

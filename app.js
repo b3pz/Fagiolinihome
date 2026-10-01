@@ -15,7 +15,7 @@ let realtimeChannel=null;
 let lastCloudUpdatedAt=null;
 
 
-const SESSION_TIMEOUT_MS=3*60*60*1000;
+const SESSION_TIMEOUT_MS=30*24*60*60*1000;
 const SESSION_ACTIVITY_KEY='fagioliniSessionActivityV1';
 let sessionExpiryTimer=null;
 let lastActivityWrite=0;
@@ -25,7 +25,7 @@ function scheduleSessionExpiry(){
  if(sessionExpiryTimer)clearTimeout(sessionExpiryTimer);
  if(!cloudSession)return;
  let last=sessionLastActivity()||Date.now(),remaining=Math.max(500,SESSION_TIMEOUT_MS-(Date.now()-last));
- sessionExpiryTimer=setTimeout(()=>checkSessionExpiry(true),remaining+250)
+ sessionExpiryTimer=setTimeout(()=>checkSessionExpiry(true),Math.min(remaining+250,24*60*60*1000))
 }
 function markSessionActivity(){
  if(!cloudSession||!loginScreen.classList.contains('hidden'))return;
@@ -39,7 +39,7 @@ async function checkSessionExpiry(force=false){
   if(sessionExpiryTimer)clearTimeout(sessionExpiryTimer);
   localStorage.removeItem(SESSION_ACTIVITY_KEY);
   await cloudLogout();
-  loginMessage.textContent='Sessione scaduta dopo 3 ore di inattività. Accedi nuovamente.';
+  loginMessage.textContent='È passato un mese dall’ultimo accesso. Richiedi un nuovo link via email.';
   return true
  }
  if(force)scheduleSessionExpiry();
@@ -620,34 +620,25 @@ function normalizeRemoteState(data){
  return out
 }
 
-async function cloudLogin(email,password){
+async function cloudLogin(email){
  loginMessage.textContent='';
  loginButton.disabled=true;
- loginButton.textContent='Accesso...';
-
+ loginButton.textContent='Invio del link…';
  try{
-  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  const redirect=new URL(window.location.href);
+  redirect.search='';redirect.hash='';
+  const {error}=await sb.auth.signInWithOtp({
+   email,
+   options:{shouldCreateUser:false,emailRedirectTo:redirect.href}
+  });
   if(error)throw error;
-  if(!data?.session)throw new Error('Sessione Supabase non ricevuta');
-
-  cloudSession=data.session;
-  localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
-  scheduleSessionExpiry();
-
-  // Da qui il login è riuscito: entra subito.
-  loginScreen.classList.add('hidden');
-  renderAll();
-
-  // La sincronizzazione è separata.
-  await initializeCloud();
-
+  loginMessage.textContent='Se questa email appartiene alla famiglia, riceverai un link per entrare. Aprilo su questo telefono. Se non arriva, controlla anche lo spam.';
  }catch(err){
   console.error('Auth error:',err);
-  loginScreen.classList.remove('hidden');
-  loginMessage.textContent='Accesso non riuscito: '+(err.message||'controlla email e password.');
+  loginMessage.textContent='Non riesco a inviare il link. Controlla la connessione e riprova tra un minuto.';
  }finally{
   loginButton.disabled=false;
-  loginButton.textContent='Accedi';
+  loginButton.textContent='Mandami il link';
  }
 }
 
@@ -814,7 +805,7 @@ async function bootCloud(){
    cloudSession=null;
    localStorage.removeItem(SESSION_ACTIVITY_KEY);
    loginScreen.classList.remove('hidden');
-   loginMessage.textContent='Sessione scaduta dopo 3 ore di inattività. Accedi nuovamente.';
+   loginMessage.textContent='È passato un mese dall’ultimo accesso. Richiedi un nuovo link via email.';
   }else{
    if(!last)localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
    scheduleSessionExpiry();
@@ -830,7 +821,9 @@ async function bootCloud(){
    loginScreen.classList.remove('hidden');
   }else if(session){
    if(!sessionLastActivity())localStorage.setItem(SESSION_ACTIVITY_KEY,String(Date.now()));
-   scheduleSessionExpiry()
+   scheduleSessionExpiry();
+   // Initialize outside the auth callback to avoid locking Supabase auth.
+   if(event==='SIGNED_IN'&&!cloudReady)setTimeout(()=>initializeCloud().catch(()=>{setCloudStatus('error','Riprova');}),0);
   }
  });
 }
@@ -2285,7 +2278,7 @@ recipeToShop.onclick=()=>{
 };
 loginForm.onsubmit=e=>{
  e.preventDefault();
- cloudLogin(loginEmail.value.trim(),loginPassword.value)
+ cloudLogin(loginEmail.value.trim())
 };
 accountBtn.onclick=()=>{updateAccountInfo();accountDialog.showModal()};
 logoutBtn.onclick=cloudLogout;
