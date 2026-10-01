@@ -1,11 +1,11 @@
-# Fagiolini — V20
+# Fagiolini — V20.1
 
 Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
 ## Organizzazione della giornata
 
 - Oggi: primi tre impegni dei prossimi sette giorni, diario selezionabile di Caty/Kiko/Astro e pasti di oggi.
-- Agenda: elenco settimanale con dettagli degli impegni; calendario mensile apribile per scegliere una data e consultare tutte le attività.
+- Agenda: grandi caselle giornaliere con appuntamenti e faccende. Sul telefono si scorrono i giorni in orizzontale; da ogni casella si aggiungono scopa, bucato e lenzuola e si spuntano le attività. Il mese resta apribile, con icone delle faccende.
 - Diari: tutti i diari con ultime registrazioni e pulsanti di inserimento già associati alla persona.
 - Pasti: pianificazione esistente e lista della spesa raggiungibile dalla home.
 - Altro: acquisti, salute, rifiuti e casa; spese, auto e scadenze raccolte in una sezione richiudibile.
@@ -24,7 +24,7 @@ Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un 
 
 ## Pubblicazione
 
-File statici nella root, compatibili con GitHub Pages. Versione degli asset: `20.0.0`. Il service worker resta inattivo.
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `20.1.0`. Il service worker resta inattivo.
 
 ## Accesso e durata della sessione
 
@@ -43,3 +43,5 @@ python3 scripts/build-icons.py logo-fagiolini.png
 ```
 
 Il comando crea favicon PNG 32 px, apple-touch-icon 180 px e icone app 192/512 px; aggiorna manifest e HTML. Il logo originale è disponibile in `logo-fagiolini.png`; favicon e icone generate sono in `assets/icons/` e collegate a HTML e manifest.
+
+Le frequenze delle pulizie si impostano direttamente nell’agenda. “Programma i prossimi 7 giorni” aggiunge le attività mancanti senza rimuovere quelle già registrate. Il bucato crea lavatrice e asciugatrice collegate: l’asciugatrice si può completare dopo la lavatrice.

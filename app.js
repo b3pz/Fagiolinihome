@@ -278,7 +278,7 @@ function taskDependencyText(t){
  if(t.routineId==='dryer')return 'Dopo la lavatrice';
  return 'Prima completa la cosa collegata'
 }
-function generateHousePlan(fillOnly=false){
+function generateHousePlan(fillOnly=false,stayOnCalendar=false){
  let dates=houseWeekDates();
  if(!fillOnly){
   let has=s.houseTasks.some(t=>dates.includes(t.date)&&t.status==='pending'&&t.generated);
@@ -296,7 +296,7 @@ function generateHousePlan(fillOnly=false){
  });
  linkSweepMopPairs(dates);
  save();
- go('house')
+ go(stayOnCalendar?'calendar':'house')
 }
 
 const COOKBOOK=[
@@ -900,6 +900,7 @@ function renderMomAgenda(container,limit=Infinity){
  container.querySelectorAll('[data-mom-agenda-source]').forEach(btn=>btn.onclick=()=>{
   const source=btn.dataset.momAgendaSource;
   if(['work','familyBirthday'].includes(source)){go('calendar');openCalendarDay(btn.dataset.momAgendaDate);}
+  else if(source==='manual')openReminder(btn.dataset.momAgendaId);
   else openSourceItem(source,btn.dataset.momAgendaId);
  });
 }
@@ -1656,11 +1657,12 @@ function dayData(k){
 
  return out
 }
+let familyWeekOffset=0;
 function renderCalendar(){
- renderMomAgenda(document.getElementById('momWeekAgenda'));
+ renderFamilyWeek();
  let base=monthBase(calOffset),y=base.getFullYear(),m=base.getMonth();calMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(base);
  let first=new Date(y,m,1,12),start=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prevDays=new Date(y,m,0).getDate(),cells=[];
- for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length,weekend=(i%7)>=5;cells.push(`<button class="calDay ${other?'other':''} ${weekend?'weekend':''} ${i%7===5?'saturday':''} ${i%7===6?'sunday':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}" aria-label="${esc(longDate(d))}${has?` · ${has} attività`: ""}" aria-pressed="${k===selectedDate}"><span class="calNum">${d.getDate()}</span>${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
+ for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length,weekend=(i%7)>=5;cells.push(`<button class="calDay ${other?'other':''} ${weekend?'weekend':''} ${i%7===5?'saturday':''} ${i%7===6?'sunday':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}" aria-label="${esc(longDate(d))}${has?` · ${has} attività`: ""}" aria-pressed="${k===selectedDate}"><span class="calNum">${d.getDate()}</span>${has?`<div class="dots">${s.houseTasks.filter(t=>t.date===k&&t.status!=='cancelled').slice(0,3).map(t=>`<span class="familyMonthChore ${t.status==='done'?'done':''}" aria-hidden="true">${houseTaskIcon(t)}</span>`).join('')}${dayData(k).some(x=>x.source!=='houseTask')?'<i class="dot"></i>':''}</div>`:''}</button>`)}
  calendarGrid.innerHTML=cells.join('');calendarGrid.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>openCalendarDay(b.dataset.date));renderCalendarDetails()
 }
 function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedDate);selectedDateTitle.textContent=longDate(d);calendarDetails.innerHTML=a.length?a.map(x=>{
@@ -2404,3 +2406,41 @@ if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone
 
 const momAgendaAdd=document.getElementById('momAgendaAdd');
 if(momAgendaAdd)momAgendaAdd.onclick=()=>openReminder(null,{kind:'appointment',person:'family',date:dateKey(),reminderDays:0,notify:'both'});
+
+function familyCalendarTaskHtml(task){
+ const done=task.status==='done',locked=!done&&!taskDependencyReady(task);
+ return `<div class="familyCalendarTask ${done?'done':''}"><button type="button" class="familyTaskCheck" data-task-done="${esc(task.id)}" ${done||locked?'disabled':''} aria-label="${done?'Completata':locked?taskDependencyText(task):'Segna fatta'}: ${esc(houseTaskTitle(task))}">${done?'✓':locked?'↳':'○'}</button><button type="button" class="familyTaskLabel" data-task-edit="${esc(task.id)}"><span aria-hidden="true">${houseTaskIcon(task)}</span><span><b>${esc(houseTaskTitle(task))}</b><small>${done?'Fatta':locked?taskDependencyText(task):taskOwnerLabel(task.by)}</small></span></button></div>`;
+}
+function renderFamilyWeek(){
+ const root=document.getElementById('momWeekAgenda');if(!root)return;
+ const scroll=root.scrollLeft;
+ const start=offsetDate(familyWeekOffset*7),end=offsetDate(familyWeekOffset*7+6);
+ familyWeekTitle.textContent=`${new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(start)} – ${new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(end)}`;
+ root.innerHTML=Array.from({length:7},(_,i)=>{
+  const date=offsetDate(familyWeekOffset*7+i),key=dateKey(date);
+  const tasks=s.houseTasks.filter(t=>t.date===key&&t.status!=='cancelled').sort(houseTaskSort);
+  const appointments=dayData(key).filter(x=>!['houseTask','house','event','menu'].includes(x.source));
+  return `<article class="familyDayCard ${key===dateKey()?'today':''}"><div class="familyDayHeading"><span>${key===dateKey()?'Oggi':esc(new Intl.DateTimeFormat('it-IT',{weekday:'long'}).format(date))}</span><b>${date.getDate()}</b><small>${esc(new Intl.DateTimeFormat('it-IT',{month:'long'}).format(date))}</small></div><div class="familyDayAppointments">${appointments.length?appointments.map(x=>`<button type="button" data-family-appointment="${esc(x.source)}" data-family-id="${esc(x.id||'')}" data-family-date="${key}">${sourceUiIcon(x.source)}<span>${esc(cleanAgendaText(x.text))}</span></button>`).join(''):'<p>Nessun appuntamento segnato</p>'}</div><div class="familyDayTasks">${tasks.length?tasks.map(familyCalendarTaskHtml).join(''):'<p class="familyDayEmpty">Nessuna faccenda programmata</p>'}</div><div class="familyDayQuick" aria-label="Programma una faccenda per ${esc(longDate(date))}">${[['sweep','🧹','Spazzare'],['washer','🧺','Bucato'],['sheets','🛏️','Lenzuola']].map(([routine,icon,label])=>`<button type="button" data-family-add="${routine}" data-family-date="${key}"><span aria-hidden="true">${icon} ＋</span><small>${label}</small></button>`).join('')}</div><button class="familyDayMore" type="button" data-family-details="${key}">Diari, pasti e altri dettagli →</button></article>`;
+ }).join('');
+ bindHouseTaskActions(root);
+ root.querySelectorAll('[data-family-add]').forEach(btn=>btn.onclick=()=>{
+  const routine=btn.dataset.familyAdd,date=btn.dataset.familyDate;
+  const exists=s.houseTasks.some(t=>t.routineId===routine&&t.date===date&&t.status==='pending');
+  if(!exists){if(routine==='washer')addWasherPair(date,false,'family');else s.houseTasks.push(makeHouseTask(routine,date,false,'family'));save();}
+  const message=document.getElementById('momSaveStatus');clearTimeout(momSaveTimer);message.textContent=exists?'È già programmato per questo giorno.':routine==='washer'?'Lavatrice e asciugatrice programmate.':`${houseRoutine(routine).name}: programmato.`;message.hidden=false;momSaveTimer=setTimeout(()=>{message.hidden=true;},4500);
+ });
+ root.querySelectorAll('[data-family-appointment]').forEach(btn=>btn.onclick=()=>{
+  if(['work','familyBirthday'].includes(btn.dataset.familyAppointment))openCalendarDay(btn.dataset.familyDate);
+  else if(btn.dataset.familyAppointment==='manual')openReminder(btn.dataset.familyId);
+  else openSourceItem(btn.dataset.familyAppointment,btn.dataset.familyId);
+ });
+ root.querySelectorAll('[data-family-details]').forEach(btn=>btn.onclick=()=>openCalendarDay(btn.dataset.familyDetails));
+ root.scrollLeft=scroll;
+ const rules=document.getElementById('calendarHouseRules');
+ rules.innerHTML=['sweep','mop','washer','sheets','towels'].map(id=>`<label><span>${houseRoutine(id).emoji} ${esc(houseRoutine(id).name)}</span><select data-calendar-house-rule="${id}">${HOUSE_FREQ_OPTIONS.map(([value,label])=>`<option value="${value}" ${value===s.housePlanRules[id]?'selected':''}>${label}</option>`).join('')}</select></label>`).join('');
+ rules.querySelectorAll('[data-calendar-house-rule]').forEach(select=>select.onchange=()=>{s.housePlanRules[select.dataset.calendarHouseRule]=select.value;save();});
+}
+familyWeekPrev.onclick=()=>{familyWeekOffset--;momWeekAgenda.scrollLeft=0;renderCalendar();};
+familyWeekNext.onclick=()=>{familyWeekOffset++;momWeekAgenda.scrollLeft=0;renderCalendar();};
+familyWeekToday.onclick=()=>{familyWeekOffset=0;momWeekAgenda.scrollLeft=0;renderCalendar();};
+calendarFillHouse.onclick=()=>{familyWeekOffset=0;generateHousePlan(true,true);calendarHouseStatus.textContent='Piano aggiunto ai prossimi 7 giorni. Le faccende già programmate restano.';};

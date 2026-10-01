@@ -21,8 +21,8 @@
 <!-- App icons -->
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20.0.0">
-<link rel="stylesheet" href="friendly.css?v=20.0.0">
+<link rel="stylesheet" href="style.css?v=20.1.0">
+<link rel="stylesheet" href="friendly.css?v=20.1.0">
 </head>
 <body data-page="home">
 
@@ -418,8 +418,9 @@
   </details>
 </section>
 <section id="calendar" class="view">
-  <div class="sectionTitle pageIntro calendarPageIntro"><div><small>TUTTO INSIEME</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><span>Agenda della famiglia</span></h2><p class="muted">Gli impegni dei prossimi giorni. Apri il mese per scegliere un’altra data.</p></div><div class="inlineBtns"><button data-go="reminders"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg> Promemoria</button><button data-go="home">← Inizio</button></div></div>
-  <section class="momPanel"><div class="momSectionHead"><h3>Da oggi, per una settimana</h3><button id="momAgendaAdd" type="button">＋ Impegno</button></div><div id="momWeekAgenda"></div></section>
+  <div class="sectionTitle pageIntro calendarPageIntro"><div><small>TUTTO INSIEME</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><span>Agenda della famiglia</span></h2><p class="muted">Appuntamenti e casa nello stesso posto. Spunta le faccende quando sono fatte.</p></div><div class="inlineBtns"><button data-go="reminders"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg> Promemoria</button><button data-go="home">← Inizio</button></div></div>
+  <section class="momPanel"><div class="momSectionHead"><h3 id="familyWeekTitle">La settimana</h3><button id="momAgendaAdd" type="button">＋ Impegno</button></div><div class="familyWeekControls"><button id="familyWeekPrev" type="button" aria-label="Settimana precedente">←</button><button id="familyWeekToday" type="button">Questa settimana</button><button id="familyWeekNext" type="button" aria-label="Settimana successiva">→</button></div><p class="momHelper familyWeekHint">Scorri i giorni. Le icone con ＋ aggiungono una faccenda; il cerchio la segna fatta.</p><div id="momWeekAgenda" class="familyWeekGrid"></div></section>
+  <details class="familyRoutineSettings momMonthPicker"><summary>Organizza le pulizie ricorrenti <span aria-hidden="true">⌄</span></summary><p>Decidi ogni quanto spazzare, fare il bucato e cambiare le lenzuola. Lavatrice e asciugatrice restano collegate.</p><div id="calendarHouseRules" class="calendarHouseRules"></div><button id="calendarFillHouse" class="momAddAppointment" type="button">Programma i prossimi 7 giorni</button><p id="calendarHouseStatus" role="status" aria-live="polite"></p></details>
   <details class="momMonthPicker"><summary>Scegli un giorno nel calendario <span aria-hidden="true">⌄</span></summary>
   <div class="calendarHead card">
     <button id="calPrev" aria-label="Mese precedente">←</button><h3 id="calMonth"></h3><button id="calNext" aria-label="Mese successivo">→</button>
@@ -429,10 +430,12 @@
     <div id="calendarGrid" class="calGrid"></div>
   </div>
   </details>
+  <details class="momMonthPicker familyDayArchive"><summary>Registrazioni e dettagli del giorno selezionato <span aria-hidden="true">⌄</span></summary>
   <div class="card calendarDayCard">
     <div class="sectionTitle compact"><div><small>GIORNO SELEZIONATO</small><h3 id="selectedDateTitle">Dettagli</h3></div><button id="calendarAddBtn" class="primary calendarAddBtn">＋ Aggiungi al giorno</button></div>
     <div id="calendarDetails"></div>
   </div>
+  </details>
 </section>
 
 
@@ -923,5 +926,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>Sonno</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=20.0.0"></script>
+<script src="app.js?v=20.1.0"></script>
 </body></html>
