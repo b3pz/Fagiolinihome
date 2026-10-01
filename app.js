@@ -843,15 +843,15 @@ function go(id){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
  const target=document.getElementById(id);if(!target)return;
  target.classList.add('on');
- const navPage=['person','adult'].includes(id)?'home':['calendar','today'].includes(id)?'calendar':id==='profiles'?'menu':['home','today','shop','menu'].includes(id)?id:'organize';
+ const navPage=['person','adult','children'].includes(id)?'children':['calendar','today'].includes(id)?'calendar':id==='profiles'?'menu':['home','today','shop','menu'].includes(id)?id:'organize';
  document.querySelectorAll('nav [data-go]').forEach(b=>{
   const active=b.dataset.go===navPage;
   b.classList.toggle('active',active);
   if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
  });
- const titles={home:'Inizio',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Fagiolini Bank','money-spending':'Dove spendiamo','money-savings':'Salvadanai','money-bills':'Bollette','money-moves':'Movimenti',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',waste:'Rifiuti',organize:'Tutte le funzioni'};
+ const titles={home:'Oggi',children:'I diari',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Fagiolini Bank','money-spending':'Dove spendiamo','money-savings':'Salvadanai','money-bills':'Bollette','money-moves':'Movimenti',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',waste:'Rifiuti',organize:'Tutte le funzioni'};
  pageTitle.textContent=titles[id]||'Fagiolini';
- if(id==='home')renderHome();if(id==='today')renderToday();if(id==='waste')renderWaste();if(id==='organize')renderOrganize();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].includes(id)){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
+ if(id==='home')renderHome();if(id==='children')renderMomFamily();if(id==='today')renderToday();if(id==='waste')renderWaste();if(id==='organize')renderOrganize();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].includes(id)){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
  scrollTo(0,0);
  document.getElementById('mainContent')?.focus({preventScroll:true});
 }
@@ -869,58 +869,76 @@ const autoAddExpenseBtnEl=document.getElementById('autoAddExpenseBtn');if(autoAd
 const addCustomRecipeBtnEl=document.getElementById('addCustomRecipeBtn');if(addCustomRecipeBtnEl)addCustomRecipeBtnEl.onclick=()=>{customRecipeForm.reset();openDialogSafe(customRecipeDialog);setTimeout(()=>customRecipeName.focus(),20)};
 const openRecipeBookBtnEl=document.getElementById('openRecipeBookBtn');if(openRecipeBookBtnEl)openRecipeBookBtnEl.onclick=()=>document.getElementById('recipeLibraryCard')?.scrollIntoView({behavior:'smooth',block:'start'});
 
-function renderHome(){
- const now=new Date(),hour=now.getHours();
- todayLabel.textContent=longDate();
- homeDateText.textContent=longDate();
- const normalGreeting=(hour<12?'Buongiorno':hour<18?'Buon pomeriggio':'Buonasera');
- const familyBirthdays=[...s.children.map(c=>({name:c.name,birthDate:c.birthDate})),...Object.entries(ADULTS).map(([id,a])=>({name:a.name,birthDate:a.birthDate}))].filter(x=>x.birthDate&&x.birthDate.slice(5)===dateKey(now).slice(5));
- homeGreeting.textContent=familyBirthdays.length?`Tanti auguri, ${familyBirthdays.map(x=>x.name).join(' e ')}!`:normalGreeting+' famiglia';
- const celebration=document.getElementById('birthdayCelebration');
- if(celebration){celebration.hidden=!familyBirthdays.length;if(familyBirthdays.length){birthdayCelebrationTitle.textContent=`Buon compleanno ${familyBirthdays.map(x=>x.name).join(' e ')}!`;birthdayCelebrationText.textContent='Oggi è il vostro giorno. Fagiolini vi fa tanti auguri da tutta la famiglia.'}}
-
- const childCards=s.children.map(c=>`<button class="familyMemberCard ${c.type==='dog'?'pet':''}" data-person="${c.id}"><img src="${avatarFor(c.id)}" alt="${esc(c.name)}"><b>${esc(c.name)}</b></button>`).join('');
- const adultCards=`<button class="familyMemberCard" data-adult="jj"><img src="${avatarFor('jj')}" alt="JJ"><b>JJ</b></button><button class="familyMemberCard" data-adult="kiki"><img src="${avatarFor('kiki')}" alt="Kiki"><b>Kiki</b></button>`;
- peopleCards.innerHTML=childCards+adultCards;
- peopleCards.querySelectorAll('[data-person]').forEach(b=>b.onclick=e=>{e.stopPropagation();openPerson(b.dataset.person)});
- peopleCards.querySelectorAll('[data-adult]').forEach(b=>b.onclick=e=>{e.stopPropagation();currentAdult=b.dataset.adult;go('adult')});
-
- const today=dateKey(),items=dayData(today),pendingHouse=s.houseTasks.filter(t=>t.date===today&&t.status==='pending'&&t.status!=='cancelled');
- const urgentRem=collectReminders().filter(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x)));
- const healthToday=s.health.filter(h=>h.date===today);
- const totalToday=new Set(items.filter(x=>x.source!=='menu').map((x,i)=>x.source+'-'+(x.id||i))).size;
- homeTodayBrief.innerHTML=totalToday?`<b>${totalToday} ${totalToday===1?'cosa':'cose'} da seguire oggi</b>`:'<b>Giornata tranquilla</b>';
- homeTodayList.innerHTML=items.filter(x=>x.source!=='menu').slice(0,3).map(x=>`<span><i>${sourceUiIcon(x.source)}</i>${esc(String(x.text).replace(/ · JJ \+ Kiki| · ⏳ Da fare/g,''))}</span>`).join('')||`<span><i>${sourceUiIcon('event')}</i>Niente di urgente.</span>`;
-
- const doneHouse=s.houseTasks.filter(t=>t.date===today&&t.status==='done').length,totalHouse=s.houseTasks.filter(t=>t.date===today&&t.status!=='cancelled').length;
- homeHouseBrief.innerHTML=totalHouse?`<b>${doneHouse} / ${totalHouse} fatte</b>`:'<b>Niente programmato</b>';
- homeHouseText.textContent=pendingHouse.length?`Mancano ${pendingHouse.slice(0,2).map(houseTaskTitle).join(' e ')}${pendingHouse.length>2?'…':''}.`:'Tutto fatto per oggi ✓';
-
- const md=s.menu[today]||{};
- homeMealsBrief.innerHTML=`<div><small>PRANZO</small><b>${esc(md.lunch||'Da scegliere')}</b></div><div><small>CENA</small><b>${esc(md.dinner||'Da scegliere')}</b></div>`;
-
- const familyBits=[];
- const workToday=(s.workStatus||[]).filter(w=>today>=w.startDate&&today<=w.endDate);
- workToday.forEach(w=>familyBits.push(`${personName(w.person)} · ${workStatusLabel(w.type)}`));
- s.health.filter(h=>h.date===today).slice(0,2).forEach(h=>familyBits.push(`${personName(h.person)} · ${h.title}${h.time?' '+h.time:''}`));
- s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,today)).forEach(b=>familyBits.push(`Compleanno di ${b.name}`));
- if(!s.birthdays.some(b=>!isOwnFamilyBirthdayDuplicate(b)&&birthdayMatchesDate(b,today))){
-  let nextB=s.birthdays.filter(b=>!isOwnFamilyBirthdayDuplicate(b)).map(b=>({...b,next:nextBirthdayDate(b,now)})).sort((a,b)=>a.next.localeCompare(b.next))[0];
-  if(nextB){let days=Math.round((dateObj(nextB.next)-dateObj(today))/86400000);if(days>0&&days<=7)familyBits.push(`${nextB.name} tra ${days} ${days===1?'giorno':'giorni'}`)}
+let momSelectedChild=null;
+let momSaveTimer=null;
+function showMomSaved(childId,type){
+ const status=document.getElementById('momSaveStatus'),child=s.children.find(c=>c.id===childId);
+ if(!status||!child)return;
+ clearTimeout(momSaveTimer);
+ status.textContent=`${META[type]?.[1]||'Registrazione'} salvata nel diario di ${child.name}`;
+ status.hidden=false;
+ momSaveTimer=setTimeout(()=>{status.hidden=true;},4500);
+}
+function momUpcomingItems(days=7){
+ const sources=new Set(['health','manual','work','familyBirthday','birthday','subscription','maintenance','auto']);
+ const items=[];
+ for(let offset=0;offset<days;offset++){
+  const date=offsetDate(offset),key=dateKey(date);
+  dayData(key).filter(x=>sources.has(x.source)).forEach(x=>{
+   if(x.source==='subscription'&&s.subscriptions.find(v=>v.id===x.id)?.status==='paid')return;
+   if(['auto','maintenance'].includes(x.source)&&/ · ✅/.test(x.text))return;
+   items.push({...x,date:key});
+  });
  }
- homeFamilyBrief.innerHTML=familyBits.length?familyBits.map(x=>`<span>${esc(x)}</span>`).join(''):'<span>Oggi tutto tranquillo per la famiglia.</span>';
-
- const mk=monthKey(now),expenses=s.expenses.filter(x=>x.month===mk).reduce((a,x)=>a+Number(x.amount||0),0),income=s.incomes.filter(x=>x.month===mk).reduce((a,x)=>a+Number(x.amount||0),0),saved=income-expenses,goal=Number(s.savingsGoals?.[mk]??s.savingsGoal??0);
- if(income>0){homeSavingsBrief.innerHTML=`<b>${euro(saved)} risparmiati</b>`;let pct=goal>0?Math.max(0,Math.min(100,saved/goal*100)):0;homeSavingsProgress.style.width=pct+'%';homeSavingsText.textContent=goal>0?(saved>=goal?`Obiettivo di ${euro(goal)} raggiunto ✓`:`Mancano ${euro(Math.max(0,goal-saved))} all’obiettivo.`):'Imposta un obiettivo mensile.'}
- else{homeSavingsBrief.innerHTML=`<b>${euro(expenses)} spesi</b>`;homeSavingsProgress.style.width='0%';homeSavingsText.textContent='Aggiungi le entrate per vedere il risparmio reale.'}
- const activeProjects=Object.values(s.savingsProjects||{}).filter(p=>p.active);
- if(homeSavingsProjects)homeSavingsProjects.innerHTML=activeProjects.length?activeProjects.map(p=>`<span>${esc(p.label)} · ${euro(p.saved||0)}${Number(p.target||0)>0?' / '+euro(p.target):''}</span>`).join(''):'<span>Vacanze e Natale pronti quando servono.</span>';
-
- const wasteToday=wasteForDate(now),wasteNext=nextWaste(now,false);
- if(wasteToday){homeWasteText.innerHTML=`<b>Oggi: ${esc(wasteToday.short)}</b>`;homeWasteNextText.textContent=wasteNext?`Domani / prossimo: ${wasteNext.info.short} · ${wasteDayName(wasteNext.date)}`:'Apri per vedere la settimana.'}
- else{homeWasteText.innerHTML='<b>Oggi niente ritiro</b>';homeWasteNextText.textContent=wasteNext?`Prossimo: ${wasteNext.info.short} · ${wasteDayName(wasteNext.date)}`:'Nessun turno disponibile.'}
-
- const bell=document.querySelector('.reminderBell .bellDot');if(bell)bell.classList.toggle('show',urgentRem.length>0);
+ return items;
+}
+function renderMomAgenda(container,limit=Infinity){
+ if(!container)return;
+ const all=momUpcomingItems(),items=all.slice(0,limit);
+ container.innerHTML=items.length?items.map(x=>`<button class="momAgendaRow" data-mom-agenda-source="${esc(x.source)}" data-mom-agenda-id="${esc(x.id||'')}" data-mom-agenda-date="${x.date}"><span class="momAgendaDate">${x.date===dateKey()?'Oggi':x.date===dateKey(offsetDate(1))?'Domani':esc(new Intl.DateTimeFormat('it-IT',{weekday:'short',day:'numeric'}).format(dateObj(x.date)))}</span><span class="momAgendaContent">${sourceUiIcon(x.source)}<b>${esc(cleanAgendaText(x.text))}</b></span><span aria-hidden="true">›</span></button>`).join(''):'<p class="momEmpty">Nessun impegno segnato per i prossimi 7 giorni. Puoi aggiungerne uno qui.</p>';
+ if(all.length>limit)container.insertAdjacentHTML('beforeend',`<p class="momHelper">Altri ${all.length-limit} impegni nell’agenda.</p>`);
+ container.querySelectorAll('[data-mom-agenda-source]').forEach(btn=>btn.onclick=()=>{
+  const source=btn.dataset.momAgendaSource;
+  if(['work','familyBirthday'].includes(source)){go('calendar');openCalendarDay(btn.dataset.momAgendaDate);}
+  else openSourceItem(source,btn.dataset.momAgendaId);
+ });
+}
+function momLatestLabel(childId,type){
+ const latest=s.events.filter(e=>e.childId===childId&&e.type===type&&new Date(e.at)<=new Date()).sort((a,b)=>new Date(b.at)-new Date(a.at))[0];
+ if(!latest)return '<span class="momNoRecord">Nessuna registrazione</span>';
+ const key=dateKey(new Date(latest.at)),day=key===dateKey()?'Oggi':key===dateKey(offsetDate(-1))?'Ieri':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(new Date(latest.at));
+ return `<b>${esc(day)} · ${esc(timeLabel(latest.at))}</b>${latest.note?`<span class="momLatestNote">${esc(latest.note)}</span>`:''}${type==='nanna'&&!latest.endAt?'<span class="momLatestNote">Fine sonno non segnata</span>':''}`;
+}
+function renderMomChildren(container,selectedId=null){
+ if(!container)return;
+ container.innerHTML=s.children.filter(c=>!selectedId||c.id===selectedId).map(c=>`<article class="momChildCard"><button class="momChildIdentity" data-person="${esc(c.id)}"><img src="${avatarFor(c.id)}" alt=""><span><b>${esc(c.name)}</b><small>Apri il diario →</small></span></button><dl class="momLatest">${(c.type==='dog'?[['pappa','Ultima pappa'],['cacca','Ultima cacca'],['pipi','Ultima pipì']]:[['pappa','Ultima pappa'],['cacca','Ultima cacca'],['nanna','Ultimo sonno']]).map(([type,label])=>`<div><dt>${childIconSvg(type)}${label}</dt><dd>${momLatestLabel(c.id,type)}</dd></div>`).join('')}</dl><div class="momChildActions">${(c.type==='dog'?[['pappa','Pappa'],['cacca','Cacca'],['pipi','Pipì'],['farmaco','Cure']]:[['pappa','Pappa'],['cacca','Cacca'],['nanna','Sonno'],['pannolino','Pannolino']]).map(([type,label])=>`<button type="button" data-mom-child="${esc(c.id)}" data-home-child-quick="${type}" aria-label="Segna ${label.toLowerCase()} per ${esc(c.name)}">${childIconSvg(type)}<span>${label}</span></button>`).join('')}</div></article>`).join('');
+ container.querySelectorAll('[data-person]').forEach(btn=>btn.onclick=()=>openPerson(btn.dataset.person));
+ container.querySelectorAll('[data-mom-child]').forEach(btn=>btn.onclick=()=>{current=btn.dataset.momChild;openChildDiary(null,btn.dataset.homeChildQuick);});
+}
+function renderMomFamily(){
+ renderMomChildren(document.getElementById('momAllChildren'));
+ const links=document.getElementById('momFamilyLinks');
+ if(!links)return;
+ links.innerHTML=Object.entries(ADULTS).map(([id,a])=>`<button data-adult="${esc(id)}"><img src="${avatarFor(id)}" alt=""><b>${esc(a.name)}</b><span>La giornata →</span></button>`).join('');
+ links.querySelectorAll('[data-person]').forEach(btn=>btn.onclick=()=>openPerson(btn.dataset.person));
+ links.querySelectorAll('[data-adult]').forEach(btn=>btn.onclick=()=>{currentAdult=btn.dataset.adult;go('adult');});
+}
+function renderHome(){
+ const now=new Date();todayLabel.textContent=longDate();homeDateText.textContent=longDate();
+ homeGreeting.textContent='La giornata di oggi';
+ const birthdays=[...s.children,...Object.values(ADULTS)].filter(x=>x.birthDate&&x.birthDate.slice(5)===dateKey().slice(5));
+ birthdayCelebration.hidden=!birthdays.length;
+ if(birthdays.length){birthdayCelebrationTitle.textContent=`Tanti auguri, ${birthdays.map(x=>x.name).join(' e ')}!`;birthdayCelebrationText.textContent='Oggi festeggiamo in famiglia.';}
+ renderMomAgenda(document.getElementById('momUpcoming'),3);
+ if(!s.children.some(c=>c.id===momSelectedChild))momSelectedChild=s.children[0]?.id||null;
+ const tabs=document.getElementById('momChildTabs');
+ tabs.innerHTML=s.children.map(c=>`<button type="button" data-mom-select="${esc(c.id)}" aria-pressed="${c.id===momSelectedChild}"><img src="${avatarFor(c.id)}" alt=""><b>${esc(c.name)}</b></button>`).join('');
+ tabs.querySelectorAll('[data-mom-select]').forEach(btn=>btn.onclick=()=>{momSelectedChild=btn.dataset.momSelect;renderHome();tabs.querySelector(`[data-mom-select="${CSS.escape(momSelectedChild)}"]`)?.focus({preventScroll:true});});
+ renderMomChildren(document.getElementById('momHomeChildren'),momSelectedChild);
+ const meals=s.menu[dateKey()]||{};
+ homeMealsBrief.innerHTML=[['lunch','Pranzo'],['dinner','Cena']].map(([key,label])=>`<div><small>${label}</small><b>${esc(meals[key]||'Ancora da scegliere')}</b></div>`).join('');
+ const bell=document.querySelector('.reminderBell .bellDot');
+ if(bell)bell.classList.toggle('show',collectReminders().some(x=>!reminderIsDismissed(x)&&['due','overdue'].includes(reminderState(x))));
 }
 
 function sourceUiIcon(source){
@@ -1016,7 +1034,9 @@ function setDiaryConditional(){let t=childDiaryType.value;childDiarySleepFields.
 function openChildDiary(id=null,presetType='pappa',presetDate=null){
  let c=s.children.find(x=>x.id===current);if(!c)return;
  editingDiaryEventId=id;let e=id?s.events.find(x=>x.id===id):null;
- childDiaryDialogTitle.textContent=e?'Modifica registrazione':`Aggiungi al diario di ${c.name}`;
+ childDiaryDialogTitle.textContent=e?'Modifica registrazione':`${META[presetType]?.[1]||'Diario'} di ${c.name}`;
+ const types=personActionKeys(c);if(e?.type&&!types.includes(e.type))types.push(e.type);
+ childDiaryType.innerHTML=types.map(type=>`<option value="${esc(type)}">${esc(META[type]?.[1]||type)}</option>`).join('');
  childDiaryType.value=e?.type||presetType||'pappa';
  let at=e?new Date(e.at):new Date();childDiaryDate.value=e?dateKey(at):(presetDate||dateKey(at));childDiaryTime.value=`${String(at.getHours()).padStart(2,'0')}:${String(at.getMinutes()).padStart(2,'0')}`;
  childDiaryEndTime.value=e?.endAt?timeLabel(e.endAt):'';
@@ -1034,7 +1054,7 @@ function handleAction(person,type){
 }
 if(addDiaryEntryBtn)addDiaryEntryBtn.onclick=()=>openChildDiary(null,'pappa');
 if(childDiaryType)childDiaryType.onchange=setDiaryConditional;
-if(childDiaryForm)childDiaryForm.onsubmit=e=>{e.preventDefault();let type=childDiaryType.value,date=childDiaryDate.value,time=childDiaryTime.value||'00:00',note=childDiaryNote.value.trim();if(type==='cacca')note=[childDiaryPoopType.value,note].filter(Boolean).join(' · ');if(type==='crescita'){let bits=[];if(childDiaryWeight.value)bits.push(`Peso ${Number(childDiaryWeight.value).toLocaleString('it-IT')} kg`);if(childDiaryHeight.value)bits.push(`Altezza ${Number(childDiaryHeight.value).toLocaleString('it-IT')} cm`);if(note)bits.push(note);note=bits.join(' · ')}let payload={childId:current,type,at:localEventIso(date,time),note};if(type==='nanna'&&childDiaryEndTime.value){let end=localEventIso(date,childDiaryEndTime.value);if(new Date(end)<new Date(payload.at)){let ed=new Date(end);ed.setDate(ed.getDate()+1);end=ed.toISOString()}payload.endAt=end}else if(type==='nanna')payload.endAt=null;if(editingDiaryEventId){let old=s.events.find(x=>x.id===editingDiaryEventId);if(old)Object.assign(old,payload)}else s.events.push({id:crypto.randomUUID(),...payload});editingDiaryEventId=null;childDiaryDialog.close();save();renderPerson()};
+if(childDiaryForm)childDiaryForm.onsubmit=e=>{e.preventDefault();let type=childDiaryType.value,date=childDiaryDate.value,time=childDiaryTime.value||'00:00',note=childDiaryNote.value.trim();if(type==='cacca')note=[childDiaryPoopType.value,note].filter(Boolean).join(' · ');if(type==='crescita'){let bits=[];if(childDiaryWeight.value)bits.push(`Peso ${Number(childDiaryWeight.value).toLocaleString('it-IT')} kg`);if(childDiaryHeight.value)bits.push(`Altezza ${Number(childDiaryHeight.value).toLocaleString('it-IT')} cm`);if(note)bits.push(note);note=bits.join(' · ')}let payload={childId:current,type,at:localEventIso(date,time),note};if(type==='nanna'&&childDiaryEndTime.value){let end=localEventIso(date,childDiaryEndTime.value);if(new Date(end)<new Date(payload.at)){let ed=new Date(end);ed.setDate(ed.getDate()+1);end=ed.toISOString()}payload.endAt=end}else if(type==='nanna')payload.endAt=null;if(editingDiaryEventId){let old=s.events.find(x=>x.id===editingDiaryEventId);if(old)Object.assign(old,payload)}else s.events.push({id:crypto.randomUUID(),...payload});editingDiaryEventId=null;childDiaryDialog.close();save();renderPerson();showMomSaved(current,type)};
 if(childDiaryDeleteBtn)childDiaryDeleteBtn.onclick=()=>{if(!editingDiaryEventId)return;if(confirm('Eliminare questa registrazione dal diario?')){s.events=s.events.filter(x=>x.id!==editingDiaryEventId);editingDiaryEventId=null;childDiaryDialog.close();save();renderPerson()}};
 poopForm.onsubmit=e=>{e.preventDefault();s.events.push({id:crypto.randomUUID(),childId:pendingPerson,type:'cacca',at:new Date().toISOString(),note:[poopType.value,poopNote.value.trim()].filter(Boolean).join(' · ')});poopDialog.close();save()};
 sleepForm.onsubmit=e=>{e.preventDefault();let a=sleepActive(pendingPerson);if(a)a.endAt=new Date().toISOString();else s.events.push({id:crypto.randomUUID(),childId:pendingPerson,type:'nanna',at:new Date().toISOString(),endAt:null,note:''});sleepDialog.close();save()};
@@ -1637,6 +1657,7 @@ function dayData(k){
  return out
 }
 function renderCalendar(){
+ renderMomAgenda(document.getElementById('momWeekAgenda'));
  let base=monthBase(calOffset),y=base.getFullYear(),m=base.getMonth();calMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(base);
  let first=new Date(y,m,1,12),start=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prevDays=new Date(y,m,0).getDate(),cells=[];
  for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length,weekend=(i%7)>=5;cells.push(`<button class="calDay ${other?'other':''} ${weekend?'weekend':''} ${i%7===5?'saturday':''} ${i%7===6?'sunday':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}" aria-label="${esc(longDate(d))}${has?` · ${has} attività`: ""}" aria-pressed="${k===selectedDate}"><span class="calNum">${d.getDate()}</span>${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
@@ -2330,7 +2351,7 @@ document.querySelectorAll('[data-calendar-child-type]').forEach(btn=>btn.onclick
 const homeQuickMoreEl=document.getElementById('homeQuickMore');if(homeQuickMoreEl)homeQuickMoreEl.onclick=openQuick;
 const homeAddAppointmentEl=document.getElementById('homeAddAppointment');if(homeAddAppointmentEl)homeAddAppointmentEl.onclick=()=>openReminder(null,{kind:'appointment',person:'family',date:dateKey(),reminderDays:0,notify:'both'});
 
-function renderAll(){renderHome();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('waste').classList.contains('on'))renderWaste();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].some(id=>document.getElementById(id)?.classList.contains('on'))){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
+function renderAll(){renderHome();if(document.getElementById('children').classList.contains('on'))renderMomFamily();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('waste').classList.contains('on'))renderWaste();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].some(id=>document.getElementById(id)?.classList.contains('on'))){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 go('home');fillHealthPeople();startSessionActivityTracking();bootCloud();
 
@@ -2380,3 +2401,6 @@ window.addEventListener('appinstalled',()=>{
 if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone){
  document.getElementById('installAppGuide').hidden=true;
 }
+
+const momAgendaAdd=document.getElementById('momAgendaAdd');
+if(momAgendaAdd)momAgendaAdd.onclick=()=>openReminder(null,{kind:'appointment',person:'family',date:dateKey(),reminderDays:0,notify:'both'});

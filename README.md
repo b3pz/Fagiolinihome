@@ -1,19 +1,18 @@
-# Fagiolini — V19.3
+# Fagiolini — V20
 
 Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
-## Interfaccia pensata per il telefono
+## Organizzazione della giornata
 
-- Home con accesso immediato al calendario e pulsante per aggiungere un impegno.
-- Diari di Caty, Kiko, Astro, JJ e Kiki raggiungibili da schede con foto e nomi leggibili.
-- Registrazioni rapide di pappa, cacca, sonno e pannolino a due colonne sul telefono.
-- Collegamenti espliciti alla lista della spesa, ai pasti e alle faccende.
-- Navigazione persistente: Inizio, Calendario, Spesa, Pasti, Altro.
-- Schede su una colonna, moduli con input di almeno 17 px e pulsanti grandi.
-- Focus visibile, indicazione della pagina corrente e rispetto delle preferenze di movimento ridotto.
-- Tema chiaro e scuro; account e notifiche disponibili nell’intestazione.
+- Oggi: primi tre impegni dei prossimi sette giorni, diario selezionabile di Caty/Kiko/Astro e pasti di oggi.
+- Agenda: elenco settimanale con dettagli degli impegni; calendario mensile apribile per scegliere una data e consultare tutte le attività.
+- Diari: tutti i diari con ultime registrazioni e pulsanti di inserimento già associati alla persona.
+- Pasti: pianificazione esistente e lista della spesa raggiungibile dalla home.
+- Altro: acquisti, salute, rifiuti e casa; spese, auto e scadenze raccolte in una sezione richiudibile.
 
-`friendly.css` definisce la nuova interfaccia dopo gli stili storici. Gli ID dei moduli e i flussi di registrazione esistenti sono preservati. Modello dei dati, sincronizzazione Supabase e notifiche sono preservati.
+Ogni diario mostra data e ora dell’ultima pappa, cacca e sonno; per Astro, pipì al posto del sonno e cure al posto del pannolino. L’assenza di registrazioni è esplicita. I moduli propongono i tipi adatti al bambino o al cane.
+
+`friendly.css` definisce l’interfaccia dopo gli stili storici. Modello dei dati, sincronizzazione Supabase e notifiche sono preservati.
 
 ## Avvio locale
 
@@ -25,7 +24,7 @@ Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un 
 
 ## Pubblicazione
 
-File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.3.0`. Il service worker resta inattivo.
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `20.0.0`. Il service worker resta inattivo.
 
 ## Accesso e durata della sessione
 

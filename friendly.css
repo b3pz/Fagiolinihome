@@ -123,3 +123,48 @@ body .calendarEntryActions button.primary{background:#28563a!important;color:#ff
 .installAppGuide p{font-size:16px}.installAppGuide button{min-height:48px;padding:12px 16px;border-radius:14px}
 body .app{padding-top:env(safe-area-inset-top)!important}
 body #installAppGuide[hidden],body #installAppButton[hidden]{display:none!important}
+/* V20: daily care, with one card per child and dog. */
+body #home.momHome.view.on{display:flex!important;flex-direction:column!important;gap:22px!important;padding:24px 0 0!important}
+.momWelcome{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.momWelcome h2{font-size:32px;margin:5px 0 0}.momWelcome p{margin:0;font-size:16px;text-transform:capitalize}
+.momBrandImage{width:64px;height:64px;border-radius:50%;flex-shrink:0}
+.momPanel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 4px 20px #253c3105}
+.momSectionHead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.momSectionHead h3{margin:4px 0 0;font-size:23px}.momEyebrow{font-size:12px;color:var(--muted);letter-spacing:.1em;font-weight:700}
+.momSectionHead button{border:0;background:var(--soft);color:var(--accent-dark);border-radius:12px;padding:10px 12px;font-weight:700;font-size:15px;min-height:44px}
+.momHelper{font-size:15px;color:var(--muted);margin:0 0 16px;line-height:1.5}.momEmpty{margin:0 0 12px;font-size:16px;color:var(--muted);line-height:1.6}
+.momAgendaRow{display:grid;grid-template-columns:82px minmax(0,1fr) 12px;gap:12px;align-items:center;text-align:left;width:100%;padding:15px 0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text)}
+.momAgendaDate{font-size:14px;color:var(--accent-dark);font-weight:700}.momAgendaContent{display:flex;align-items:center;gap:10px;min-width:0}.momAgendaContent b{font-size:16px;font-weight:600;overflow-wrap:anywhere}.momAgendaContent .uiIcon{width:22px;height:22px;flex-shrink:0;color:var(--accent-dark)}
+.momAddAppointment{width:100%;min-height:50px;background:var(--soft);border:1px solid var(--line);border-radius:14px;margin-top:14px;color:var(--accent-dark);font-weight:700}
+.momChildrenGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.momChildCard{border:1px solid var(--line);border-radius:22px;background:var(--card);padding:18px;min-width:0}
+.momChildIdentity{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:0;text-align:left;color:var(--text)}
+.momChildIdentity img{width:56px;height:56px;border-radius:50%}.momChildIdentity b{display:block;font-size:23px}.momChildIdentity small{display:block;font-size:14px!important;color:var(--accent-dark)!important;margin-top:3px}
+.momLatest{margin:18px 0}.momLatest>div{display:grid;grid-template-columns:1fr;gap:4px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.momLatest dt{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--muted)}.momLatest dt .uiIcon{width:18px;height:18px}.momLatest dd{margin:0;font-size:16px;line-height:1.45}.momLatest dd b{font-size:16px;font-weight:650}.momLatestNote{display:block;font-size:14px;color:var(--muted);overflow-wrap:anywhere;margin-top:3px}.momNoRecord{color:var(--muted);font-size:15px}
+.momChildActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.momChildActions button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;background:var(--soft);border:1px solid var(--line);border-radius:13px;font-size:15px;font-weight:700;padding:10px 6px;color:var(--accent-dark)}.momChildActions .uiIcon{width:22px;height:22px;flex-shrink:0}
+.momMealsGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.momMealsGrid>div{background:var(--soft);border-radius:15px;padding:16px;min-width:0}.momMealsGrid small{display:block;font-size:14px!important;margin-bottom:7px}.momMealsGrid b{font-size:18px;font-weight:650;overflow-wrap:anywhere}
+.momShoppingLink{display:flex;align-items:center;gap:12px;width:100%;background:transparent;border:0;border-top:1px solid var(--line);margin-top:18px;padding:16px 0 0;color:var(--accent-dark);font-size:16px;font-weight:650}.momShoppingLink .uiIcon{width:24px;height:24px}.momShoppingLink span:last-child{margin-left:auto}
+.momHouseLink{display:flex;align-items:center;gap:12px;padding:18px;border:1px solid var(--line);border-radius:18px;text-align:left;background:var(--card);color:var(--text)}.momHouseLink .uiIcon{width:28px;height:28px}.momHouseLink b{display:block;font-size:17px}.momHouseLink small{display:block;font-size:14px!important;margin-top:3px}.momHouseLink>span:last-child{margin-left:auto}
+.momPageIntro{padding:28px 0 12px}.momPageIntro h2{font-size:32px;margin:8px 0}.momPageIntro p{color:var(--muted);font-size:17px}.momChildrenView .momPanel{margin-top:20px}
+.momFamilyLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.momFamilyLinks button{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;background:var(--soft);padding:12px;color:var(--text)}.momFamilyLinks img{width:44px;height:44px;border-radius:50%}.momFamilyLinks b{font-size:17px}.momFamilyLinks span{margin-left:auto;font-size:14px}
+.momMonthPicker{border:1px solid var(--line);border-radius:20px;background:var(--card);margin:18px 0;padding:18px}.momMonthPicker summary{cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:17px;font-weight:700;min-height:48px}.momMonthPicker .calendarHead{margin-top:14px!important}
+@media(max-width:899px){
+ body #home.momHome.view.on{padding-top:22px!important;gap:22px!important}
+ .momWelcome h2{font-size:28px}.momBrandImage{width:54px;height:54px}.momWelcome p{font-size:15px}
+ .momPanel{padding:18px}.momChildrenGrid{grid-template-columns:minmax(0,1fr);gap:14px}
+ .momChildCard{padding:18px}.momLatest>div{grid-template-columns:112px minmax(0,1fr);align-items:start;gap:8px;margin-bottom:10px;padding-bottom:10px}.momLatest dt{font-size:14px}.momLatest dd b{font-size:16px}
+ .momChildActions{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.momChildActions button{flex-direction:column;gap:5px;min-height:68px;font-size:13px;padding:8px 2px}
+ .momAgendaRow{grid-template-columns:64px minmax(0,1fr) 10px;gap:8px}.momAgendaContent{gap:8px}.momAgendaContent b{font-size:16px}
+ .momFamilyLinks{grid-template-columns:minmax(0,1fr)}.momMealsGrid{gap:10px}.momMealsGrid>div{padding:14px}.momMealsGrid b{font-size:16px}
+ body #home .momSectionHead h3{font-size:22px!important}.momSectionHead button{font-size:14px;padding:8px 10px}
+}
+@media(max-width:350px){.momLatest>div{grid-template-columns:102px minmax(0,1fr)}.momChildActions{grid-template-columns:repeat(2,minmax(0,1fr))}.momChildActions button{flex-direction:row;min-height:52px}.momAgendaContent .uiIcon{display:none}}
+
+.momGroupTitle{font-size:21px;margin:20px 0 14px}.momOtherFunctions{margin:18px 0;border:1px solid var(--line);border-radius:18px;background:var(--card);padding:16px}.momOtherFunctions summary{cursor:pointer;min-height:48px;font-size:17px;font-weight:700;display:flex;align-items:center}.momOtherFunctions .organizeGrid{margin-top:12px}
+
+.momChildTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}.momChildTabs button{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 8px;border:1px solid var(--line);border-radius:16px;background:var(--card);font-size:17px;color:var(--text)}.momChildTabs img{width:40px;height:40px;border-radius:50%}.momChildTabs button[aria-pressed="true"]{border:2px solid var(--accent-dark);background:var(--soft);padding:11px 7px}.momChildTabs b{font-size:17px}#momHomeChildren{grid-template-columns:minmax(0,1fr)}#momHomeChildren .momLatest>div{grid-template-columns:140px minmax(0,1fr)}#momHomeChildren .momChildActions{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:899px){.momChildTabs button{flex-direction:column;gap:6px;padding:10px 4px}.momChildTabs button[aria-pressed="true"]{padding:9px 3px}.momChildTabs img{width:40px;height:40px}.momChildTabs b{font-size:16px}#momHomeChildren .momLatest>div{grid-template-columns:112px minmax(0,1fr)}}
+@media(max-width:350px){#momHomeChildren .momLatest>div{grid-template-columns:102px minmax(0,1fr)}#momHomeChildren .momChildActions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.momChildCard{display:flex;flex-direction:column}.momChildIdentity{order:0}.momChildActions{order:1;margin-top:16px}.momLatest{order:2;margin-bottom:0}.momLatest>div:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}.momSaveStatus{position:fixed;z-index:100;bottom:calc(92px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:calc(100% - 32px);width:max-content;background:var(--accent-dark);color:var(--card);border-radius:16px;padding:14px 18px;font-size:16px;font-weight:650;box-shadow:0 5px 20px #0002}.momSaveStatus[hidden]{display:none!important}

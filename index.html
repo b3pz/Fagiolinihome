@@ -21,8 +21,8 @@
 <!-- App icons -->
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=19.3.0">
-<link rel="stylesheet" href="friendly.css?v=19.3.0">
+<link rel="stylesheet" href="style.css?v=20.0.0">
+<link rel="stylesheet" href="friendly.css?v=20.0.0">
 </head>
 <body data-page="home">
 
@@ -59,9 +59,9 @@
     <span id="todayLabel" class="muted"></span>
   </div>
   <nav class="desktopNav" aria-label="Navigazione desktop">
-<button type="button" data-go="home"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-home"></use></svg></span><small>Inizio</small></button>
-<button type="button" data-go="calendar"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><small>Calendario</small></button>
-<button type="button" data-go="shop"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><small>Spesa</small></button>
+<button type="button" data-go="home"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-home"></use></svg></span><small>Oggi</small></button>
+<button type="button" data-go="calendar"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><small>Agenda</small></button>
+<button type="button" data-go="children"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-family"></use></svg></span><small>Diari</small></button>
 <button type="button" data-go="menu"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg></span><small>Pasti</small></button>
 <button type="button" data-go="organize"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-menu"></use></svg></span><small>Altro</small></button>
 </nav>
@@ -74,91 +74,25 @@
   </div>
 </header>
 
+<div id="momSaveStatus" class="momSaveStatus" role="status" aria-live="polite" hidden></div>
 <main id="mainContent" tabindex="-1">
-<section id="home" class="view on homeHeroRemoved">
-  <div class="homeWelcome">
-    <div>
-      <small>LA NOSTRA FAMIGLIA</small>
-      <h2 id="homeGreeting">Buongiorno</h2>
-      <p id="homeDateText" class="muted"></p>
-    </div>
-    <button class="homeProfileButton" data-go="organize" aria-label="Apri tutte le funzioni">☰</button>
-  </div>
-
-  <div id="birthdayCelebration" class="birthdayCelebration" hidden>
-    <span class="birthdayCelebrationIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-gift"></use></svg></span>
-    <div><small>OGGI FESTEGGIAMO</small><strong id="birthdayCelebrationTitle">Tanti auguri!</strong><p id="birthdayCelebrationText"></p></div>
-  </div>
-
-
-  <section class="homeQuickCapture" aria-labelledby="homeQuickTitle">
-    <div class="homeQuickCaptureHead">
-      <div><small>SEGNA AL VOLO</small><h3 id="homeQuickTitle">Segna la giornata dei bimbi</h3></div>
-      <button class="homeQuickMore" id="homeQuickMore" type="button">Altre azioni</button>
-    </div>
-    <div class="homeQuickCaptureGrid">
-      <button type="button" data-home-child-quick="pappa"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-bottle"></use></svg></span><b>Pappa</b></button>
-      <button type="button" data-home-child-quick="cacca"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-poop"></use></svg></span><b>Cacca</b></button>
-      <button type="button" data-home-child-quick="nanna"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-sleep"></use></svg></span><b>Sonno</b></button>
-      <button type="button" data-home-child-quick="pannolino"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-diaper"></use></svg></span><b>Pannolino</b></button>
-      <button type="button" data-go="calendar"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-calendar"></use></svg></span><b>Calendario</b></button>
-      <button type="button" id="homeAddAppointment"><span class="quickCaptureIcon"><svg class="uiIcon"><use href="icons.svg#icon-plus"></use></svg></span><b>Appuntamento</b></button>
-    </div>
+<section id="home" class="view on momHome">
+  <div class="momWelcome"><div><p id="homeDateText" class="muted"></p><h2 id="homeGreeting">La giornata di oggi</h2></div><img class="momBrandImage" src="assets/icons/icon-192.png" alt="La famiglia Fagiolini"></div>
+  <div id="birthdayCelebration" class="birthdayCelebration" hidden><span class="birthdayCelebrationIcon">🎂</span><div><strong id="birthdayCelebrationTitle"></strong><p id="birthdayCelebrationText"></p></div></div>
+  <section class="momPanel momAgenda" aria-labelledby="momAgendaTitle">
+    <div class="momSectionHead"><div><span class="momEyebrow">DA RICORDARE</span><h3 id="momAgendaTitle">I prossimi impegni</h3></div><button data-go="calendar">Apri agenda →</button></div>
+    <div id="momUpcoming"></div>
+    <button id="homeCalendarAdd" class="momAddAppointment" type="button">＋ Aggiungi un impegno</button>
   </section>
+  <section class="momKidsSection" aria-labelledby="momKidsTitle"><div class="momSectionHead"><div><span class="momEyebrow">I LORO DIARI</span><h3 id="momKidsTitle">Bimbi e Astro</h3></div><button data-go="children">Tutti i dettagli →</button></div><p class="momHelper">Scegli chi stai seguendo, poi segna la sua giornata.</p><div id="momChildTabs" class="momChildTabs" aria-label="Scegli un diario"></div><div id="momHomeChildren" class="momChildrenGrid"></div></section>
+  <section class="momPanel momMeals" aria-labelledby="momMealsTitle"><div class="momSectionHead"><div><span class="momEyebrow">A TAVOLA</span><h3 id="momMealsTitle">Cosa mangiamo oggi?</h3></div><button data-go="menu">Scegli i pasti →</button></div><div id="homeMealsBrief" class="momMealsGrid"></div><button class="momShoppingLink" data-go="shop"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg><span>Apri la lista della spesa</span><span aria-hidden="true">→</span></button></section>
+  <button class="momHouseLink" data-go="organize"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-home"></use></svg><span><b>Il resto della famiglia</b><small>Casa, salute e spese</small></span><span aria-hidden="true">→</span></button>
+</section>
 
-  <section class="dailyShortcuts" aria-labelledby="dailyShortcutsTitle">
-    <h3 id="dailyShortcutsTitle">Di cosa hai bisogno?</h3>
-    <div class="dailyShortcutsGrid">
-      <button data-go="shop"><span class="shortcutIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><span><b>Lista della spesa</b><small>Aggiungi e spunta gli acquisti</small></span><em aria-hidden="true">›</em></button>
-      <button data-go="menu"><span class="shortcutIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg></span><span><b>Cosa mangiamo?</b><small>Pranzo, cena e settimana</small></span><em aria-hidden="true">›</em></button>
-      <button data-go="calendar"><span class="shortcutIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><span><b>Appuntamenti</b><small>Consulta il calendario</small></span><em aria-hidden="true">›</em></button>
-      <button data-go="house"><span class="shortcutIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-housework"></use></svg></span><span><b>Cose da fare in casa</b><small>Organizza le faccende</small></span><em aria-hidden="true">›</em></button>
-    </div>
-  </section>
-
-  <section class="calendarEntry" aria-label="Appuntamenti della famiglia">
-    <div><small>IL CALENDARIO DELLA FAMIGLIA</small><h3>Gli impegni, tutti qui.</h3><p>Visite, appuntamenti e attività di tutti.</p></div>
-    <div class="calendarEntryActions"><button class="primary" data-go="calendar"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg> Apri il calendario</button><button type="button" id="homeCalendarAdd">＋ Aggiungi un impegno</button></div>
-  </section>
-
-  <button class="dashboardCard dashboardHero" data-go="today">
-    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><small>OGGI</small><h3>La nostra giornata</h3></div><em>›</em></div>
-    <div id="homeTodayBrief" class="dashboardBigText"></div>
-    <div id="homeTodayList" class="dashboardPreviewList"></div>
-  </button>
-
-  <div class="homeDashboardGrid">
-    <button class="dashboardCard" data-go="house">
-      <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-housework"></use></svg></span><div><small>CASA</small><h3>Faccende</h3></div><em>›</em></div>
-      <div id="homeHouseBrief" class="dashboardBigText"></div>
-      <p id="homeHouseText" class="dashboardNote"></p>
-    </button>
-
-    <button class="dashboardCard" data-go="menu">
-      <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg></span><div><small>PASTI</small><h3>Oggi mangiamo</h3></div><em>›</em></div>
-      <div id="homeMealsBrief" class="mealBrief"></div>
-    </button>
-  </div>
-
-  <div class="dashboardCard familyDashboardCard">
-    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-family"></use></svg></span><div><small>FAMIGLIA</small><h3>Apri un diario</h3></div><button class="familyHeaderLink" data-go="organize" aria-label="Apri famiglia">›</button></div>
-    <div id="peopleCards" class="familyStrip familyStripHome"></div>
-    <div id="homeFamilyBrief" class="familyMiniSummary"></div>
-  </div>
-
-  <button class="dashboardCard savingsHomeCard" data-go="money">
-    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bank"></use></svg></span><div><small>FAGIOLINI BANK</small><h3>Questo mese</h3></div><em>›</em></div>
-    <div id="homeSavingsBrief" class="dashboardBigText"></div>
-    <div class="progressTrack"><i id="homeSavingsProgress"></i></div>
-    <p id="homeSavingsText" class="dashboardNote"></p>
-    <div id="homeSavingsProjects" class="homeSavingsProjects"></div>
-  </button>
-
-  <button class="dashboardCard wasteHomeCard" data-go="waste">
-    <div class="dashboardCardHead"><span class="dashboardIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg></span><div><small>RACCOLTA</small><h3>Rifiuti</h3></div><em>›</em></div>
-    <div id="homeWasteText" class="dashboardBigText"></div>
-    <p id="homeWasteNextText" class="dashboardNote"></p>
-  </button>
+<section id="children" class="view momChildrenView">
+  <div class="momPageIntro"><span class="momEyebrow">UN DIARIO PER CIASCUNO</span><h2>I loro diari</h2><p>Due bimbi e Astro: le ultime registrazioni e tutto quello che serve segnare.</p></div>
+  <div id="momAllChildren" class="momChildrenGrid"></div>
+  <section class="momPanel"><div class="momSectionHead"><h3>Anche noi</h3></div><div id="momFamilyLinks" class="momFamilyLinks"></div></section>
 </section>
 
 <section id="today" class="view">
@@ -194,7 +128,7 @@
 
   <div class="nativeSection diaryTimelineSection">
     <div class="sectionTitle compact">
-      <div><small>DIARIO DELLA GIORNATA</small><h3>Timeline</h3></div>
+      <div><small>DIARIO DELLA GIORNATA</small><h3>Cosa abbiamo segnato</h3></div>
       <div class="daySwitch"><button id="dayPrev">←</button><span id="dayLabel"></span><button id="dayNext">→</button></div>
     </div>
     <div id="personTimeline" class="diaryTimeline"></div>
@@ -392,16 +326,9 @@
 <section id="organize" class="view">
   <div class="sectionTitle pageIntro"><div><small>TUTTO IL RESTO</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-menu"></use></svg><span>Tutte le funzioni</span></h2><p class="muted">Scegli cosa vuoi fare. È tutto qui.</p></div></div>
 
-  <div class="organizeGrid">
-    <button class="organizeCard" data-go="shop"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><div><b>Da comprare</b><small id="organizeShopText">Alimentari, bambini, Astro, regali e wishlist</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="money"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bank"></use></svg></span><div><b>Soldi e bollette</b><small id="organizeMoneyText">Risparmi, spese e bollette</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="health"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-health"></use></svg></span><div><b>Salute</b><small id="organizeHealthText">Visite e medicine</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="auto"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-car"></use></svg></span><div><b>Auto</b><small id="organizeAutoText">Scadenze e costi</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="maintenance"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg></span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Bollette, tecnici e cose da comprare</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="reminders"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg></span><div><b>Promemoria</b><small id="organizeReminderText">Da ricordare</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="calendar"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button>
-    <button class="organizeCard" data-go="waste"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg></span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button>
-  </div>
+  <h3 class="momGroupTitle">Per la vita di tutti i giorni</h3>
+  <div class="organizeGrid"><button class="organizeCard" data-go="shop"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><div><b>Da comprare</b><small id="organizeShopText">Alimentari, bambini, Astro, regali e wishlist</small></div><em>›</em></button><button class="organizeCard" data-go="health"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-health"></use></svg></span><div><b>Salute</b><small id="organizeHealthText">Visite e medicine</small></div><em>›</em></button><button class="organizeCard" data-go="waste"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bin"></use></svg></span><div><b>Rifiuti</b><small id="organizeWasteText">Cosa si butta oggi</small></div><em>›</em></button><button class="organizeCard" data-go="house"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-housework"></use></svg></span><div><b>Cose da fare in casa</b><small>Il piano e le faccende condivise</small></div><em>›</em></button></div>
+  <details class="momOtherFunctions"><summary>Spese, scadenze e altre cose</summary><div class="organizeGrid"><button class="organizeCard" data-go="money"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bank"></use></svg></span><div><b>Soldi e bollette</b><small id="organizeMoneyText">Risparmi, spese e bollette</small></div><em>›</em></button><button class="organizeCard" data-go="maintenance"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-tools"></use></svg></span><div><b>Casa & lavori</b><small id="organizeMaintenanceText">Bollette, tecnici e cose da comprare</small></div><em>›</em></button><button class="organizeCard" data-go="auto"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-car"></use></svg></span><div><b>Auto</b><small id="organizeAutoText">Scadenze e costi</small></div><em>›</em></button><button class="organizeCard" data-go="reminders"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg></span><div><b>Promemoria</b><small id="organizeReminderText">Da ricordare</small></div><em>›</em></button><button class="organizeCard" data-go="calendar"><span><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><div><b>Calendario</b><small>Tutto il mese</small></div><em>›</em></button></div></details>
 
   <details id="installAppGuide" class="card installAppGuide">
     <summary><b>Fagiolini sul tuo telefono</b><span>Aprila come un’app dalla schermata Home</span></summary>
@@ -491,7 +418,9 @@
   </details>
 </section>
 <section id="calendar" class="view">
-  <div class="sectionTitle pageIntro calendarPageIntro"><div><small>TUTTO INSIEME</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><span>Calendario</span></h2><p class="muted">Tocca un giorno per vedere o aggiungere qualcosa.</p></div><div class="inlineBtns"><button data-go="reminders"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg> Promemoria</button><button data-go="home">← Inizio</button></div></div>
+  <div class="sectionTitle pageIntro calendarPageIntro"><div><small>TUTTO INSIEME</small><h2 class="titleWithIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg><span>Agenda della famiglia</span></h2><p class="muted">Gli impegni dei prossimi giorni. Apri il mese per scegliere un’altra data.</p></div><div class="inlineBtns"><button data-go="reminders"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-bell"></use></svg> Promemoria</button><button data-go="home">← Inizio</button></div></div>
+  <section class="momPanel"><div class="momSectionHead"><h3>Da oggi, per una settimana</h3><button id="momAgendaAdd" type="button">＋ Impegno</button></div><div id="momWeekAgenda"></div></section>
+  <details class="momMonthPicker"><summary>Scegli un giorno nel calendario <span aria-hidden="true">⌄</span></summary>
   <div class="calendarHead card">
     <button id="calPrev" aria-label="Mese precedente">←</button><h3 id="calMonth"></h3><button id="calNext" aria-label="Mese successivo">→</button>
   </div>
@@ -499,6 +428,7 @@
     <div class="weekdays"><span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span></div>
     <div id="calendarGrid" class="calGrid"></div>
   </div>
+  </details>
   <div class="card calendarDayCard">
     <div class="sectionTitle compact"><div><small>GIORNO SELEZIONATO</small><h3 id="selectedDateTitle">Dettagli</h3></div><button id="calendarAddBtn" class="primary calendarAddBtn">＋ Aggiungi al giorno</button></div>
     <div id="calendarDetails"></div>
@@ -683,9 +613,9 @@
 </main>
 
 <nav class="mobileNav" aria-label="Navigazione principale">
-<button type="button" data-go="home"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-home"></use></svg></span><small>Inizio</small></button>
-<button type="button" data-go="calendar"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><small>Calendario</small></button>
-<button type="button" data-go="shop"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-shop"></use></svg></span><small>Spesa</small></button>
+<button type="button" data-go="home"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-home"></use></svg></span><small>Oggi</small></button>
+<button type="button" data-go="calendar"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-calendar"></use></svg></span><small>Agenda</small></button>
+<button type="button" data-go="children"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-family"></use></svg></span><small>Diari</small></button>
 <button type="button" data-go="menu"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-meal"></use></svg></span><small>Pasti</small></button>
 <button type="button" data-go="organize"><span class="navIcon"><svg class="uiIcon" aria-hidden="true"><use href="icons.svg#icon-menu"></use></svg></span><small>Altro</small></button>
 </nav>
@@ -993,5 +923,5 @@
 <dialog id="sleepDialog"><form id="sleepForm" class="dialogBox"><h3>Sonno</h3><p id="sleepMessage"></p><button class="primary">Conferma</button><button type="button" data-close="sleepDialog">Annulla</button></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=19.3.0"></script>
+<script src="app.js?v=20.0.0"></script>
 </body></html>
