@@ -1,28 +1,28 @@
-# Fagiolini V18 — Family First
+# Fagiolini — V19
 
-Revisione UX, leggibilità e linguaggio quotidiano, mantenendo il visual elegante della V17.1.
+Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
-## Cosa cambia
-- **Bank più chiara**: soldi del mese, entrate, uscite, quanto resta e obiettivo mensile sono separati dai salvadanai.
-- **Salvadanai Vacanze/Natale**: indicano quanto vogliamo accumulare prima della spesa, quanto è già stato messo da parte e quanto manca. Non sono budget da spendere durante la vacanza.
-- **Auto a pulsanti**: Benzina, Meccanico, Autostrada, Accessori, Manutenzione, Bollo, Assicurazione, Revisione.
-- **Bollo/Assicurazione**: data attivazione/pagamento, fine validità, rinnovo e costo.
-- **Casa & lavori a pulsanti**: Bollette, Intervento, Da comprare.
-- **Bollette a pulsanti**: Luce, Gas, Acqua, Internet, Telefono, Abbonamenti; il modulo usa domande esplicite e leggibili.
-- **Interventi casa**: chi è venuto, cosa ha fatto, quanto è costato, stato e promemoria.
-- **Spese collegate alla Banca**: Auto, manutenzioni casa, bollette pagate e acquisti registrati confluiscono nelle uscite.
-- **Lista acquisti a categorie**: Alimentari, Bambini, Astro, Casa, Regali, Wishlist. Il form appare solo quando si aggiunge qualcosa.
-- **Astro**: Cacca resta una registrazione principale insieme a Pappa/Pipì/cure; Traversina non compare più tra le nuove registrazioni.
-- **Rifiuti**: icona bidone riconoscibile, nomi testuali e colori usati solo come supporto.
-- **Calendario**: azioni esplicite “Vedi dettagli”, “Aggiungi al giorno”, “Aggiungi a questo giorno”.
-- **Pasti**: rimossi contatori e frasi impersonali come “12 pasti scelti / 9 da decidere”.
-- **Linguaggio**: ripuliti CTA e testi troppo tecnici/da gestionale o da AI.
-- **Desktop**: dimensioni attuali preservate; il pieno utilizzo della larghezza resta un perfezionamento futuro.
-- **iPhone/Safari**: testo, metadati, pulsanti, form e touch target più grandi; input a 16px+ per evitare zoom automatico.
-- **Dark mode**: contrasto rivisto in Rifiuti, Bank, Calendario, input, pulsanti e nuove griglie.
+## Interfaccia pensata per il telefono
 
-## Tecnico
-- cache busting `18.0.0`
-- struttura tutta nella root per GitHub Pages
-- `sw.js` resta volutamente inattivo/unregister
-- login, Supabase, sessione, Telegram e Cron non modificati
+- Home con accesso immediato al calendario e pulsante per aggiungere un impegno.
+- Diari di Caty, Kiko, Astro, JJ e Kiki raggiungibili da schede con foto e nomi leggibili.
+- Registrazioni rapide di pappa, cacca, sonno e pannolino a due colonne sul telefono.
+- Collegamenti espliciti alla lista della spesa, ai pasti e alle faccende.
+- Navigazione persistente: Inizio, Calendario, Spesa, Pasti, Altro.
+- Schede su una colonna, moduli con input di almeno 17 px e pulsanti grandi.
+- Focus visibile, indicazione della pagina corrente e rispetto delle preferenze di movimento ridotto.
+- Tema chiaro e scuro; account e notifiche disponibili nell’intestazione.
+
+`friendly.css` definisce la nuova interfaccia dopo gli stili storici. Gli ID dei moduli e i flussi di registrazione esistenti sono preservati. Login, modello dei dati, sincronizzazione Supabase e notifiche non sono stati modificati.
+
+## Avvio locale
+
+```sh
+python3 -m http.server 8765
+```
+
+Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un account famiglia valido.
+
+## Pubblicazione
+
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `19.0.0`. Il service worker resta inattivo.

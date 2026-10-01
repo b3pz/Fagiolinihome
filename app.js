@@ -840,11 +840,17 @@ function go(id){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
  const target=document.getElementById(id);if(!target)return;
  target.classList.add('on');
- document.querySelectorAll('nav [data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
- const titles={home:'La nostra giornata',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Fagiolini Bank','money-spending':'Dove spendiamo','money-savings':'Salvadanai','money-bills':'Bollette','money-moves':'Movimenti',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',waste:'Rifiuti',organize:'Organizza'};
+ const navPage=['person','adult'].includes(id)?'home':['calendar','today'].includes(id)?'calendar':id==='profiles'?'menu':['home','today','shop','menu'].includes(id)?id:'organize';
+ document.querySelectorAll('nav [data-go]').forEach(b=>{
+  const active=b.dataset.go===navPage;
+  b.classList.toggle('active',active);
+  if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+ });
+ const titles={home:'Inizio',today:'Oggi',person:'Registro',adult:'Noi',menu:'Pasti',profiles:'Profili alimentari',health:'Salute',calendar:'Calendario',house:'Casa',shop:'Spesa',money:'Fagiolini Bank','money-spending':'Dove spendiamo','money-savings':'Salvadanai','money-bills':'Bollette','money-moves':'Movimenti',maintenance:'Casa & lavori',auto:'Auto',reminders:'Promemoria',waste:'Rifiuti',organize:'Tutte le funzioni'};
  pageTitle.textContent=titles[id]||'Fagiolini';
  if(id==='home')renderHome();if(id==='today')renderToday();if(id==='waste')renderWaste();if(id==='organize')renderOrganize();if(id==='adult')renderAdult();if(id==='menu')renderMenu();if(id==='profiles')renderProfiles();if(id==='health')renderHealth();if(id==='calendar')renderCalendar();if(id==='house')renderHouse();if(id==='shop')renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].includes(id)){renderMoney();renderSubscriptions();}if(id==='maintenance')renderMaintenance();if(id==='auto')renderAuto();if(id==='reminders')renderReminders();
- scrollTo(0,0)
+ scrollTo(0,0);
+ document.getElementById('mainContent')?.focus({preventScroll:true});
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeDialogSafe(document.getElementById(b.dataset.close)));
@@ -1630,7 +1636,7 @@ function dayData(k){
 function renderCalendar(){
  let base=monthBase(calOffset),y=base.getFullYear(),m=base.getMonth();calMonth.textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(base);
  let first=new Date(y,m,1,12),start=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prevDays=new Date(y,m,0).getDate(),cells=[];
- for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length,weekend=(i%7)>=5;cells.push(`<button class="calDay ${other?'other':''} ${weekend?'weekend':''} ${i%7===5?'saturday':''} ${i%7===6?'sunday':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}"><span class="calNum">${d.getDate()}</span>${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
+ for(let i=0;i<42;i++){let num=i-start+1,other=false,d;if(num<1){d=new Date(y,m-1,prevDays+num,12);other=true}else if(num>days){d=new Date(y,m+1,num-days,12);other=true}else d=new Date(y,m,num,12);let k=dateKey(d),has=dayData(k).length,weekend=(i%7)>=5;cells.push(`<button class="calDay ${other?'other':''} ${weekend?'weekend':''} ${i%7===5?'saturday':''} ${i%7===6?'sunday':''} ${k===dateKey()?'today':''} ${k===selectedDate?'selected':''}" data-date="${k}" aria-label="${esc(longDate(d))}${has?` · ${has} attività`: ""}" aria-pressed="${k===selectedDate}"><span class="calNum">${d.getDate()}</span>${has?`<div class="dots">${Array.from({length:Math.min(has,4)},()=>'<i class="dot"></i>').join('')}</div>`:''}</button>`)}
  calendarGrid.innerHTML=cells.join('');calendarGrid.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>openCalendarDay(b.dataset.date));renderCalendarDetails()
 }
 function renderCalendarDetails(){let d=dateObj(selectedDate),a=dayData(selectedDate);selectedDateTitle.textContent=longDate(d);calendarDetails.innerHTML=a.length?a.map(x=>{
@@ -2323,7 +2329,7 @@ const homeAddAppointmentEl=document.getElementById('homeAddAppointment');if(home
 
 function renderAll(){renderHome();if(document.getElementById('today').classList.contains('on'))renderToday();if(document.getElementById('waste').classList.contains('on'))renderWaste();if(document.getElementById('organize').classList.contains('on'))renderOrganize();if(person.classList.contains('on'))renderPerson();if(adult.classList.contains('on'))renderAdult();if(menu.classList.contains('on'))renderMenu();if(profiles.classList.contains('on'))renderProfiles();if(health.classList.contains('on'))renderHealth();if(calendar.classList.contains('on'))renderCalendar();if(house.classList.contains('on'))renderHouse();if(shop.classList.contains('on'))renderShop();if(['money','money-spending','money-savings','money-bills','money-moves'].some(id=>document.getElementById(id)?.classList.contains('on'))){renderMoney();renderSubscriptions()}if(document.getElementById('maintenance').classList.contains('on'))renderMaintenance();if(document.getElementById('auto').classList.contains('on'))renderAuto();if(document.getElementById('reminders').classList.contains('on'))renderReminders()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-renderHome();fillHealthPeople();startSessionActivityTracking();bootCloud();
+go('home');fillHealthPeople();startSessionActivityTracking();bootCloud();
 
 
 // V11.1 — Organizza hub panels
@@ -2343,3 +2349,7 @@ document.querySelectorAll('[data-organize-panel]').forEach(btn=>{
 document.querySelectorAll('[data-close-organize-panel]').forEach(btn=>{
   btn.addEventListener('click',()=>{closeOrganizePanels();document.querySelector('#organize .organizeGridSecondary')?.scrollIntoView({behavior:'smooth',block:'center'});});
 });
+
+// Calendar-first home: reuse the existing appointment flow.
+const homeCalendarAdd=document.getElementById('homeCalendarAdd');
+if(homeCalendarAdd)homeCalendarAdd.onclick=()=>openReminder(null,{kind:'appointment',person:'family',date:dateKey(),reminderDays:0,notify:'both'});
