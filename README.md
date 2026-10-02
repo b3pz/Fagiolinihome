@@ -1,4 +1,4 @@
-# Fagiolini — V21
+# Fagiolini — V21.1
 
 Sito della famiglia con calendario, diari, pasti, spesa e gestione della casa.
 
@@ -24,7 +24,7 @@ Aprire `http://localhost:8765`. Per usare i dati sincronizzati è necessario un 
 
 ## Pubblicazione
 
-File statici nella root, compatibili con GitHub Pages. Versione degli asset: `21.0.0`. Il service worker resta inattivo.
+File statici nella root, compatibili con GitHub Pages. Versione degli asset: `21.1.0`. Il service worker resta inattivo.
 
 ## Accesso e durata della sessione
 
@@ -45,3 +45,11 @@ python3 scripts/build-icons.py logo-fagiolini.png
 Il comando crea favicon PNG 32 px, apple-touch-icon 180 px e icone app 192/512 px; aggiorna manifest e HTML. Il logo originale è disponibile in `logo-fagiolini.png`; favicon e icone generate sono in `assets/icons/` e collegate a HTML e manifest.
 
 Le frequenze delle pulizie si impostano direttamente nell’agenda. “Programma i prossimi 7 giorni” aggiunge le attività mancanti senza rimuovere quelle già registrate. Il bucato crea lavatrice e asciugatrice collegate: l’asciugatrice si può completare dopo la lavatrice.
+
+## Dimensioni e colori
+
+La home occupa tutta la larghezza interna della pagina: le schede non dipendono più dall’allineamento delle vecchie griglie. I margini tengono conto delle aree sicure del telefono. La palette unica salvia/avorio copre anche i componenti storici e dispone di varianti chiare e scure; il colore della barra del browser segue il tema.
+
+Verificati layout mobili/touch e desktop da 320 a 1280 px, larghezza effettiva delle schede, assenza di scorrimento orizzontale e contrasto dei testi. Il browser WebKit locale non riesce a creare una pagina di test: la verifica automatica usa Chromium con viewport e modalità mobile; resta utile il riscontro su iPhone reale.
+
+Per ripetere il controllo automatico, avviare il server locale e, con Playwright/Chromium installati, eseguire `python3 scripts/check-visual.py`. I test sostituiscono il client di autenticazione con uno stub e non inviano dati a Supabase.

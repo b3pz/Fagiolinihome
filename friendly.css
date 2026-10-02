@@ -189,3 +189,192 @@ body .sectionsButton{display:grid!important;place-items:center;font-size:24px!im
 body #person .personInsightCard{margin:0!important;border:0!important;padding:14px 0!important;background:transparent!important;box-shadow:none!important}
 @media(min-width:900px){.appEntryChoices{grid-template-columns:1fr 1fr;gap:18px}.appEntryChoices button{min-height:120px}}
 @media(max-width:350px){.diaryMainActions{gap:6px}.diaryMainActions b{font-size:13px}.appEntryChoices button,.diaryDirectory>button{grid-template-columns:44px minmax(0,1fr) 12px;gap:10px}.entryChoiceIcon,.diaryDirectory img{width:44px;height:44px}}
+
+/* V21.1 — one palette and explicit viewport-sized page containers. */
+html:root {
+  --ui-bg:#f7f8f2;
+  --ui-surface:#ffffff;
+  --ui-soft:#edf2e8;
+  --ui-raised:#e1eadb;
+  --ui-ink:#233b2d;
+  --ui-muted:#566658;
+  --ui-line:#d9e2d3;
+  --ui-accent:#345d3e;
+  --ui-action:#345d3e;
+  --ui-on-action:#ffffff;
+  --ui-warm:#f6eadc;
+  --ui-warm-ink:#82542f;
+  --ui-danger:#a63c35;
+  --ui-shadow:0 4px 16px rgba(35,59,45,.045);
+}
+html:root.themeDark {
+  --ui-bg:#141c17;
+  --ui-surface:#1e2a22;
+  --ui-soft:#293a2e;
+  --ui-raised:#354d3b;
+  --ui-ink:#f1f5ed;
+  --ui-muted:#b8c8b8;
+  --ui-line:#405545;
+  --ui-accent:#bbd7ae;
+  --ui-action:#bbd7ae;
+  --ui-on-action:#16271b;
+  --ui-warm:#3b3024;
+  --ui-warm-ink:#e1bd94;
+  --ui-danger:#ffb4a9;
+  --ui-shadow:0 4px 16px rgba(0,0,0,.12);
+}
+/* Historical components consume these aliases. Keep their values in sync. */
+html:root {
+  --bg:var(--ui-bg)!important;
+  --card:var(--ui-surface)!important;
+  --cream:var(--ui-surface)!important;
+  --text:var(--ui-ink)!important;
+  --muted:var(--ui-muted)!important;
+  --line:var(--ui-line)!important;
+  --soft:var(--ui-soft)!important;
+  --accent:var(--ui-accent)!important;
+  --accent-dark:var(--ui-accent)!important;
+  --orange:var(--ui-warm-ink)!important;
+  --gold:var(--ui-warm-ink)!important;
+  --v11-bg:var(--ui-bg)!important;
+  --v11-surface:var(--ui-surface)!important;
+  --v11-ink:var(--ui-ink)!important;
+  --v11-muted:var(--ui-muted)!important;
+  --v11-soft:var(--ui-soft)!important;
+  --v11-shadow:var(--ui-shadow)!important;
+  --v13-bg:var(--ui-bg)!important;
+  --v13-surface:var(--ui-surface)!important;
+  --v13-surface-strong:var(--ui-surface)!important;
+  --v13-ink:var(--ui-ink)!important;
+  --v13-secondary:var(--ui-muted)!important;
+  --v13-hairline:var(--ui-line)!important;
+  --v13-green:var(--ui-accent)!important;
+  --v13-green-soft:var(--ui-soft)!important;
+  --v13-shadow:var(--ui-shadow)!important;
+  --v14-bg:var(--ui-bg)!important;
+  --v14-surface:var(--ui-surface)!important;
+  --v14-surface-strong:var(--ui-surface)!important;
+  --v14-text:var(--ui-ink)!important;
+  --v14-secondary:var(--ui-muted)!important;
+  --v14-hairline:var(--ui-line)!important;
+  --v14-soft:var(--ui-soft)!important;
+  --v14-accent:var(--ui-accent)!important;
+  --v14-shadow:var(--ui-shadow)!important;
+  --v15-bg:var(--ui-bg)!important;
+  --v15-surface:var(--ui-surface)!important;
+  --v15-surface-soft:var(--ui-soft)!important;
+  --v15-ink:var(--ui-ink)!important;
+  --v15-muted:var(--ui-muted)!important;
+  --v15-line:var(--ui-line)!important;
+  --v15-accent:var(--ui-accent)!important;
+  --v15-accent-soft:var(--ui-soft)!important;
+  --v15-weekend:var(--ui-soft)!important;
+  --v15-shadow:var(--ui-shadow)!important;
+  --v16-bg:var(--ui-bg)!important;
+  --v16-surface:var(--ui-surface)!important;
+  --v16-surface-2:var(--ui-soft)!important;
+  --v16-ink:var(--ui-ink)!important;
+  --v16-muted:var(--ui-muted)!important;
+  --v16-line:var(--ui-line)!important;
+  --v16-accent:var(--ui-accent)!important;
+  --v16-accent-strong:var(--ui-accent)!important;
+  --v16-accent-soft:var(--ui-soft)!important;
+  --v16-shadow:var(--ui-shadow)!important;
+  --v16-shadow-soft:var(--ui-shadow)!important;
+  --v17-bg:var(--ui-bg)!important;
+  --v17-bg-deep:var(--ui-bg)!important;
+  --v17-surface:var(--ui-surface)!important;
+  --v17-surface-2:var(--ui-soft)!important;
+  --v17-surface-3:var(--ui-raised)!important;
+  --v17-ink:var(--ui-ink)!important;
+  --v17-muted:var(--ui-muted)!important;
+  --v17-faint:var(--ui-muted)!important;
+  --v17-line:var(--ui-line)!important;
+  --v17-primary:var(--ui-accent)!important;
+  --v17-primary-2:var(--ui-accent)!important;
+  --v17-primary-soft:var(--ui-soft)!important;
+  --v17-sage:var(--ui-accent)!important;
+  --v17-sage-soft:var(--ui-soft)!important;
+  --v17-clay:var(--ui-warm-ink)!important;
+  --v17-clay-soft:var(--ui-warm)!important;
+  --v17-sand:var(--ui-warm)!important;
+  --v17-gold:var(--ui-warm-ink)!important;
+  --v17-shadow:var(--ui-shadow)!important;
+  --v17-shadow-card:var(--ui-shadow)!important;
+  --v18-bg:var(--ui-bg)!important;
+  --v18-surface:var(--ui-surface)!important;
+  --v18-surface-2:var(--ui-soft)!important;
+  --v18-ink:var(--ui-ink)!important;
+  --v18-muted:var(--ui-muted)!important;
+  --v18-line:var(--ui-line)!important;
+  --v18-blue:var(--ui-accent)!important;
+  --v18-blue-soft:var(--ui-soft)!important;
+  --v18-sage:var(--ui-accent)!important;
+  --v18-sage-soft:var(--ui-soft)!important;
+  --v18-clay:var(--ui-warm-ink)!important;
+  --v18-clay-soft:var(--ui-warm)!important;
+}
+html:root { -webkit-text-size-adjust:100%!important; text-size-adjust:100%!important; }
+html:root body,html:root body .app {background:var(--ui-bg)!important;color:var(--ui-ink)!important;}
+html:root body .app {min-height:100svh!important;padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;}
+html:root body main {width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:0!important;}
+html:root body main>.view.on {width:100%!important;max-width:100%!important;min-width:0!important;}
+body #home.momHome.view.on {align-items:stretch!important;justify-content:flex-start!important;min-height:0!important;}
+body #home.momHome .momWelcome,body #home.momHome .appEntryChoices {width:100%!important;min-width:0!important;align-self:stretch!important;}
+body #home .appEntryChoices {grid-template-columns:minmax(0,1fr);}
+body #home .appEntryChoices button {width:100%!important;min-width:0!important;}
+.appEntryChoices button>span:nth-child(2),.diaryDirectory button>span:nth-child(2) {min-width:0;overflow-wrap:anywhere;}
+html:root body header {background:transparent!important;border-color:var(--ui-line)!important;}
+html:root body .round {background:var(--ui-surface)!important;color:var(--ui-accent)!important;border-color:var(--ui-line)!important;box-shadow:none!important;}
+html:root body .view :is(.card,.nativeSection,.profileCard,.menuDay,.organizeCard,.stat,.bankMenuCard),
+html:root body :is(.dialogBox,.nativeSheet,.loginCard) {background:var(--ui-surface)!important;color:var(--ui-ink)!important;border-color:var(--ui-line)!important;box-shadow:var(--ui-shadow)!important;}
+html:root body :is(.entryChoiceIcon,.diaryMainActions button,.familyDayHeading,.familyDayQuick,.familyTaskCheck) {background:var(--ui-soft)!important;color:var(--ui-accent)!important;}
+html:root body nav.mobileNav,html:root body nav.desktopNav {background:var(--ui-surface)!important;border-color:var(--ui-line)!important;}
+html:root body nav.mobileNav>button,html:root body nav.desktopNav>button {color:var(--ui-muted)!important;background:transparent!important;}
+html:root body nav.mobileNav>button.active,html:root body nav.desktopNav>button.active {color:var(--ui-accent)!important;background:var(--ui-soft)!important;box-shadow:none!important;}
+html:root body nav button small {color:inherit!important;}
+html:root body :is(input,select,textarea) {color:var(--ui-ink)!important;background:var(--ui-surface)!important;border-color:var(--ui-line)!important;}
+html:root body :is(input,textarea)::placeholder {color:var(--ui-muted)!important;opacity:1;}
+html:root body input:is([type=checkbox],[type=radio]) {accent-color:var(--ui-accent);min-height:22px!important;width:22px!important;height:22px!important;flex-shrink:0;}
+html:root body button.primary,html:root body button.primary *,html:root body .momSaveStatus {background:var(--ui-action)!important;color:var(--ui-on-action)!important;border-color:transparent!important;}
+html:root body button.primary .uiIcon {background:transparent!important;}
+html:root body :is(.shopCategoryBtn,.autoCategoryGrid button,.homeServiceGrid button,.maintenanceQuickGrid button,.billQuickGrid button) {background:var(--ui-surface)!important;border-color:var(--ui-line)!important;color:var(--ui-ink)!important;box-shadow:var(--ui-shadow)!important;}
+html:root body :is(.shopCategoryBtn,.autoCategoryGrid button,.homeServiceGrid button,.billQuickGrid button)>span {background:var(--ui-soft)!important;color:var(--ui-accent)!important;}
+html:root body .shopCategoryBtn.active {background:var(--ui-soft)!important;border-color:var(--ui-accent)!important;}
+html:root body #calendar .calDay {background:var(--ui-surface)!important;color:var(--ui-ink)!important;}
+html:root body #calendar .calDay.weekend {background:var(--ui-soft)!important;}
+html:root body #calendar .calDay.selected {outline:2px solid var(--ui-accent)!important;outline-offset:-2px;box-shadow:none!important;}
+html:root body #calendar .calDay.today .calNum {background:var(--ui-action)!important;color:var(--ui-on-action)!important;}
+html:root body #calendar .calDay.other {opacity:.65!important;}
+html:root body #calendar .dot {background:var(--ui-accent)!important;}
+html:root body .familyTaskCheck:disabled {color:var(--ui-muted)!important;}
+html:root body :is(.dangerSoft,.danger) {color:var(--ui-danger)!important;}
+@media(min-width:900px) and (hover:hover) and (pointer:fine){
+ body #home .appEntryChoices{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:899px),(hover:none) and (pointer:coarse){
+ html:root body .app{width:100%!important;max-width:none!important;padding-left:max(16px,env(safe-area-inset-left))!important;padding-right:max(16px,env(safe-area-inset-right))!important;}
+ html:root body .desktopNav{display:none!important;}
+ html:root body header{grid-template-columns:minmax(0,1fr) auto!important;}
+ html:root body .appEntryChoices button{min-height:96px!important;padding:18px!important;}
+ html:root body .appEntryChoices b{font-size:22px!important;}
+ html:root body .appEntryChoices small{font-size:16px!important;font-weight:500!important;line-height:1.45!important;}
+ html:root body .momWelcome h2{font-size:30px!important;}
+ html:root body .mobileNav{display:grid!important;}
+}
+/* High-contrast accents also cover components that previously used white text. */
+html:root body #money .bankSimpleHero {background:var(--ui-action)!important;color:var(--ui-on-action)!important;border-color:transparent!important;}
+html:root body #money .bankSimpleHero :is(h3,strong,b,small,span,p,button) {color:var(--ui-on-action)!important;}
+html:root body #money .bankSimpleHero .bankHeroNumbers>div {background:rgba(127,127,127,.12)!important;}
+html:root body .menuDayTabs button {background:var(--ui-surface)!important;color:var(--ui-muted)!important;border:1px solid var(--ui-line)!important;}
+html:root body .menuDayTabs button.active {background:var(--ui-soft)!important;color:var(--ui-accent)!important;border:2px solid var(--ui-accent)!important;}
+html:root body .menuDayTabs button :is(small,b) {color:inherit!important;}
+html:root body .brand {color:var(--ui-accent)!important;}
+html:root body :is(.muted,.tiny,.meta,.momHelper,.appEntryChoices small,.diaryDirectory small) {color:var(--ui-muted)!important;}
+html:root body :is(.savingProjectEditor,.savingProjectSummary,.moneyPieCenter) {background:var(--ui-surface)!important;color:var(--ui-ink)!important;border-color:var(--ui-line)!important;opacity:1!important;}
+html:root body .savingProjectPlainNumbers span {background:var(--ui-soft)!important;}
+html:root body .savingProjectPlainNumbers small {color:var(--ui-muted)!important;}
+html:root body .savingProjectPlainNumbers b {color:var(--ui-ink)!important;}
+html:root body .bankSavingsExplainer {background:var(--ui-warm)!important;color:var(--ui-ink)!important;}
+html:root body .bankSavingsExplainer :is(p,b,strong,.uiIcon) {color:var(--ui-ink)!important;}
+html:root body .cloudStatus:is(.offline,.error) span {color:var(--ui-muted)!important;}
